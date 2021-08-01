@@ -17,13 +17,13 @@ class CLI {
     private static final int DEFAULT_SIZE = 25;
 
     private static final Map<Integer, String> EXAMPLES = Map.of(
-            18, "x + y != 0 && (x < 2 || y < 2)",
+            18, "(x - y != -24) && (x < 2 || y > 22)",
             19, "x == 0 || x == 24 || y == 0 || y == 24",
             20, "x % 2 == y % 2",
-            21, "0 == y % (x + 1)",
-            22, "x % 3 == (24 - y) % 3",
-            23, "x % 3 == 0 && y % 2 == 0",
-            24, "x == y || x == (24 - y)",
+            21, "0 == x % (25 - y)",
+            22, "y % 3 == x % 3",
+            23, "y % 3 == 0 && x % 2 == 0",
+            24, "x == y || y == (24 - x)",
             25, "x % 6 == 0 || y % 6 == 0");
 
     private final int size;
@@ -106,7 +106,9 @@ class CLI {
                         .build())
                 .addOption(Option.builder("f")
                         .longOpt("formula")
-                        .desc("xy-formula to display, required. example: \"x > y\"")
+                        .desc("formula, xy-boolean expression to display, required. example: \"x > y\"." +
+                                "\nhere x is an abscissa (bottom horizontal line)," +
+                                "\nand y is an ordinate (left vertical line of square)")
                         .type(String.class)
                         .hasArg()
                         .build())

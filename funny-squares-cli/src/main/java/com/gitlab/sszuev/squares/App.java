@@ -25,9 +25,9 @@ public class App {
     }
 
     public static void plotSquare(PrintStream out, int size, String formula) {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                boolean res = (Boolean) Eval.xy(i, j, formula);
+        for (int y = size - 1; y >= 0; y--) {
+            for (int x = 0; x < size; x++) {
+                boolean res = (Boolean) Eval.xy(x, y, formula);
                 String point = res ? "#" : ".";
                 out.print(point + " ");
             }
