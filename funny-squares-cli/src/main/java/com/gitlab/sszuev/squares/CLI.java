@@ -5,6 +5,9 @@ import org.apache.commons.cli.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by @ssz on 01.08.2021.
@@ -12,6 +15,12 @@ import java.io.StringWriter;
 class CLI {
     private static final int MINIMAL_SIZE = 5;
     private static final int DEFAULT_SIZE = 25;
+
+    private static final Map<Integer, String> EXAMPLES = Map.of(
+            23, "x % 3 == 0 && y % 2 == 0",
+            24, "x == y || x == (24 - y)",
+            25, "x % 6 == 0 || y % 6 == 0");
+
     private final int size;
     private final String formula;
 
@@ -27,10 +36,19 @@ class CLI {
             if (cmd.hasOption("h") || args.length == 0) {
                 throw new ExitException(args.length == 1 ? 0 : 1, printHelp(options), null);
             }
+            if (cmd.hasOption("e")) {
+                throw new ExitException(0, printExamples(), null);
+            }
             return new CLI(parseSize(cmd), parseFormula(cmd));
         } catch (ParseException e) {
             throw new ExitException(2, e.getMessage(), e);
         }
+    }
+
+    private static String printExamples() {
+        return new TreeMap<>(EXAMPLES).entrySet().stream()
+                .map(x -> String.format("#%d:\t\"%s\"", x.getKey(), x.getValue()))
+                .collect(Collectors.joining("\n", "Examples:\n\n", ""));
     }
 
     private static String printHelp(Options options) {
@@ -70,6 +88,10 @@ class CLI {
                 .addOption(Option.builder("h")
                         .longOpt("help")
                         .desc("Display usage")
+                        .build())
+                .addOption(Option.builder("e")
+                        .longOpt("examples")
+                        .desc("Display examples")
                         .build())
                 .addOption(Option.builder("s")
                         .longOpt("size")
