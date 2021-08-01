@@ -16,15 +16,20 @@ class CLI {
     private static final int MINIMAL_SIZE = 5;
     private static final int DEFAULT_SIZE = 25;
 
-    private static final Map<Integer, String> EXAMPLES = Map.of(
-            18, "(x - y != -24) && (x < 2 || y > 22)",
-            19, "x == 0 || x == 24 || y == 0 || y == 24",
-            20, "x % 2 == y % 2",
-            21, "0 == x % (25 - y)",
-            22, "y % 3 == x % 3",
-            23, "y % 3 == 0 && x % 2 == 0",
-            24, "x == y || y == (24 - x)",
-            25, "x % 6 == 0 || y % 6 == 0");
+    private static final Map<Integer, String> EXAMPLES = Map.ofEntries(
+            Map.entry(11, "x == 1 || x == 23 || y == 1 || y == 23"),
+            Map.entry(15, "(y >= 4 - x && y <= 14 - x) || (y >= 34 - x && y <= 44 - x)"),
+            Map.entry(16, "y <= 21 - Math.abs(x - 12) && y >= Math.abs(x - 12) + 3"),
+            Map.entry(17, "y < (int)(8 * (1 + Math.sin((x + 9.5)  / 3.0))) + 1"),
+            Map.entry(18, "(x - y != -24) && (x < 2 || y > 22)"),
+            Map.entry(19, "x == 0 || x == 24 || y == 0 || y == 24"),
+            Map.entry(20, "x % 2 == y % 2"),
+            Map.entry(21, "0 == x % (25 - y)"),
+            Map.entry(22, "y % 3 == x % 3"),
+            Map.entry(23, "y % 3 == 0 && x % 2 == 0"),
+            Map.entry(24, "x == y || y == (24 - x)"),
+            Map.entry(25, "x % 6 == 0 || y % 6 == 0")
+    );
 
     private final int size;
     private final String formula;
