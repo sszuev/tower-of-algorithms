@@ -17,6 +17,8 @@ class CLI {
     private static final int DEFAULT_SIZE = 25;
 
     private static final Map<Integer, String> EXAMPLES = Map.of(
+            18, "x + y != 0 && (x < 2 || y < 2)",
+            19, "x == 0 || x == 24 || y == 0 || y == 24",
             20, "x % 2 == y % 2",
             21, "0 == y % (x + 1)",
             22, "x % 3 == (24 - y) % 3",
