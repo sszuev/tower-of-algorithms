@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.tasks;
 
 import com.gitlab.sszuev.tasks.strings.StringLengthCalculationAlgorithmTest;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -26,6 +27,11 @@ public abstract class RunTestEngine {
 
     public abstract Algorithm getTaskToTest();
 
+    @BeforeAll
+    public static void beforeClass() {
+        System.out.println("==".repeat(42));
+    }
+
     @SuppressWarnings("RedundantThrows")
     public static Stream<Data> listData() throws Exception {
         throw new UnsupportedOperationException();
@@ -41,11 +47,19 @@ public abstract class RunTestEngine {
             actual = task.run(data.given);
         } finally {
             Duration duration = Duration.between(start, Instant.now());
-            double timeInMs = duration.getSeconds() * 1000. + duration.getNano() / 1_000_000.;
-            String msg = String.format("%s\t#%d:\t%s\t%sms",
-                    task.name(), data.id, data.expected.equals(actual) ? " OK " : "FAIL", timeInMs);
+            String msg = formatMessage(task.name(), data.id, data.expected.equals(actual), duration);
             System.out.println(msg);
         }
+    }
+
+    private static String formatMessage(String name, long id, boolean status, Duration duration) {
+        return String.format("%s\t#%d:\t%s\t%s",
+                name, id, status ? "  OK" : "FAIL", formatDuration(duration));
+    }
+
+    private static String formatDuration(Duration duration) {
+        double timeInMs = duration.getSeconds() * 1000. + duration.getNano() / 1_000_000.;
+        return timeInMs + "ms";
     }
 
     public static Stream<Data> listData(String dir) throws Exception {
