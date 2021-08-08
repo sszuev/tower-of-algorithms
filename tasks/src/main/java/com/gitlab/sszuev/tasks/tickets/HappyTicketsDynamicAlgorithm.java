@@ -11,6 +11,8 @@ import java.util.stream.LongStream;
  * if the sum of the first {@code N} digits is equal to the sum of the last {@code N} digits.
  * How many lucky {@code 2 * N}-digit tickets exist?
  * <p>
+ * Time+mem complexity : {@code O(n^2)}
+ * <p>
  * Created by @ssz on 08.08.2021.
  */
 public class HappyTicketsDynamicAlgorithm implements Algorithm {
@@ -21,7 +23,6 @@ public class HappyTicketsDynamicAlgorithm implements Algorithm {
         }
         return LongStream.of(calcSums(n)).map(x -> x * x).sum();
     }
-
 
     private static long[] calcSums(int n) {
         if (n == 1) {

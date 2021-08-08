@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.tasks;
 
 import com.gitlab.sszuev.tasks.strings.StringLengthCalculationAlgorithmTest;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,8 +54,8 @@ public abstract class RunTestEngine {
     }
 
     private static String formatMessage(String name, long id, boolean status, Duration duration) {
-        return String.format("%s\t#%d:\t%s\t%s",
-                name, id, status ? "  OK" : "FAIL", formatDuration(duration));
+        return String.format("%s\t#%d:\t\t%s\t%s",
+                StringUtils.rightPad(name, 42), id, status ? "  OK" : "FAIL", formatDuration(duration));
     }
 
     private static String formatDuration(Duration duration) {
