@@ -7,6 +7,8 @@ Right now there are following algorithmic tasks:
   dummy algorithm for demonstration)
 - [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/tickets/HappyTicketsDynamicAlgorithm.java) (
   dynamic-programming approach)
+- Bitboard algorithms:
+  * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
 
 ###### For [OtusTeam](https://otus.ru).
 
