@@ -10,13 +10,14 @@ public interface Algorithm {
 
     /**
      * Runs this algorithm.
-     * @param arg {@code String} first argument
+     *
+     * @param arg   {@code String} first argument
      * @param other {@code Array} of rest arguments
      * @return {@code String} result of algorithm calculation
      */
-    String run(String arg, String... other);
+    List<String> run(String arg, String... other);
 
-    default String run(List<String> args) {
+    default List<String> run(List<String> args) {
         return run(args.get(0), args.subList(1, args.size()).toArray(String[]::new));
     }
 

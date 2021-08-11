@@ -2,6 +2,8 @@ package com.gitlab.sszuev.tasks.strings;
 
 import com.gitlab.sszuev.tasks.Algorithm;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -13,9 +15,9 @@ public class StringLengthCalculationAlgorithm implements Algorithm {
     private static final Random RANDOM = new Random();
 
     @Override
-    public String run(String arg, String... other) {
+    public List<String> run(String arg, String... other) {
         delay();
-        return String.valueOf(arg.length());
+        return Collections.singletonList(String.valueOf(arg.length()));
     }
 
     private void delay() {

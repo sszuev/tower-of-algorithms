@@ -2,6 +2,7 @@ package com.gitlab.sszuev.tasks;
 
 import com.gitlab.sszuev.tasks.strings.StringLengthCalculationAlgorithmTest;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,6 +27,13 @@ import java.util.stream.Stream;
  */
 public abstract class RunTestEngine {
 
+    /**
+     * Specify VM option '-Duse.assertions=true' to throw {@link AssertionError} if testcase has wrong status.
+     * To provide nice-looking console output this option is disabled by default.
+     */
+    static final boolean USE_ASSERTIONS = Boolean.parseBoolean(System.getProperty("use.assertions",
+            Boolean.FALSE.toString()));
+
     public abstract Algorithm getTaskToTest();
 
     @BeforeAll
@@ -42,7 +50,7 @@ public abstract class RunTestEngine {
     @MethodSource("listData")
     public void testRunTask(Data data) {
         Algorithm task = getTaskToTest();
-        String actual = null;
+        List<String> actual = null;
         Instant start = Instant.now();
         try {
             actual = task.run(data.given);
@@ -50,6 +58,9 @@ public abstract class RunTestEngine {
             Duration duration = Duration.between(start, Instant.now());
             String msg = formatMessage(task.name(), data.id, data.expected.equals(actual), duration);
             System.out.println(msg);
+            if (USE_ASSERTIONS) {
+                Assertions.assertEquals(data.expected, actual);
+            }
         }
     }
 
@@ -119,24 +130,25 @@ public abstract class RunTestEngine {
         }
         List<String> given = readContentAsList(in);
         List<String> expected = readContentAsList(out);
-        if (expected.size() != 1) {
-            throw new IllegalStateException("Wrong content in " + out);
-        }
-        return new Data(id, given, expected.get(0));
+        return new Data(id, given, expected);
     }
 
     private static List<String> readContentAsList(Path file) throws IOException {
         try (Stream<String> lines = Files.lines(file)) {
-            return lines.map(String::trim).collect(Collectors.toUnmodifiableList());
+            List<String> res = lines.map(String::trim).collect(Collectors.toUnmodifiableList());
+            if (res.isEmpty()) {
+                throw new IllegalStateException("Wrong content in " + file + ".");
+            }
+            return res;
         }
     }
 
     public static class Data {
         private final long id;
         private final List<String> given;
-        private final String expected;
+        private final List<String> expected;
 
-        public Data(long id, List<String> given, String expected) {
+        protected Data(long id, List<String> given, List<String> expected) {
             this.given = given;
             this.expected = expected;
             this.id = id;

@@ -2,6 +2,8 @@ package com.gitlab.sszuev.tasks.tickets;
 
 import com.gitlab.sszuev.tasks.Algorithm;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.LongStream;
 
 /**
@@ -46,8 +48,8 @@ public class HappyTicketsDynamicAlgorithm implements Algorithm {
     }
 
     @Override
-    public String run(String arg, String... other) {
+    public List<String> run(String arg, String... other) {
         int n = Integer.parseInt(arg);
-        return String.valueOf(calcNumberOfHappyTickets(n));
+        return Collections.singletonList(String.valueOf(calcNumberOfHappyTickets(n)));
     }
 }
