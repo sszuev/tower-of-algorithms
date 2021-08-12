@@ -17,16 +17,6 @@ import java.util.List;
  */
 public class BishopWalkAlgorithm implements Algorithm {
 
-    final static long LEFT_BORDER = 0x101010101010101L;
-    final static long RIGHT_BORDER = 0x8080808080808080L;
-    final static long TOP_BORDER = 0xff00000000000000L;
-    final static long BOTTOM_BORDER = 0xffL;
-
-    final static long TOP_RIGHT_BORDER = TOP_BORDER | RIGHT_BORDER;
-    final static long BOTTOM_LEFT_BORDER = BOTTOM_BORDER | LEFT_BORDER;
-    final static long TOP_LEFT_BORDER = TOP_BORDER | LEFT_BORDER;
-    final static long BOTTOM_RIGHT_BORDER = BOTTOM_BORDER | RIGHT_BORDER;
-
     /**
      * Calculates the mask for bishop's position.
      *
@@ -34,35 +24,32 @@ public class BishopWalkAlgorithm implements Algorithm {
      * @return {@code long} - bit-mask
      */
     public static long calcMask(int p) {
-        if (p < 0 || p > 63) {
-            throw new IllegalArgumentException("Wrong position: " + p);
-        }
-        long k = 1L << p;
+        long k = BitUtils.getBitMask(p);
         return (calcBottomLeftToTopRightDiagonal(k) | calcTopLeftToBottomRightDiagonal(k)) ^ k;
     }
 
     private static long calcBottomLeftToTopRightDiagonal(long k) {
         for (int i = 1; i < 8; i++) {
-            if ((BOTTOM_LEFT_BORDER & k) != 0)
+            if ((BitUtils.BOTTOM_LEFT_BORDER & k) != 0)
                 break;
             k |= k >>> 9; // move to the bottom left cell
         }
         for (int i = 1; i < 8; i++) {
-            if ((TOP_RIGHT_BORDER & k) != 0)
+            if ((BitUtils.TOP_RIGHT_BORDER & k) != 0)
                 break;
             k |= k << 9; // move to the top right cell
         }
         return k;
     }
 
-    private static long calcTopLeftToBottomRightDiagonal(long k) { // TODO:
+    private static long calcTopLeftToBottomRightDiagonal(long k) {
         for (int i = 1; i < 8; i++) {
-            if ((BOTTOM_RIGHT_BORDER & k) != 0)
+            if ((BitUtils.BOTTOM_RIGHT_BORDER & k) != 0)
                 break;
             k |= k >>> 7; // move to the bottom right cell
         }
         for (int i = 1; i < 8; i++) {
-            if ((TOP_LEFT_BORDER & k) != 0)
+            if ((BitUtils.TOP_LEFT_BORDER & k) != 0)
                 break;
             k |= k << 7; // move to the top left cell
         }

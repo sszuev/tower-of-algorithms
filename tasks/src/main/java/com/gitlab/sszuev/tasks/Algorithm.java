@@ -13,7 +13,7 @@ public interface Algorithm {
      *
      * @param arg   {@code String} first argument
      * @param other {@code Array} of rest arguments
-     * @return {@code String} result of algorithm calculation
+     * @return {@code List} with result of algorithm calculation
      */
     List<String> run(String arg, String... other);
 
