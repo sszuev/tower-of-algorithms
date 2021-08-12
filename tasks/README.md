@@ -9,6 +9,7 @@ Right now there are following algorithmic tasks:
   dynamic-programming approach)
 - Bitboard algorithms:
   * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
+  * [Bishop walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/BishopWalkAlgorithm.java)
 
 ###### For [OtusTeam](https://otus.ru).
 
