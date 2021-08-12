@@ -7,14 +7,22 @@ public class BitUtils {
 
     final static long LEFT_BORDER = 0x101010101010101L;
     final static long RIGHT_BORDER = 0x8080808080808080L;
+    final static long COLUMN_B = 0x202020202020202L;
+    final static long COLUMN_G = 0x4040404040404040L;
+
     final static long TOP_BORDER = 0xff00000000000000L;
     final static long TOP_LEFT_BORDER = TOP_BORDER | LEFT_BORDER;
     final static long TOP_RIGHT_BORDER = TOP_BORDER | RIGHT_BORDER;
     final static long BOTTOM_BORDER = 0xffL;
     final static long BOTTOM_RIGHT_BORDER = BOTTOM_BORDER | RIGHT_BORDER;
     final static long BOTTOM_LEFT_BORDER = BOTTOM_BORDER | LEFT_BORDER;
-    final static long EVERYTHING_WITHOUT_COLUMN_A = 0xfefefefefefefefeL;
-    final static long EVERYTHING_WITHOUT_COLUMN_H = 0x7f7f7f7f7f7f7f7fL;
+
+    final static long EVERYTHING = 0xffffffffffffffffL;
+
+    final static long EVERYTHING_WITHOUT_COLUMN_A = EVERYTHING ^ LEFT_BORDER;
+    final static long EVERYTHING_WITHOUT_COLUMN_H = EVERYTHING ^ RIGHT_BORDER;
+    final static long EVERYTHING_WITHOUT_TWO_LAST_COLUMNS = EVERYTHING ^ RIGHT_BORDER ^ COLUMN_G;
+    final static long EVERYTHING_WITHOUT_TWO_FIRST_COLUMNS = EVERYTHING ^ LEFT_BORDER ^ COLUMN_B;
 
     /**
      * Counts number of {@code 1} in bit-representation of the given number.
