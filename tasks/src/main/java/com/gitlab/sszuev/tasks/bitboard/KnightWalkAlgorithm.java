@@ -1,9 +1,5 @@
 package com.gitlab.sszuev.tasks.bitboard;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
-import java.util.List;
-
 /**
  * The chess knight decides to take a walk on a deserted chessboard.
  * Currently, he is in the specified chessboard cell. Where can he go?
@@ -15,7 +11,7 @@ import java.util.List;
  * <p>
  * Created by @ssz on 12.08.2021.
  */
-public class KnightWalkAlgorithm implements Algorithm {
+public class KnightWalkAlgorithm extends BaseWalkAlgorithm {
 
     /**
      * Calculates the mask for knight walk position.
@@ -34,10 +30,7 @@ public class KnightWalkAlgorithm implements Algorithm {
     }
 
     @Override
-    public List<String> run(String arg, String... other) {
-        int position = Integer.parseInt(arg);
-        long mask = calcMask(position);
-        int number = BitUtils.count(mask);
-        return List.of(String.valueOf(number), Long.toUnsignedString(mask));
+    long calculateWalkMask(int p) {
+        return calcMask(p);
     }
 }

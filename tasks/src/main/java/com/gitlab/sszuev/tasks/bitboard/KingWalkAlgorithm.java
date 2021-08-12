@@ -1,9 +1,5 @@
 package com.gitlab.sszuev.tasks.bitboard;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
-import java.util.List;
-
 /**
  * The king decides to take a walk on a deserted chessboard.
  * Currently, he is in the specified chessboard cell.
@@ -17,7 +13,7 @@ import java.util.List;
  *
  * @see <a href='https://gekomad.github.io/Cinnamon/BitboardCalculator/'>Bitboard Calculator</a>
  */
-public class KingWalkAlgorithm implements Algorithm {
+public class KingWalkAlgorithm extends BaseWalkAlgorithm {
 
     /**
      * Calculates the mask for king's position.
@@ -33,10 +29,7 @@ public class KingWalkAlgorithm implements Algorithm {
     }
 
     @Override
-    public List<String> run(String arg, String... other) {
-        int position = Integer.parseInt(arg);
-        long mask = calcMask(position);
-        int number = BitUtils.count(mask);
-        return List.of(String.valueOf(number), Long.toUnsignedString(mask));
+    long calculateWalkMask(int p) {
+        return calcMask(p);
     }
 }

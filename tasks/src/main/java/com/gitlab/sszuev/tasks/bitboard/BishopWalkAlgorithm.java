@@ -1,9 +1,5 @@
 package com.gitlab.sszuev.tasks.bitboard;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
-import java.util.List;
-
 /**
  * The chess bishop decides to take a walk on a deserted chessboard.
  * Currently, he is in the specified chessboard cell.
@@ -15,7 +11,7 @@ import java.util.List;
  * <p>
  * Created by @ssz on 12.08.2021.
  */
-public class BishopWalkAlgorithm implements Algorithm {
+public class BishopWalkAlgorithm extends BaseWalkAlgorithm {
 
     /**
      * Calculates the mask for bishop's position.
@@ -57,10 +53,7 @@ public class BishopWalkAlgorithm implements Algorithm {
     }
 
     @Override
-    public List<String> run(String arg, String... other) {
-        int position = Integer.parseInt(arg);
-        long mask = calcMask(position);
-        int number = BitUtils.count(mask);
-        return List.of(String.valueOf(number), Long.toUnsignedString(mask));
+    long calculateWalkMask(int p) {
+        return calcMask(p);
     }
 }
