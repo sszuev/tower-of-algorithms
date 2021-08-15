@@ -56,12 +56,20 @@ public abstract class RunTestEngine {
             actual = task.run(data.given);
         } finally {
             Duration duration = Duration.between(start, Instant.now());
-            String msg = formatMessage(task.name(), data.id, data.expected.equals(actual), duration);
+            String msg = formatMessage(task.name(), data.id, isEquals(data.expected, actual), duration);
             System.out.println(msg);
             if (USE_ASSERTIONS) {
-                Assertions.assertEquals(data.expected, actual);
+                assertEquals(data.expected, actual);
             }
         }
+    }
+
+    protected boolean isEquals(List<String> expected, List<String> actual) {
+        return expected.equals(actual);
+    }
+
+    protected void assertEquals(List<String> expected, List<String> actual) {
+        Assertions.assertEquals(expected, actual);
     }
 
     private static String formatMessage(String name, long id, boolean status, Duration duration) {
