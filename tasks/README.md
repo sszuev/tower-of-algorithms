@@ -11,6 +11,14 @@ Right now there are following algorithmic tasks:
   * [Rook walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/RookWalkAlgorithm.java)
   * [Queen walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/QueenWalkAlgorithm.java)
   * [Knight walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KnightWalkAlgorithm.java)
+- Algorithms for raising a real number to a natural power:
+  * [Simple iterative algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/power/NaturalPowerSimpleIterativeAlgorithm.java)
+  * [Iterative algorithm with optimization](src/main/java/com/gitlab/sszuev/tasks/algebraic/power/NaturalPowerOptimizedIterativeAlgorithm.java)
+  * [Fast algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/power/NaturalPowerFastAlgorithm.java)
+- Fibonacci number calculation:
+  * [Simple recursive algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciRecursiveAlgorithm.java)
+  * [Simple iterative algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciIterativeAlgorithm.java)
+  * [Using golden ration](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciGoldenRationAlgorithm.java)
 
 ##### Requirements:
 
