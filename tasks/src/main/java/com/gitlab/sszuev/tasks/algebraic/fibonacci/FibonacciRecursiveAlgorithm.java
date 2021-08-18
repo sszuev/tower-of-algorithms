@@ -1,14 +1,11 @@
 package com.gitlab.sszuev.tasks.algebraic.fibonacci;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * Created by @ssz on 17.08.2021.
  */
-public class FibonacciRecursiveAlgorithm implements Algorithm {
+public class FibonacciRecursiveAlgorithm extends BaseFibonacciAlgorithm {
 
     public static BigInteger fibonacci(long n) {
         if (n <= 1) {
@@ -17,14 +14,17 @@ public class FibonacciRecursiveAlgorithm implements Algorithm {
         return fibonacci(n - 1).add(fibonacci(n - 2));
     }
 
-    BigInteger calc(long n) {
-        return fibonacci(n);
+    public static long fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        checkNumberIsInRange(n);
+        return fibonacci(n - 1) + fibonacci(n - 2);
     }
 
     @Override
-    public List<String> run(String arg, String... other) {
-        long n = Long.parseLong(arg);
-        String res = String.valueOf(calc(n));
-        return List.of(res);
+    BigInteger calc(long n) {
+        return n > MAX_N_FOR_LONG_RETURN ? fibonacci(n) : BigInteger.valueOf(fibonacci((int) n));
     }
+
 }

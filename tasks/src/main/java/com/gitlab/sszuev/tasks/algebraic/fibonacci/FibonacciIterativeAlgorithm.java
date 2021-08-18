@@ -1,20 +1,15 @@
 package com.gitlab.sszuev.tasks.algebraic.fibonacci;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * Created by @ssz on 17.08.2021.
  */
-public class FibonacciIterativeAlgorithm implements Algorithm {
+public class FibonacciIterativeAlgorithm extends BaseFibonacciAlgorithm {
 
     public static long fibonacci(int n) {
         if (n <= 1) return n;
-        if (n > 6) {
-            throw new IllegalArgumentException("Not applicable for n > 6");
-        }
+        checkNumberIsInRange(n);
         long f0 = 0;
         long f1 = 1;
         long res = -1;
@@ -35,14 +30,9 @@ public class FibonacciIterativeAlgorithm implements Algorithm {
         return res;
     }
 
+    @Override
     BigInteger calc(long n) {
-        return n < 7 ? BigInteger.valueOf(fibonacci((int) n)) : fibonacci(n);
+        return n > MAX_N_FOR_LONG_RETURN ? fibonacci(n) : BigInteger.valueOf(fibonacci((int) n));
     }
 
-    @Override
-    public List<String> run(String arg, String... other) {
-        long n = Long.parseLong(arg);
-        String res = String.valueOf(calc(n));
-        return List.of(res);
-    }
 }
