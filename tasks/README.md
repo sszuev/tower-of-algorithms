@@ -19,6 +19,7 @@ Right now there are following algorithmic tasks:
   * [Simple recursive algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciRecursiveAlgorithm.java)
   * [Simple iterative algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciIterativeAlgorithm.java)
   * [Using golden ration](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciGoldenRationAlgorithm.java)
+  * [Matrix solution](src/main/java/com/gitlab/sszuev/tasks/algebraic/fibonacci/FibonacciMatrixAlgorithm.java)
 
 ##### Requirements:
 
