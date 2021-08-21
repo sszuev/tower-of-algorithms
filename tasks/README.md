@@ -23,6 +23,7 @@ Right now there are following algorithmic tasks:
 - Primes number calculation:
   * [Iterative algorithm with some optimizations](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesOptimizedIterativeAlgorithm.java)
   * [Sieve of Eratosthenes algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesAlgorithm.java)
+  * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java)
 
 ##### Requirements:
 
