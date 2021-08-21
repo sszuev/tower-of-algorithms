@@ -50,17 +50,15 @@ public abstract class RunTestEngine {
     @MethodSource("listData")
     public void testRunTask(Data data) {
         Algorithm task = getTaskToTest();
-        List<String> actual = null;
+
         Instant start = Instant.now();
-        try {
-            actual = task.run(data.given);
-        } finally {
-            Duration duration = Duration.between(start, Instant.now());
-            String msg = formatMessage(task.name(), data.id, isEquals(data.expected, actual), duration);
-            System.out.println(msg);
-            if (USE_ASSERTIONS) {
-                assertEquals(data.expected, actual);
-            }
+        List<String> actual = task.run(data.given);
+        Duration duration = Duration.between(start, Instant.now());
+
+        String msg = formatMessage(task.name(), data.id, isEquals(data.expected, actual), duration);
+        System.out.println(msg);
+        if (USE_ASSERTIONS) {
+            assertEquals(data.expected, actual);
         }
     }
 
