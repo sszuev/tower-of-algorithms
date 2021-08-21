@@ -17,16 +17,16 @@ import java.util.List;
  */
 public class PrimesSieveOfEratosthenesAlgorithm implements Algorithm {
 
-    public static long numberOfPrimes(long n) {
-        if (n <= 0 || n > Integer.MAX_VALUE) {
+    public static int numberOfPrimes(int n) {
+        if (n <= 0) {
             throw new IllegalArgumentException("Wrong n = " + n);
         }
         if (n == 1) {
             return 0;
         }
-        BitSet sieve = new BitSet((int) n);
+        BitSet sieve = new BitSet(n);
         int max = (int) Math.sqrt(n);
-        long res = 0;
+        int res = 0;
         for (int i = 2; i <= n; i++) {
             if (sieve.get(i)) {
                 continue;
@@ -44,8 +44,8 @@ public class PrimesSieveOfEratosthenesAlgorithm implements Algorithm {
 
     @Override
     public List<String> run(String arg, String... other) {
-        long n = Long.parseLong(arg);
-        long res = numberOfPrimes(n);
+        int n = Integer.parseInt(arg);
+        int res = numberOfPrimes(n);
         return List.of(String.valueOf(res));
     }
 }

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class PrimesSieveOfEratosthenesAlgorithmTest extends RunTestEngine {
 
     public static Stream<Data> listData() throws Exception {
-        // iteration #13 (N = 1_000_000_000) lasts about ~18s
+        // iteration #13 (N = 1_000_000_000) lasts about ~14s
         return listData("/algebraic/primes");
     }
 
