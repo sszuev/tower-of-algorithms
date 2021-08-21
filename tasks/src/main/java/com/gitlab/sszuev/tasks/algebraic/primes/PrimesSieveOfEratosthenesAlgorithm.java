@@ -2,11 +2,14 @@ package com.gitlab.sszuev.tasks.algebraic.primes;
 
 import com.gitlab.sszuev.tasks.Algorithm;
 
+import java.util.BitSet;
 import java.util.List;
 
 /**
+ * Sieve of Eratosthenes with bit-set.
+ * <p>
  * Time complexity: {@code O(N*log(log(N)))}.
- * Mem complexity: {@code O(N)}.
+ * Mem complexity: {@code O(N)} (~ N * 8 byte).
  * <p>
  * Created by @ssz on 21.08.2021.
  *
@@ -15,17 +18,17 @@ import java.util.List;
 public class PrimesSieveOfEratosthenesAlgorithm implements Algorithm {
 
     public static long numberOfPrimes(long n) {
-        if (n <= 0 || n > Integer.MAX_VALUE - 1) {
+        if (n <= 0 || n > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Wrong n = " + n);
         }
         if (n == 1) {
             return 0;
         }
-        boolean[] sieve = new boolean[(int) (n + 1)];
+        BitSet sieve = new BitSet((int) n);
         int max = (int) Math.sqrt(n);
         long res = 0;
         for (int i = 2; i <= n; i++) {
-            if (sieve[i]) {
+            if (sieve.get(i)) {
                 continue;
             }
             res++;
@@ -33,7 +36,7 @@ public class PrimesSieveOfEratosthenesAlgorithm implements Algorithm {
                 continue;
             }
             for (int j = i * i; j <= n; j += i) {
-                sieve[j] = true;
+                sieve.set(j);
             }
         }
         return res;
