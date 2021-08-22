@@ -1,16 +1,23 @@
 package com.gitlab.sszuev.arrays;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Created by @ssz on 22.08.2021.
  */
 public class FactorDynamicArrayTest extends DynamicArrayBaseTest {
-    @Override
-    DynamicArray<Integer> createIntegerDynamicArray(Integer[] data) {
-        return FactorDynamicArray.of(10, data);
+    @Test
+    public void testCreateNonEmptyWithVector4() {
+        doTestCreateNonEmpty(data -> FactorDynamicArray.of(4, data));
     }
 
-    @Override
-    DynamicArray<String> createStringDynamicArray(String[] data) {
-        return FactorDynamicArray.of(5, data);
+    @Test
+    public void testRemoveWithFactor2() {
+        doTestRemove(data -> FactorDynamicArray.of(2, data));
+    }
+
+    @Test
+    public void testRemoveWithFactor5() {
+        doTestRemove(data -> FactorDynamicArray.of(5, data));
     }
 }

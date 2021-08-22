@@ -1,28 +1,23 @@
 package com.gitlab.sszuev.arrays;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+
+import java.util.function.Function;
 
 /**
  * Created by @ssz on 22.08.2021.
  */
 abstract class DynamicArrayBaseTest {
 
-    abstract DynamicArray<Integer> createIntegerDynamicArray(Integer[] data);
-
-    abstract DynamicArray<String> createStringDynamicArray(String[] data);
-
-    @Test
-    public void testCreateNonEmpty() {
+    void doTestCreateNonEmpty(Function<Integer[], DynamicArray<Integer>> factory) {
         Integer[] data = new Integer[]{1, 2, 3, 4, 5, 6, 6, 7, -1};
-        DynamicArray<Integer> res = createIntegerDynamicArray(data);
+        DynamicArray<Integer> res = factory.apply(data);
         assertArray(res, data);
     }
 
-    @Test
-    public void testRemove() {
+    void doTestRemove(Function<String[], DynamicArray<String>> factory) {
         String[] data = new String[]{"a", "b", "c", "d", "e"};
-        DynamicArray<String> res = createStringDynamicArray(data);
+        DynamicArray<String> res = factory.apply(data);
         Assertions.assertEquals("c", res.remove(2));
         assertArray(res, "a", "b", "d", "e");
 
@@ -40,7 +35,7 @@ abstract class DynamicArrayBaseTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <X> void assertArray(DynamicArray<X> actual, X... expected) {
+    <X> void assertArray(DynamicArray<X> actual, X... expected) {
         Assertions.assertEquals(expected.length, actual.size());
         for (int i = 0; i < expected.length; i++) {
             Assertions.assertEquals(expected[i], actual.get(i));

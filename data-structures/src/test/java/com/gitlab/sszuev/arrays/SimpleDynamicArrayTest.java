@@ -1,16 +1,19 @@
 package com.gitlab.sszuev.arrays;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Created by @ssz on 22.08.2021.
  */
 public class SimpleDynamicArrayTest extends DynamicArrayBaseTest {
-    @Override
-    DynamicArray<Integer> createIntegerDynamicArray(Integer[] data) {
-        return SimpleDynamicArray.of(data);
+
+    @Test
+    public void testCreateNonEmpty() {
+        doTestCreateNonEmpty(SimpleDynamicArray::of);
     }
 
-    @Override
-    DynamicArray<String> createStringDynamicArray(String[] data) {
-        return SimpleDynamicArray.of(data);
+    @Test
+    public void testRemove() {
+        doTestRemove(SimpleDynamicArray::of);
     }
 }
