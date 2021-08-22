@@ -13,6 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <version.jmh>1.33</version.jmh>
+        <version.junit>5.8.0-M1</version.junit>
     </properties>
 
     <dependencies>
@@ -26,6 +27,12 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>${version.jmh}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

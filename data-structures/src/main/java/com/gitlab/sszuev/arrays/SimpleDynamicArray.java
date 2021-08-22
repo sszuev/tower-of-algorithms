@@ -1,5 +1,7 @@
 package com.gitlab.sszuev.arrays;
 
+import java.util.Objects;
+
 /**
  * A simple straightforward {@link DynamicArray} implementation,
  * the internal array grows by one item each time the operation {@link #add(Object)} is performed.
@@ -11,7 +13,23 @@ public class SimpleDynamicArray<E> implements DynamicArray<E> {
     private Object[] array;
 
     public SimpleDynamicArray() {
-        this.array = new Object[0];
+        this(new Object[0]);
+    }
+
+    protected SimpleDynamicArray(Object[] array) {
+        this.array = Objects.requireNonNull(array);
+    }
+
+    /**
+     * Creates an array instance with the given data.
+     *
+     * @param array {@code Array} with data
+     * @param <X>   any object
+     * @return {@link SimpleDynamicArray} of {@link X}
+     */
+    @SafeVarargs
+    public static <X> SimpleDynamicArray<X> of(X... array) {
+        return new SimpleDynamicArray<>(ArrayUtils.copy(array));
     }
 
     @Override
