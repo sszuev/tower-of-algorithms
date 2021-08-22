@@ -3,6 +3,7 @@ package com.gitlab.sszuev.benchmarks;
 import com.gitlab.sszuev.arrays.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -16,11 +17,21 @@ public enum DynamicArrayFactory {
         DynamicArray<Object> createEmptyList() {
             return new SimpleDynamicArray<>();
         }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return SimpleDynamicArray.of(data);
+        }
     },
     VECTOR_LIST {
         @Override
         DynamicArray<Object> createEmptyList() {
             return new VectorDynamicArray<>();
+        }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return VectorDynamicArray.of(10, data);
         }
     },
     MATRIX_LIST {
@@ -28,11 +39,21 @@ public enum DynamicArrayFactory {
         DynamicArray<Object> createEmptyList() {
             return new MatrixDynamicArray<>();
         }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return MatrixDynamicArray.of(10, data);
+        }
     },
     FACTOR_LIST {
         @Override
         DynamicArray<Object> createEmptyList() {
             return new FactorDynamicArray<>();
+        }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return FactorDynamicArray.of(50, data);
         }
     },
 
@@ -41,13 +62,25 @@ public enum DynamicArrayFactory {
         DynamicArray<Object> createEmptyList() {
             return new JDKListDynamicArray<>(new ArrayList<>());
         }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return new JDKListDynamicArray<>(new ArrayList<>(Arrays.asList(data)));
+        }
     },
     JDK_LINKED_LIST {
         @Override
         DynamicArray<Object> createEmptyList() {
             return new JDKListDynamicArray<>(new LinkedList<>());
         }
+
+        @Override
+        DynamicArray<Object> createListOf(Object... data) {
+            return new JDKListDynamicArray<>(new LinkedList<>(Arrays.asList(data)));
+        }
     };
 
     abstract DynamicArray<Object> createEmptyList();
+
+    abstract DynamicArray<Object> createListOf(Object... data);
 }
