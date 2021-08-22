@@ -14,7 +14,7 @@ class ArrayUtils {
     }
 
     static Object[] grow(Object[] array, int toAdd) {
-        if (toAdd <= 0) {
+        if (toAdd < 0) {
             throw new IllegalArgumentException();
         }
         Object[] res = new Object[array.length + toAdd];

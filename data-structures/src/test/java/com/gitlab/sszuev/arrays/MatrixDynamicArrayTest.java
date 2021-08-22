@@ -6,6 +6,13 @@ import org.junit.jupiter.api.Test;
  * Created by @ssz on 22.08.2021.
  */
 public class MatrixDynamicArrayTest extends DynamicArrayBaseTest {
+
+    @Test
+    public void testAdd() {
+        doTestAdd(data -> MatrixDynamicArray.of(42, data), 42);
+        doTestAdd(data -> new MatrixDynamicArray<>(33));
+    }
+
     @Test
     public void testCreateNonEmptyWithVector4() {
         doTestCreateNonEmpty(data -> MatrixDynamicArray.of(42, data));

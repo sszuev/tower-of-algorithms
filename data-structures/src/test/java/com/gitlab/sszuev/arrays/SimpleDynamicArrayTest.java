@@ -13,6 +13,12 @@ public class SimpleDynamicArrayTest extends DynamicArrayBaseTest {
     }
 
     @Test
+    public void testAdd() {
+        doTestAdd(SimpleDynamicArray::of, 1, 2, 4);
+        doTestAdd(SimpleDynamicArray::new);
+    }
+
+    @Test
     public void testRemove() {
         doTestRemove(SimpleDynamicArray::of);
     }

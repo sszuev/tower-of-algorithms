@@ -8,6 +8,12 @@ import org.junit.jupiter.api.Test;
 public class VectorDynamicArrayTest extends DynamicArrayBaseTest {
 
     @Test
+    public void testAdd() {
+        doTestAdd(data -> VectorDynamicArray.of(42, data), 42);
+        doTestAdd(data -> new VectorDynamicArray<>(33));
+    }
+
+    @Test
     public void testCreateNonEmptyWithVector4() {
         doTestCreateNonEmpty(data -> VectorDynamicArray.of(4, data));
     }
