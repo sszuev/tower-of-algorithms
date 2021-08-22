@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 public class NonEmptyDynamicArrayBenchmark {
     private final static int TEST_ITEM = 42;
     private static final Random RANDOM = new Random();
-    private static final int TEST_CONTENT_LENGTH = 1_000;
+    private static final int TEST_CONTENT_LENGTH = 100_000;
     private static final Object[] TEST_CONTENT = IntStream.generate(RANDOM::nextInt)
             .limit(TEST_CONTENT_LENGTH).boxed().toArray();
 
@@ -34,10 +34,18 @@ public class NonEmptyDynamicArrayBenchmark {
     }
 
     @Benchmark
-    @Group("ADD_999")
-    public void testAdd10000() {
-        for (int i = 0; i < 999; i++) {
+    @Group("ADD_9999")
+    public void testAdd9999() {
+        for (int i = 0; i < 9999; i++) {
             array.add(TEST_ITEM);
+        }
+    }
+
+    @Benchmark
+    @Group("REMOVE_9999")
+    public void testRemove9999() {
+        for (int i = 0; i < 9999; i++) {
+            array.remove(TEST_CONTENT_LENGTH / 2);
         }
     }
 

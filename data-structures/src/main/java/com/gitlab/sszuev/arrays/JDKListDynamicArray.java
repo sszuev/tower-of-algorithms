@@ -1,6 +1,5 @@
 package com.gitlab.sszuev.arrays;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,10 +13,6 @@ import java.util.Objects;
 public class JDKListDynamicArray<E> implements DynamicArray<E> {
 
     private final List<E> inner;
-
-    public JDKListDynamicArray() {
-        this(new ArrayList<>());
-    }
 
     public JDKListDynamicArray(List<E> inner) {
         this.inner = Objects.requireNonNull(inner);
