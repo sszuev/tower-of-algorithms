@@ -45,16 +45,29 @@ public class FactorDynamicArray<E> implements DynamicArray<E> {
 
     @Override
     public void add(E item) {
-        if (size == array.length)
-            resize();
+        if (size == array.length) {
+            this.array = ArrayUtils.grow(array, this.array.length * factor / 100);
+        }
         array[size] = item;
         size++;
     }
 
     @Override
+    public E remove(int index) {
+        @SuppressWarnings("unchecked") E res = (E) array[checkIndex(index)];
+        int vector = this.array.length * factor / 100;
+        ArrayUtils.remove(array, index);
+        size--;
+        if (this.array.length - size >= vector) {
+            this.array = ArrayUtils.truncate(array, size);
+        }
+        return res;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public E get(int index) {
-        return (E) array[index];
+        return (E) array[checkIndex(index)];
     }
 
     @Override
@@ -62,9 +75,7 @@ public class FactorDynamicArray<E> implements DynamicArray<E> {
         return size;
     }
 
-    private void resize() {
-        Object[] newArray = new Object[array.length + array.length * factor / 100];
-        System.arraycopy(array, 0, newArray, 0, array.length);
-        array = newArray;
+    private int checkIndex(int index) {
+        return ArrayUtils.checkIndex(index, size);
     }
 }

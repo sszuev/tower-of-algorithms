@@ -10,16 +10,40 @@ abstract class DynamicArrayBaseTest {
 
     abstract DynamicArray<Integer> createIntegerDynamicArray(Integer[] data);
 
+    abstract DynamicArray<String> createStringDynamicArray(String[] data);
+
     @Test
     public void testCreateNonEmpty() {
-        doTestCreateIntegerDynamicArray(new Integer[]{1, 2, 3, 4, 5, 6, 6, 7, -1});
+        Integer[] data = new Integer[]{1, 2, 3, 4, 5, 6, 6, 7, -1};
+        DynamicArray<Integer> res = createIntegerDynamicArray(data);
+        assertArray(res, data);
     }
 
-    void doTestCreateIntegerDynamicArray(Integer[] data) {
-        DynamicArray<Integer> res = createIntegerDynamicArray(data);
-        Assertions.assertEquals(data.length, res.size());
-        for (int i = 0; i < data.length; i++) {
-            Assertions.assertEquals(data[i], res.get(i));
+    @Test
+    public void testRemove() {
+        String[] data = new String[]{"a", "b", "c", "d", "e"};
+        DynamicArray<String> res = createStringDynamicArray(data);
+        Assertions.assertEquals("c", res.remove(2));
+        assertArray(res, "a", "b", "d", "e");
+
+        Assertions.assertEquals("d", res.remove(2));
+        assertArray(res, "a", "b", "e");
+
+        Assertions.assertEquals("a", res.remove(0));
+        assertArray(res, "b", "e");
+
+        Assertions.assertEquals("e", res.remove(1));
+        assertArray(res, "b");
+
+        Assertions.assertEquals("b", res.remove(0));
+        assertArray(res);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <X> void assertArray(DynamicArray<X> actual, X... expected) {
+        Assertions.assertEquals(expected.length, actual.size());
+        for (int i = 0; i < expected.length; i++) {
+            Assertions.assertEquals(expected[i], actual.get(i));
         }
     }
 }

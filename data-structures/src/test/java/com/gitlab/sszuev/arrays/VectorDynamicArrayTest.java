@@ -9,4 +9,9 @@ public class VectorDynamicArrayTest extends DynamicArrayBaseTest {
     DynamicArray<Integer> createIntegerDynamicArray(Integer[] data) {
         return VectorDynamicArray.of(2, data);
     }
+
+    @Override
+    DynamicArray<String> createStringDynamicArray(String[] data) {
+        return VectorDynamicArray.of(3, data);
+    }
 }

@@ -8,4 +8,9 @@ public class FactorDynamicArrayTest extends DynamicArrayBaseTest {
     DynamicArray<Integer> createIntegerDynamicArray(Integer[] data) {
         return FactorDynamicArray.of(10, data);
     }
+
+    @Override
+    DynamicArray<String> createStringDynamicArray(String[] data) {
+        return FactorDynamicArray.of(5, data);
+    }
 }

@@ -34,8 +34,18 @@ public class SimpleDynamicArray<E> implements DynamicArray<E> {
 
     @Override
     public void add(E item) {
-        resize();
-        array[size() - 1] = item;
+        this.array = ArrayUtils.grow(array, 1);
+        this.array[this.array.length - 1] = item;
+    }
+
+    @Override
+    public E remove(int index) {
+        @SuppressWarnings("unchecked") E res = (E) array[index];
+        Object[] newArray = new Object[array.length - 1];
+        System.arraycopy(array, 0, newArray, 0, index);
+        System.arraycopy(array, index + 1, newArray, index, array.length - index - 1);
+        array = newArray;
+        return res;
     }
 
     @SuppressWarnings("unchecked")
@@ -49,9 +59,4 @@ public class SimpleDynamicArray<E> implements DynamicArray<E> {
         return array.length;
     }
 
-    private void resize() {
-        Object[] newArray = new Object[array.length + 1];
-        System.arraycopy(array, 0, newArray, 0, size());
-        array = newArray;
-    }
 }

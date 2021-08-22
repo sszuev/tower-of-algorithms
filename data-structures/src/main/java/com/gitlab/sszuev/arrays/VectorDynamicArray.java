@@ -45,16 +45,27 @@ public class VectorDynamicArray<E> implements DynamicArray<E> {
     @Override
     public void add(E item) {
         if (size == array.length) {
-            resize();
+            this.array = ArrayUtils.grow(array, vector);
         }
         array[size] = item;
         size++;
     }
 
     @Override
+    public E remove(int index) {
+        @SuppressWarnings("unchecked") E res = (E) array[checkIndex(index)];
+        ArrayUtils.remove(array, index);
+        size--;
+        if (this.array.length - size >= vector) {
+            this.array = ArrayUtils.truncate(array, size);
+        }
+        return res;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public E get(int index) {
-        return (E) array[index];
+        return (E) array[checkIndex(index)];
     }
 
     @Override
@@ -62,9 +73,7 @@ public class VectorDynamicArray<E> implements DynamicArray<E> {
         return size;
     }
 
-    private void resize() {
-        Object[] newArray = new Object[array.length + vector];
-        System.arraycopy(array, 0, newArray, 0, array.length);
-        this.array = newArray;
+    private int checkIndex(int index) {
+        return ArrayUtils.checkIndex(index, size);
     }
 }

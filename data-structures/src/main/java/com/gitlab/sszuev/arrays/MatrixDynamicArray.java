@@ -57,8 +57,50 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
     }
 
     @Override
+    public E remove(int index) {
+        Position<E> pos = findPosition(checkIndex(index));
+        E res = pos.chunk.remove(pos.innerIndex);
+        if (pos.chunk.isEmpty()) {
+            array.remove(pos.chunkIndex);
+        }
+        size--;
+        return res;
+    }
+
+    @Override
     public E get(int index) {
-        return array.get(index / vector).get(index % vector);
+        Position<E> pos = findPosition(checkIndex(index));
+        return pos.chunk.get(pos.innerIndex);
+    }
+
+    private Position<E> findPosition(int index) {
+        return index > this.size / 2 ? findFromEnd(index) : findFromBeginning(index);
+    }
+
+    private Position<E> findFromBeginning(int index) {
+        int count = 0;
+        for (int i = 0; i < array.size(); i++) {
+            DynamicArray<E> chunk = array.get(i);
+            int chunkSize = chunk.size();
+            count += chunkSize;
+            if (index < count) {
+                return new Position<>(chunk, i, chunkSize - count + index);
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private Position<E> findFromEnd(int index) {
+        int count = size;
+        for (int i = array.size() - 1; i >= 0; i--) {
+            DynamicArray<E> chunk = array.get(i);
+            int chunkSize = chunk.size();
+            count -= chunkSize;
+            if (index >= count) {
+                return new Position<>(chunk, i, index - count);
+            }
+        }
+        throw new IllegalStateException();
     }
 
     @Override
@@ -66,6 +108,19 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
         return size;
     }
 
-    public static void main(String... args) {
+    private int checkIndex(int index) {
+        return ArrayUtils.checkIndex(index, size);
+    }
+
+    private static class Position<X> {
+        private final DynamicArray<X> chunk;
+        private final int chunkIndex;
+        private final int innerIndex;
+
+        private Position(DynamicArray<X> chunk, int chunkIndex, int innerIndex) {
+            this.chunk = chunk;
+            this.chunkIndex = chunkIndex;
+            this.innerIndex = innerIndex;
+        }
     }
 }

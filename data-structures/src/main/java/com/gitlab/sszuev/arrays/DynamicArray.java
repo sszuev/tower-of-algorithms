@@ -15,6 +15,15 @@ public interface DynamicArray<E> {
     void add(E item);
 
     /**
+     * Removes the element at the specified position in this array.
+     * Returns the element that was removed from the array.
+     *
+     * @param index the index of the element to be removed
+     * @return {@link E} the element previously at the specified position
+     */
+    E remove(int index);
+
+    /**
      * Returns the element at the specified position in this array.
      *
      * @param index non-negative {@code int}, index of the element to return
@@ -28,4 +37,13 @@ public interface DynamicArray<E> {
      * @return {@code int}, the number of elements
      */
     int size();
+
+    /**
+     * Answers {@code true} if this array contains no elements.
+     *
+     * @return {@code true} if it is empty array
+     */
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 }

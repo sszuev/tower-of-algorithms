@@ -8,4 +8,9 @@ public class SimpleDynamicArrayTest extends DynamicArrayBaseTest {
     DynamicArray<Integer> createIntegerDynamicArray(Integer[] data) {
         return SimpleDynamicArray.of(data);
     }
+
+    @Override
+    DynamicArray<String> createStringDynamicArray(String[] data) {
+        return SimpleDynamicArray.of(data);
+    }
 }
