@@ -14,6 +14,12 @@ public class VectorDynamicArrayTest extends DynamicArrayBaseTest {
     }
 
     @Test
+    public void testInsert() {
+        doTestInsert(data -> VectorDynamicArray.of(2, data), "x", "y", "z");
+        doTestInsert(data -> new VectorDynamicArray<>(1));
+    }
+
+    @Test
     public void testCreateNonEmptyWithVector4() {
         doTestCreateNonEmpty(data -> VectorDynamicArray.of(4, data));
     }

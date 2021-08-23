@@ -52,6 +52,21 @@ public class VectorDynamicArray<E> implements DynamicArray<E> {
     }
 
     @Override
+    public void add(int index, E item) {
+        Object[] res;
+        if (size == array.length) {
+            res = new Object[array.length + vector];
+            System.arraycopy(array, 0, res, 0, index);
+        } else {
+            res = array;
+        }
+        System.arraycopy(array, index, res, index + 1, size - index);
+        res[index] = item;
+        array = res;
+        size++;
+    }
+
+    @Override
     public E remove(int index) {
         @SuppressWarnings("unchecked") E res = (E) array[checkIndex(index)];
         ArrayUtils.remove(array, index);

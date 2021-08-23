@@ -10,9 +10,21 @@ public interface DynamicArray<E> {
     /**
      * Appends the specified element to the end of this array.
      *
-     * @param item {@link E} element to be appended to this list
+     * @param item {@link E} element to be appended to this array
      */
     void add(E item);
+
+    /**
+     * Inserts the specified element at the specified position in this array.
+     * Shifts the element currently at that position (if any) and
+     * any subsequent elements to the right (adds one to their indices).
+     *
+     * @param index {@code int} index at which the specified element is to be inserted
+     * @param item  {@link E}  element to be inserted
+     */
+    default void add(int index, E item) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Removes the element at the specified position in this array.

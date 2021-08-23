@@ -24,6 +24,11 @@ public class JDKListDynamicArray<E> implements DynamicArray<E> {
     }
 
     @Override
+    public void add(int index, E item) {
+        inner.add(index, item);
+    }
+
+    @Override
     public E remove(int index) {
         return inner.remove(index);
     }

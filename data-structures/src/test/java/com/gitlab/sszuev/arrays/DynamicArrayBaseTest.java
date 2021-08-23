@@ -31,6 +31,26 @@ abstract class DynamicArrayBaseTest {
         assertArray(res, list);
     }
 
+    void doTestInsert(Function<String[], DynamicArray<String>> factory, String... data) {
+        List<String> list = Arrays.stream(data).collect(Collectors.toList());
+        DynamicArray<String> array = factory.apply(data);
+        list.add(0, "C");
+        array.add(0, "C");
+        assertArray(array, list);
+        list.add(0, "A");
+        array.add(0, "A");
+        assertArray(array, list);
+
+        list.add(1, "B");
+        array.add(1, "B");
+        assertArray(array, list);
+
+        int i = list.size() - 1;
+        list.add(i, "D");
+        array.add(i, "D");
+        assertArray(array, list);
+    }
+
     void doTestRemove(Function<String[], DynamicArray<String>> factory) {
         String[] data = new String[]{"a", "b", "c", "d", "e"};
         DynamicArray<String> res = factory.apply(data);

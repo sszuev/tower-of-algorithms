@@ -39,6 +39,15 @@ public class SimpleDynamicArray<E> implements DynamicArray<E> {
     }
 
     @Override
+    public void add(int index, E item) {
+        Object[] res = new Object[array.length + 1];
+        res[index] = item;
+        System.arraycopy(array, 0, res, 0, index);
+        System.arraycopy(array, index, res, index + 1, array.length - index);
+        this.array = res;
+    }
+
+    @Override
     public E remove(int index) {
         @SuppressWarnings("unchecked") E res = (E) array[index];
         Object[] newArray = new Object[array.length - 1];
