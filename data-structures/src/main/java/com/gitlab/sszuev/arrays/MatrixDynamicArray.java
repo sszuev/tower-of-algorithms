@@ -5,7 +5,7 @@ package com.gitlab.sszuev.arrays;
  * If there is no free space when operation {@link #add(Object)} is performed, then a new array is added.
  *
  * @param <E> - any object
- * @see VectorDynamicArray
+ * @see FixedVectorDynamicArray
  * @see SimpleDynamicArray
  */
 public class MatrixDynamicArray<E> implements DynamicArray<E> {
@@ -42,7 +42,7 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
         Object[][] data = ArrayUtils.split(array, vector);
         Object[] chunks = new Object[data.length];
         for (int i = 0; i < chunks.length; i++) {
-            chunks[i] = new VectorDynamicArray<>(data[i], vector);
+            chunks[i] = new FixedVectorDynamicArray<>(data[i], vector);
         }
         return new MatrixDynamicArray<>(new SimpleDynamicArray<>(chunks), vector, array.length);
     }
@@ -50,7 +50,7 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
     @Override
     public void add(E item) {
         if (size == array.size() * vector) {
-            array.add(new VectorDynamicArray<>(vector));
+            array.add(new FixedVectorDynamicArray<>(vector));
         }
         array.get(size / vector).add(item);
         size++;

@@ -26,12 +26,12 @@ public enum DynamicArrayFactory {
     VECTOR_LIST {
         @Override
         DynamicArray<Object> createEmptyList() {
-            return new VectorDynamicArray<>();
+            return new FixedVectorDynamicArray<>();
         }
 
         @Override
         DynamicArray<Object> createListOf(Object... data) {
-            return VectorDynamicArray.of(10, data);
+            return FixedVectorDynamicArray.of(10, data);
         }
     },
     MATRIX_LIST {
@@ -48,12 +48,12 @@ public enum DynamicArrayFactory {
     FACTOR_LIST {
         @Override
         DynamicArray<Object> createEmptyList() {
-            return new FactorDynamicArray<>();
+            return new FactorVectorDynamicArray<>();
         }
 
         @Override
         DynamicArray<Object> createListOf(Object... data) {
-            return FactorDynamicArray.of(50, data);
+            return FactorVectorDynamicArray.of(50, data);
         }
     },
 
