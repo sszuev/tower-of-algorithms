@@ -7,7 +7,7 @@ import java.util.stream.LongStream;
 /**
  * Created by @ssz on 22.08.2021.
  */
-public class SimpleDynamicArrayTest extends DynamicArrayBaseTest {
+public class SimpleDynamicArrayTest extends DynamicArrayTestBase {
 
     @Test
     public void testCreateNonEmpty() {

@@ -8,7 +8,7 @@ import java.util.stream.LongStream;
 /**
  * Created by @ssz on 22.08.2021.
  */
-public class MatrixDynamicArrayTest extends DynamicArrayBaseTest {
+public class MatrixDynamicArrayTest extends DynamicArrayTestBase {
 
     @Test
     public void testAdd() {

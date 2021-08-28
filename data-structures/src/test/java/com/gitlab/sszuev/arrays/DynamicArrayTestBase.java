@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 /**
  * Created by @ssz on 22.08.2021.
  */
-abstract class DynamicArrayBaseTest {
+abstract class DynamicArrayTestBase {
     private static final Random RANDOM = new Random();
 
     void doTestCreateNonEmpty(Function<Integer[], DynamicArray<Integer>> factory) {

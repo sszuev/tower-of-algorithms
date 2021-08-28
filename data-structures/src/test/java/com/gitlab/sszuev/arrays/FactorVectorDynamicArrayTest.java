@@ -7,7 +7,7 @@ import java.util.stream.LongStream;
 /**
  * Created by @ssz on 22.08.2021.
  */
-public class FactorVectorDynamicArrayTest extends DynamicArrayBaseTest {
+public class FactorVectorDynamicArrayTest extends DynamicArrayTestBase {
 
     @Test
     public void testCreateNonEmptyWithVector4() {
