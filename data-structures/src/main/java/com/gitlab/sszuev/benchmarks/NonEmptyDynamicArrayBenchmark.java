@@ -49,4 +49,11 @@ public class NonEmptyDynamicArrayBenchmark {
         }
     }
 
+    @Benchmark
+    @Group("INSERT_9999")
+    public void testInsert9999() {
+        for (int i = 0; i < 9999; i++) {
+            array.add(TEST_CONTENT_LENGTH / 2, TEST_ITEM);
+        }
+    }
 }
