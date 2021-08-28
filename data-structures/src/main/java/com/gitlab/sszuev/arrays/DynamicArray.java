@@ -22,9 +22,7 @@ public interface DynamicArray<E> {
      * @param index {@code int} index at which the specified element is to be inserted
      * @param item  {@link E}  element to be inserted
      */
-    default void add(int index, E item) {
-        throw new UnsupportedOperationException();
-    }
+    void add(int index, E item);
 
     /**
      * Removes the element at the specified position in this array.

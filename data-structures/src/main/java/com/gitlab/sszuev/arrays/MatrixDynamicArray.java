@@ -57,6 +57,23 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
     }
 
     @Override
+    public void add(int index, E item) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("index = " + index + ", size = " + size);
+        }
+        if (array.isEmpty()) {
+            array.add(new FixedVectorDynamicArray<>(vector));
+        }
+        if (index == 0) {
+            array.get(0).add(0, item);
+        } else {
+            Position<E> pos = findPosition(index);
+            pos.chunk.add(pos.innerIndex, item);
+        }
+        size++;
+    }
+
+    @Override
     public E remove(int index) {
         Position<E> pos = findPosition(checkIndex(index));
         E res = pos.chunk.remove(pos.innerIndex);
@@ -74,7 +91,7 @@ public class MatrixDynamicArray<E> implements DynamicArray<E> {
     }
 
     private Position<E> findPosition(int index) {
-        return index > this.size / 2 ? findFromEnd(index) : findFromBeginning(index);
+        return 2 * index > this.size ? findFromEnd(index) : findFromBeginning(index);
     }
 
     private Position<E> findFromBeginning(int index) {
