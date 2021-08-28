@@ -14,73 +14,73 @@ import java.util.LinkedList;
 public enum DynamicArrayFactory {
     SIMPLE_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new SimpleDynamicArray<>();
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return SimpleDynamicArray.of(data);
         }
     },
     VECTOR_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new FixedVectorDynamicArray<>();
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return FixedVectorDynamicArray.of(10, data);
         }
     },
     MATRIX_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new MatrixDynamicArray<>();
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return MatrixDynamicArray.of(10, data);
         }
     },
     FACTOR_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new FactorVectorDynamicArray<>();
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return FactorVectorDynamicArray.of(50, data);
         }
     },
 
     JDK_ARRAY_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new JDKListDynamicArray<>(new ArrayList<>());
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return new JDKListDynamicArray<>(new ArrayList<>(Arrays.asList(data)));
         }
     },
     JDK_LINKED_LIST {
         @Override
-        DynamicArray<Object> createEmptyList() {
+        public DynamicArray<Object> createEmptyList() {
             return new JDKListDynamicArray<>(new LinkedList<>());
         }
 
         @Override
-        DynamicArray<Object> createListOf(Object... data) {
+        public DynamicArray<Object> createListOf(Object... data) {
             return new JDKListDynamicArray<>(new LinkedList<>(Arrays.asList(data)));
         }
     };
 
-    abstract DynamicArray<Object> createEmptyList();
+    public abstract DynamicArray<Object> createEmptyList();
 
-    abstract DynamicArray<Object> createListOf(Object... data);
+    public abstract DynamicArray<Object> createListOf(Object... data);
 }
