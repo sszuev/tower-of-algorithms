@@ -1,19 +1,21 @@
 package com.gitlab.sszuev.queues;
 
 import java.util.Comparator;
+import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.TreeSet;
 
 /**
- * A {@link PriorityQueue} implementation which is based on {@link java.util.PriorityQueue JDK PriorityQueue}.
+ * A {@link PriorityQueue} implementation which is based on {@link TreeSet}.
  * Created by @ssz on 28.08.2021.
  */
-public class JDKPriorityQueue<E> implements PriorityQueue<E> {
-    private final java.util.PriorityQueue<Item<E>> queue;
+public class TreeSetPriorityQueue<E> implements PriorityQueue<E> {
+    private final NavigableSet<Item<E>> queue;
     // not thread-safe:
     private long counter;
 
-    public JDKPriorityQueue() {
-        this.queue = new java.util.PriorityQueue<>();
+    public TreeSetPriorityQueue() {
+        this.queue = new TreeSet<>();
     }
 
     @Override
@@ -23,7 +25,8 @@ public class JDKPriorityQueue<E> implements PriorityQueue<E> {
 
     @Override
     public E dequeue() {
-        Item<E> res = queue.poll();
+        Item<E> res = queue.first();
+        queue.remove(res);
         return res == null ? null : res.element;
     }
 
@@ -50,7 +53,7 @@ public class JDKPriorityQueue<E> implements PriorityQueue<E> {
 
         @SuppressWarnings("NullableProblems")
         @Override
-        public int compareTo(JDKPriorityQueue.Item<X> other) {
+        public int compareTo(Item<X> other) {
             return COMPARATOR.compare(this, other);
         }
     }

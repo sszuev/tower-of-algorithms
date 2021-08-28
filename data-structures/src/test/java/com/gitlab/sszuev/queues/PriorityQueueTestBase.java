@@ -64,7 +64,7 @@ abstract class PriorityQueueTestBase {
             this.id = id;
         }
 
-        static ObjWrapper of(String x) {
+        static ObjWrapper of(Object x) {
             return new ObjWrapper(x);
         }
 
