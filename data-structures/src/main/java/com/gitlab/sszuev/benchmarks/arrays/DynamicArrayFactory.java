@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.benchmarks;
+package com.gitlab.sszuev.benchmarks.arrays;
 
 import com.gitlab.sszuev.arrays.*;
 

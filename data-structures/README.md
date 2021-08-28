@@ -1,10 +1,16 @@
-#### A project-collection of data structures and demo-benchmarks.
+#### Data structures.
 
-This project contains different data structures (such
-as [DynamicArray](src/main/java/com/gitlab/sszuev/arrays/DynamicArray.java))
-and simple console [JMH](https://openjdk.java.net/projects/code-tools/jmh) based application for demonstration.
+This project contains different data structure implementations and simple
+console [JMH](https://openjdk.java.net/projects/code-tools/jmh) based application for demonstration.
 
-###### For [OtusTeam](https://otus.ru).
+Right now there are following data structures:
+
+- [Dynamic Array](src/main/java/com/gitlab/sszuev/arrays/DynamicArray.java):
+    * [A naive one-item-a-time-grown implementation](src/main/java/com/gitlab/sszuev/arrays/SimpleDynamicArray.java)
+    * [An implementation with fixed growth-factor (so called "vector")](src/main/java/com/gitlab/sszuev/arrays/FixedVectorDynamicArray.java)
+    * [An implementation with dynamic growth-factor](src/main/java/com/gitlab/sszuev/arrays/FactorVectorDynamicArray.java)
+    * [A matrix-based dynamic array](src/main/java/com/gitlab/sszuev/arrays/MatrixDynamicArray.java)
+    * [A wrapper for JDK `java.util.List` implementations](src/main/java/com/gitlab/sszuev/arrays/JDKListDynamicArray.java)
 
 ##### Requirements:
 
@@ -20,3 +26,10 @@ $ cd 2021-07-otus-algorithms-sszuev/data-structures
 $ mvn clean package
 $ java -jar target/data-structures.jar
 ```
+
+##### Additional notes:
+
+- For help use `-h`
+- To see all benchmarks use `-l`
+- Example of run particular
+  benchmark: `$ java -jar target/data-structures.jar -h com.gitlab.sszuev.benchmarks.arrays.NonEmptyDynamicArrayBenchmark.REMOVE_9999`
