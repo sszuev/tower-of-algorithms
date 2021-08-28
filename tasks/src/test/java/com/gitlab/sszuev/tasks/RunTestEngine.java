@@ -1,6 +1,5 @@
 package com.gitlab.sszuev.tasks;
 
-import com.gitlab.sszuev.tasks.strings.StringLengthCalculationAlgorithmTest;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -8,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,13 +28,6 @@ import java.util.stream.Stream;
  */
 public abstract class RunTestEngine {
 
-    /**
-     * Specify VM option '-Duse.assertions=true' to throw {@link AssertionError} if testcase has wrong status.
-     * To provide nice-looking console output this option is disabled by default.
-     */
-    static final boolean USE_ASSERTIONS = Boolean.parseBoolean(System.getProperty("use.assertions",
-            Boolean.FALSE.toString()));
-
     public abstract Algorithm getTaskToTest();
 
     @BeforeAll
@@ -41,6 +35,13 @@ public abstract class RunTestEngine {
         System.out.println("==".repeat(42));
     }
 
+    /**
+     * A dummy-method to load test data.
+     * It is "overridden" in runtime by concrete method-loader.
+     *
+     * @return a {@code Stream}
+     * @throws Exception something is wrong
+     */
     @SuppressWarnings("RedundantThrows")
     public static Stream<Data> listData() throws Exception {
         throw new UnsupportedOperationException();
@@ -57,7 +58,7 @@ public abstract class RunTestEngine {
 
         String msg = formatMessage(task.name(), data.id, isEquals(data.expected, actual), duration);
         System.out.println(msg);
-        if (USE_ASSERTIONS) {
+        if (TestPropertiesSupport.USE_ASSERTIONS) {
             assertEquals(data.expected, actual);
         }
     }
@@ -80,11 +81,74 @@ public abstract class RunTestEngine {
         return timeInMs + "ms";
     }
 
-    public static Stream<Data> listData(String dir) throws Exception {
-        URL url = Objects.requireNonNull(StringLengthCalculationAlgorithmTest.class.getResource(dir));
-        return loadTestData(Paths.get(url.toURI())).stream();
+    /**
+     * Loads some data from the resource directory with a limit:
+     * all data with {@link Data#id} greater or equal the specified {@code maxDataIdLimit} will be skipped.
+     * Note: the method loads all data regardless arguments
+     * if there are vm-options {@code -Dtest=TestClassName} and {@code -Dtest-data=fileSystemDirPath}.
+     *
+     * @param dir            {@code String} name of resource dir
+     * @param maxDataIdLimit {@code int} max id exclusively
+     * @return a {@code Stream} of {@link Data}s
+     * @throws Exception if something is wrong
+     */
+    public static Stream<Data> listData(String dir, int maxDataIdLimit) throws Exception {
+        return listData(dir).filter(x -> x.id < maxDataIdLimit);
     }
 
+    /**
+     * Loads data from the directory.
+     * Note: the method loads all data regardless arguments
+     * if there are vm-options {@code -Dtest=TestClassName} and {@code -Dtest-data=FileSystemDirPath}.
+     *
+     * @param dir {@code String} name of resource dir
+     * @return a {@code Stream} of {@link Data}s
+     * @throws Exception if something is wrong
+     */
+    public static Stream<Data> listData(String dir) throws Exception {
+        return listData(dir, x -> true);
+    }
+
+    /**
+     * Loads data from a directory.
+     * It is a generic method.
+     * By default, it is the specified subfolder in the test resource directory.
+     * But for a particular test (i.e. when there is a property {@code -Dtest=TestClassName} in the vm options),
+     * a directory can also be specified in VM options, for this use {@code -Dtest-data=fileSystemDirPath} property.
+     * Note that in the latter case, all method parameters are ignored.
+     *
+     * @param dir    {@code String} name of resource dir
+     * @param filter a {@link Predicate} to filter data
+     * @return a {@code Stream} of {@link Data}s
+     * @throws Exception if something is wrong
+     */
+    public static Stream<Data> listData(String dir, Predicate<Data> filter) throws Exception {
+        Path res = externalDir();
+        if (res != null) {
+            return loadTestData(res).stream();
+        }
+        return loadTestData(resourceDir(dir)).stream().filter(filter);
+    }
+
+    private static Path resourceDir(String dir) throws URISyntaxException {
+        URL url = Objects.requireNonNull(RunTestEngine.class.getResource(dir));
+        return Paths.get(url.toURI());
+    }
+
+    private static Path externalDir() {
+        if (TestPropertiesSupport.isParticularTestSpecified()) {
+            return TestPropertiesSupport.getTestDataDir();
+        }
+        return null;
+    }
+
+    /**
+     * Loads data from specified path.
+     *
+     * @param dir {@link Path}
+     * @return a {@code List} of {@link Data}
+     * @throws IOException if something is wrong
+     */
     public static List<Data> loadTestData(Path dir) throws IOException {
         List<Data> res = new ArrayList<>();
         List<Path> files;
@@ -149,6 +213,10 @@ public abstract class RunTestEngine {
         }
     }
 
+    /**
+     * A wrapper for test data.
+     * It contains data from file {@code *.n.in} (given) and data from file {@code *.n.out} (expected), also test id.
+     */
     public static class Data {
         private final long id;
         private final List<String> given;
