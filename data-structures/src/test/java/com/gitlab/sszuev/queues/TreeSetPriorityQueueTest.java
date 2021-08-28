@@ -9,7 +9,7 @@ public class TreeSetPriorityQueueTest extends PriorityQueueTestBase {
     @Test
     public void testAddRemoveWithoutPriority() {
         doTestFillAndEmptyWithDefaultPriority(TreeSetPriorityQueue::new, 1, 1, 2, 2, 3, 3, 4, 4, 42, 1, 2, 3);
-        doTestFillAndEmptyWithDefaultPriority(JDKPriorityQueue::new,
+        doTestFillAndEmptyWithDefaultPriority(HeapPriorityQueue::new,
                 ObjWrapper.of(42),
                 ObjWrapper.of("x"),
                 ObjWrapper.of("y"));

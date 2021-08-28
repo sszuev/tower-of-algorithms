@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by @ssz on 28.08.2021.
  */
-public class JDKPriorityQueueTest extends PriorityQueueTestBase {
+public class HeapPriorityQueueTest extends PriorityQueueTestBase {
 
     @Test
     public void testAddRemoveWithoutPriority() {
-        doTestFillAndEmptyWithDefaultPriority(JDKPriorityQueue::new, "A", "A", "B", "C", "D");
-        doTestFillAndEmptyWithDefaultPriority(JDKPriorityQueue::new,
+        doTestFillAndEmptyWithDefaultPriority(HeapPriorityQueue::new, "A", "A", "B", "C", "D");
+        doTestFillAndEmptyWithDefaultPriority(HeapPriorityQueue::new,
                 ObjWrapper.of("a"),
                 ObjWrapper.of("v"),
                 ObjWrapper.of("xxx"));
@@ -18,7 +18,7 @@ public class JDKPriorityQueueTest extends PriorityQueueTestBase {
 
     @Test
     public void testAddRemoveAllWithPriority() {
-        doTestFillAndEmptyWithDifferentPriorities(JDKPriorityQueue::new,
+        doTestFillAndEmptyWithDifferentPriorities(HeapPriorityQueue::new,
                 ObjIntWrapper.of("A", 2),
                 ObjIntWrapper.of("B", 1),
                 ObjIntWrapper.of("S", 42),
@@ -32,7 +32,7 @@ public class JDKPriorityQueueTest extends PriorityQueueTestBase {
 
     @Test
     public void testAddRemoveWithPriority() {
-        doTestAddRemoveWithPriorityAndFixedData(JDKPriorityQueue::new);
+        doTestAddRemoveWithPriorityAndFixedData(HeapPriorityQueue::new);
     }
 
 }
