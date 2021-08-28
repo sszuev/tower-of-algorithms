@@ -12,7 +12,7 @@ public class FibonacciRecursiveAlgorithmTest extends RunTestEngine {
 
     public static Stream<Data> listData() throws Exception {
         // limit for with 7 tests: too long calculation for n ~> 100
-        return listData("/algebraic/fibonacci").filter(x -> x.id() < 7);
+        return listData("/algebraic/fibonacci", 7);
     }
 
     @Override

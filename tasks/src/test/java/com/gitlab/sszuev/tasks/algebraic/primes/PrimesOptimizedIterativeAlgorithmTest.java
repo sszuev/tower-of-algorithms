@@ -12,7 +12,7 @@ public class PrimesOptimizedIterativeAlgorithmTest extends RunTestEngine {
 
     public static Stream<Data> listData() throws Exception {
         // for N = 12 it takes more than 2 min
-        return listData("/algebraic/primes").filter(x -> x.id() < 12);
+        return listData("/algebraic/primes", 12);
     }
 
     @Override

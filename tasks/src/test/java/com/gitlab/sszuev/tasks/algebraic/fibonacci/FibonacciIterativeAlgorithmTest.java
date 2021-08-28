@@ -13,7 +13,7 @@ public class FibonacciIterativeAlgorithmTest extends RunTestEngine {
     public static Stream<Data> listData() throws Exception {
         // for 12 (n = 10_000_000) calculation is too heavy, can't wait
         // for 11 it takes about 20s - still too long
-        return listData("/algebraic/fibonacci").filter(x -> x.id() < 11);
+        return listData("/algebraic/fibonacci", 11);
     }
 
     @Override

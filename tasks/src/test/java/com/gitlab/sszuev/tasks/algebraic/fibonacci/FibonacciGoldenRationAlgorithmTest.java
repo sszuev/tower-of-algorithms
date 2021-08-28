@@ -17,7 +17,7 @@ public class FibonacciGoldenRationAlgorithmTest extends RunTestEngine {
     public static Stream<Data> listData() throws Exception {
         // for N = 12 (n = 10_000_000) calculation is too heavy, can't wait
         // for N = 11 it takes about 30s - still too long for demonstration
-        return listData("/algebraic/fibonacci").filter(x -> x.id() < 11);
+        return listData("/algebraic/fibonacci", 11);
     }
 
     @Override
