@@ -3,12 +3,12 @@ package com.gitlab.sszuev.tasks.sorting;
 /**
  * <b>Bubble Sort Algorithm (for Integers)</b>
  * It is is <b>non-adaptive</b>, <b>stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
- * <p>
- * Worst case performance, {@code O(n^2)} (comparisons and swaps)
- * Best case performance, {@code O(n)} comparisons and {@code O(1)} swaps
- * Average case performance, {@code O(n^2)} (comparisons and swaps)
- * Worst-case space complexity: {@code O(n)} total, {@code O(1)} auxiliary
- * <p>
+ * <ul>
+ * <li>Worst case performance, {@code O(n^2)} (comparisons and swaps)</li>
+ * <li>Best case performance, {@code O(n)} comparisons and {@code O(1)} swaps</li>
+ * <li>Average case performance, {@code O(n^2)} (comparisons and swaps)</li>
+ * <li>Worst-case space complexity: {@code O(n)} total, {@code O(1)} auxiliary</li>
+ * </ul>
  * Created by @ssz on 29.08.2021.
  *
  * @see <a href='https://en.wikipedia.org/wiki/Bubble_sort'>wiki: Bubble Sort</a>
