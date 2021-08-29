@@ -2,7 +2,7 @@ package com.gitlab.sszuev.tasks.sorting;
 
 /**
  * <b>Insertion Sort (for Integers).</b>
- * It is is <b>adaptive</b>, <b>stable</b>, <b>in-place</b>, <b>online</b> sorting.
+ * It is <b>adaptive</b>, <b>stable</b>, <b>in-place</b>, <b>online</b> sorting.
  * <ul>
  * <li>Worst case performance, {@code O(n^2)} (comparisons and swaps)</li>
  * <li>Best case performance, {@code O(n)} comparisons and {@code O(1)} swaps</li>

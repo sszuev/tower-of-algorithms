@@ -35,6 +35,7 @@ Right now there are following algorithmic tasks:
   * [Insertion sort](src/main/java/com/gitlab/sszuev/tasks/sorting/InsertionSortAlgorithm.java)
   * [Selection sort](src/main/java/com/gitlab/sszuev/tasks/sorting/SelectionSortAlgorithm.java)
   * [Shell sort](src/main/java/com/gitlab/sszuev/tasks/sorting/ShellSortAlgorithm.java)
+  * [Heap sort](src/main/java/com/gitlab/sszuev/tasks/sorting/HeapSortAlgorithm.java)
 
 ##### Requirements:
 

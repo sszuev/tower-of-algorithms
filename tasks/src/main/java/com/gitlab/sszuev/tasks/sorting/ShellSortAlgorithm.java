@@ -2,7 +2,7 @@ package com.gitlab.sszuev.tasks.sorting;
 
 /**
  * <b>Shell Sort (for Integers).</b>
- * It is is <b>non-adaptive</b>, <b>non-stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
+ * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
  * <ul>
  * <li>Worst case performance: {@code O(n^2)} (worst known worst case gap sequence),
  * {@code O(n * (log(n))^2)} (best known worst case gap sequence)</li>
