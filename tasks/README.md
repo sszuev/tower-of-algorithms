@@ -29,6 +29,10 @@ Right now there are following algorithmic tasks:
   * [Sieve of Eratosthenes algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesAlgorithm.java)
   * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java)
 
+  
+- Sorting algorithms (command to run: `mvn -q test -Dtest=*SortlgorithmTest`):
+  * [Bubble sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BubbleSortAlgorithm.java)
+  
 ##### Requirements:
 
 - Git
