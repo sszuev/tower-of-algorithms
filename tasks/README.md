@@ -27,12 +27,13 @@ Right now there are following algorithmic tasks:
 - Primes number calculation (command to run: `mvn -q test -Dtest=Primes*AlgorithmTest`):
   * [Iterative algorithm with some optimizations](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesOptimizedIterativeAlgorithm.java)
   * [Sieve of Eratosthenes algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesAlgorithm.java)
-  * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java)
+  * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java) 
 
-  
+
 - Sorting algorithms (command to run: `mvn -q test -Dtest=*SortlgorithmTest`):
   * [Bubble sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BubbleSortAlgorithm.java)
-  
+  * [Insertion sort](src/main/java/com/gitlab/sszuev/tasks/sorting/InsertionSortAlgorithm.java)
+
 ##### Requirements:
 
 - Git
