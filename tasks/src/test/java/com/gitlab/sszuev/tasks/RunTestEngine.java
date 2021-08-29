@@ -56,7 +56,7 @@ public abstract class RunTestEngine {
         List<String> actual = task.run(data.given);
         Duration duration = Duration.between(start, Instant.now());
 
-        String msg = formatMessage(task.name(), data.id, isEquals(data.expected, actual), duration);
+        String msg = formatMessage(task.name(), data.displayName(), isEquals(data.expected, actual), duration);
         System.out.println(msg);
         if (TestPropertiesSupport.USE_ASSERTIONS) {
             assertEquals(data.expected, actual);
@@ -71,9 +71,12 @@ public abstract class RunTestEngine {
         Assertions.assertEquals(expected, actual);
     }
 
-    private static String formatMessage(String name, long id, boolean status, Duration duration) {
-        return String.format("%s\t#%d:\t\t%s\t%s",
-                StringUtils.rightPad(name, 42), id, status ? "  OK" : "FAIL", formatDuration(duration));
+    private static String formatMessage(String className, String displayName, boolean status, Duration duration) {
+        return String.format("%s\t%s\t\t%s\t%s",
+                StringUtils.rightPad(className, 42),
+                StringUtils.rightPad(displayName, 4),
+                status ? "  OK" : "FAIL",
+                formatDuration(duration));
     }
 
     private static String formatDuration(Duration duration) {
@@ -110,14 +113,13 @@ public abstract class RunTestEngine {
     }
 
     /**
-     * Loads data from a directory.
-     * It is a generic method.
-     * By default, it is the specified subfolder in the test resource directory.
-     * But for a particular test (i.e. when there is a property {@code -Dtest=TestClassName} in the vm options),
-     * a directory can also be specified in VM options, for this use {@code -Dtest-data=fileSystemDirPath} property.
-     * Note that in the latter case, all method parameters are ignored.
+     * By default, the method loads test data from the given subfolder in the test resource directory.
+     * This behaviour can be changed for a particular test
+     * (i.e. when there is a property {@code -Dtest=TestClassName} in the vm options)
+     * by specifying the property {@code -Dtest-data=fileSystemDirPath}.
+     * In the latter case, all method parameters are ignored and data are loaded from external directory.
      *
-     * @param dir    {@code String} name of resource dir
+     * @param dir    {@code String} name of resource dir (in target dir)
      * @param filter a {@link Predicate} to filter data
      * @return a {@code Stream} of {@link Data}s
      * @throws Exception if something is wrong
@@ -130,12 +132,25 @@ public abstract class RunTestEngine {
         return loadTestData(resourceDir(dir)).stream().filter(filter);
     }
 
-    private static Path resourceDir(String dir) throws URISyntaxException {
+    /**
+     * Returns a path to dir in resources.
+     *
+     * @param dir {@code String} subfolder path
+     * @return {@link Path}, not {@code null}
+     * @throws URISyntaxException in case something is wrong
+     */
+    protected static Path resourceDir(String dir) throws URISyntaxException {
         URL url = Objects.requireNonNull(RunTestEngine.class.getResource(dir));
         return Paths.get(url.toURI());
     }
 
-    private static Path externalDir() {
+    /**
+     * Returns a path to dir specified by vm-option  {@code -Dtest-data=fileSystemDirPath}
+     * (works only in conjunction with {@code -Dtest=TestClassName}).
+     *
+     * @return {@link Path} or {@code null}
+     */
+    protected static Path externalDir() {
         if (TestPropertiesSupport.isParticularTestSpecified()) {
             return TestPropertiesSupport.getTestDataDir();
         }
@@ -200,7 +215,7 @@ public abstract class RunTestEngine {
         }
         List<String> given = readContentAsList(in);
         List<String> expected = readContentAsList(out);
-        return new Data(id, given, expected);
+        return new Data(id, null, given, expected);
     }
 
     private static List<String> readContentAsList(Path file) throws IOException {
@@ -219,13 +234,26 @@ public abstract class RunTestEngine {
      */
     public static class Data {
         private final long id;
+        private final String name;
         private final List<String> given;
         private final List<String> expected;
 
-        protected Data(long id, List<String> given, List<String> expected) {
+        protected Data(long id, String name, List<String> given, List<String> expected) {
+            this.name = name;
             this.given = given;
             this.expected = expected;
             this.id = id;
+        }
+
+        String displayName() {
+            if (name == null) {
+                return "#" + id;
+            }
+            return String.format("#%d [%s]", id, name);
+        }
+
+        public Data withName(String name) {
+            return new Data(id, name, given, expected);
         }
 
         @Override
