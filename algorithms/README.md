@@ -47,7 +47,7 @@ Right now there are following algorithmic tasks:
 
 ```
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
-$ cd 2021-07-otus-algorithms-sszuev/tasks
+$ cd 2021-07-otus-algorithms-sszuev/algorithms
 $ mvn -q test
 ```
 
@@ -55,7 +55,7 @@ $ mvn -q test
 
 ```
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
-$ cd 2021-07-otus-algorithms-sszuev/tasks
+$ cd 2021-07-otus-algorithms-sszuev/algorithms
 $ mvn -Dtest=StringLengthCalculationAlgorithmTest -q test
 ```
 
