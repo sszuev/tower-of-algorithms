@@ -16,7 +16,7 @@ package com.gitlab.sszuev.tasks.sorting;
  */
 public class SelectionSortAlgorithm extends BaseIntegerSortAlgorithm {
 
-    public static void sort(int[] array) {
+    public static void sortInts(int[] array) {
         for (int i = array.length - 1; i >= 0; i--) {
             int m = i;
             for (int j = 0; j < i; j++) {
@@ -35,7 +35,7 @@ public class SelectionSortAlgorithm extends BaseIntegerSortAlgorithm {
     }
 
     @Override
-    void performSorting(int[] array) {
-        sort(array);
+    public void sort(int[] array) {
+        sortInts(array);
     }
 }

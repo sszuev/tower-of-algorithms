@@ -17,7 +17,7 @@ package com.gitlab.sszuev.tasks.sorting;
  */
 public class BubbleSortAlgorithm extends BaseIntegerSortAlgorithm {
 
-    public static void sort(int[] array) {
+    public static void sortInts(int[] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = array.length - 1; j > i; j--) {
                 if (array[j] < array[j - 1]) {
@@ -34,8 +34,8 @@ public class BubbleSortAlgorithm extends BaseIntegerSortAlgorithm {
     }
 
     @Override
-    void performSorting(int[] array) {
-        sort(array);
+    public void sort(int[] array) {
+        sortInts(array);
     }
 }
 

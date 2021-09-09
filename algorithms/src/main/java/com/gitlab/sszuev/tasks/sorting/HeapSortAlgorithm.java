@@ -14,7 +14,7 @@ package com.gitlab.sszuev.tasks.sorting;
  */
 public class HeapSortAlgorithm extends BaseIntegerSortAlgorithm {
 
-    public static void sort(int[] array) {
+    public static void sortInts(int[] array) {
         for (int root = array.length / 2 - 1; root >= 0; root--) {
             heapify(array, root, array.length);
         }
@@ -48,7 +48,7 @@ public class HeapSortAlgorithm extends BaseIntegerSortAlgorithm {
     }
 
     @Override
-    void performSorting(int[] array) {
-        sort(array);
+    public void sort(int[] array) {
+        sortInts(array);
     }
 }

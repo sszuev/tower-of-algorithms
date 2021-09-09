@@ -17,7 +17,7 @@ package com.gitlab.sszuev.tasks.sorting;
  */
 public class InsertionSortAlgorithm extends BaseIntegerSortAlgorithm {
 
-    public static void sort(int[] array) {
+    public static void sortInts(int[] array) {
         for (int i = 1; i < array.length; i++) {
             int item = array[i];
             int index = i;
@@ -30,7 +30,7 @@ public class InsertionSortAlgorithm extends BaseIntegerSortAlgorithm {
     }
 
     @Override
-    void performSorting(int[] array) {
-        sort(array);
+    public void sort(int[] array) {
+        sortInts(array);
     }
 }
