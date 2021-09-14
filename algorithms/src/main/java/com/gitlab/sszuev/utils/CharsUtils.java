@@ -62,11 +62,4 @@ public class CharsUtils {
             res.append(", ");
         }
     }
-
-    public static void swap(char[] array, int from, int to) {
-        char item = array[from];
-        array[from] = array[to];
-        array[to] = item;
-    }
-
 }

@@ -13,6 +13,7 @@ public class BufferUtils {
         int length = (limit % 2 != 0 ? limit + 1 : limit) / 2;
         CharBuffer res = CharBuffer.allocate(length);
         copy(bytes, res);
+        res.rewind();
         return res;
     }
 
@@ -29,6 +30,22 @@ public class BufferUtils {
         CharBuffer chars = source.asCharBuffer();
         for (; i < length; i++) {
             target.put(i, chars.get());
+        }
+    }
+
+    public static void copy(CharBuffer source, ByteBuffer target) {
+        copy(source, source.limit(), target);
+    }
+
+    public static void copy(CharBuffer source, int length, ByteBuffer target) {
+        int limit = target.limit();
+        int i = 0;
+        if (limit % 2 != 0) {
+            target.put((byte) source.get(0));
+            i++;
+        }
+        for (; i < length; i++) {
+            target.putChar(source.get(i));
         }
     }
 }
