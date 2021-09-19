@@ -1,10 +1,10 @@
 package com.gitlab.sszuev.tasks.sorting.external;
 
 import com.gitlab.sszuev.tasks.sorting.JDKDualPivotQuickSortAlgorithm;
+import com.gitlab.sszuev.utils.IOUtils;
 import com.gitlab.sszuev.utils.RandomFileGenerator;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -19,8 +19,9 @@ public class MergeSortDemo {
     public static final long UPPER_LIMIT_CHUNK_SIZE_IN_BYTES = 50 * 1024 * 1024;
 
     public static void main(String... xxx) throws IOException {
-        Path file = Files.createTempFile("BIG-FILE-", ".bytes");
-        Files.deleteIfExists(file);
+        Instant s = Instant.now();
+
+        Path file = IOUtils.newTempFile("BIG-FILE-", ".bytes");
         LOGGER.log(file);
 
         // 1. generate
@@ -37,12 +38,13 @@ public class MergeSortDemo {
 
         // 5. validate is sorted
         exec("validate-after", () -> validate(file, true));
+
+        LOGGER.log("[TOTAL]::%s", Duration.between(s, Instant.now()));
     }
 
     private static void exec(String msg, Operation op) {
         msg = msg.toUpperCase();
         LOGGER.log("[" + msg + "]::START");
-        LOGGER.log("==".repeat(42));
         Instant s = Instant.now();
         RuntimeException ex = null;
         try {
@@ -51,7 +53,6 @@ public class MergeSortDemo {
             ex = new RuntimeException(e);
         }
         Instant e = Instant.now();
-        LOGGER.log("==".repeat(42));
         LOGGER.log("[" + msg + "]::" + Duration.between(s, e));
         if (ex != null) throw ex;
     }

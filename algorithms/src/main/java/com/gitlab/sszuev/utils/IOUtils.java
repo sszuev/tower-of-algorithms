@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.tasks.sorting.external;
+package com.gitlab.sszuev.utils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -6,7 +6,9 @@ import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by @ssz on 19.09.2021.
  */
-public class IOOperations {
+public class IOUtils {
     private static final int IO_TIMEOUT_IN_SECONDS = 5;
 
     public static char readChar(AsynchronousFileChannel source, long byteIndex) throws IOException {
@@ -100,5 +102,29 @@ public class IOOperations {
         if (actual != expected) {
             throw new IllegalStateException("Expected " + expected + ", got " + actual);
         }
+    }
+
+    /**
+     * Prepares a place for a new temporary file.
+     *
+     * @param prefix the prefix string to be used in generating the file's name; may be {@code null}
+     * @param suffix the suffix string to be used in generating the file's name;
+     *               may be {@code null}, in which case "{@code .tmp}" is used
+     * @return a {@link Path} to non-existent (yet) file
+     * @throws IOException something is wrong
+     * @see Files#createTempFile(String, String, FileAttribute[])
+     */
+    @SuppressWarnings("SameParameterValue")
+    public static Path newTempFile(String prefix, String suffix) throws IOException {
+        Path dir = Paths.get(System.getProperty("java.io.tmpdir")).toRealPath();
+        if (prefix == null) {
+            prefix = "";
+        }
+        if (suffix == null) {
+            suffix = ".tmp";
+        }
+        Path file = dir.resolve(prefix + System.currentTimeMillis() + suffix);
+        Files.deleteIfExists(file);
+        return file;
     }
 }

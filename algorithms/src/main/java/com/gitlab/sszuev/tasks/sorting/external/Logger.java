@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
 /**
+ * A dummy logger.
  * Created by @ssz on 19.09.2021.
  */
 public final class Logger {

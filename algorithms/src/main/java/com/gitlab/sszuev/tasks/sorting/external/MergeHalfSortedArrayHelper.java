@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.tasks.sorting.external;
 
 import com.gitlab.sszuev.utils.BufferUtils;
+import com.gitlab.sszuev.utils.IOUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -71,7 +72,7 @@ public class MergeHalfSortedArrayHelper {
         long length = checkPositiveInt(rightEndIndex - leftStartIndex + 1);
         long delimiter = checkPositiveInt((rightStartIndex - leftStartIndex) / 2);
         ByteBuffer bytes = ByteBuffer.allocate((int) length);
-        IOOperations.read(channel, leftStartIndex, bytes);
+        IOUtils.read(channel, leftStartIndex, bytes);
         bytes.rewind();
 
         CharBuffer chars = BufferUtils.toCharBuffer(bytes);
@@ -79,7 +80,7 @@ public class MergeHalfSortedArrayHelper {
 
         BufferUtils.copy(CharBuffer.wrap(sorted), bytes);
         bytes.rewind();
-        IOOperations.write(channel, leftStartIndex, bytes);
+        IOUtils.write(channel, leftStartIndex, bytes);
     }
 
     /**
@@ -101,7 +102,7 @@ public class MergeHalfSortedArrayHelper {
             throw new IllegalArgumentException();
         }
         ByteBuffer bytes = ByteBuffer.allocate((int) length);
-        IOOperations.read(channel, leftStartIndex, bytes);
+        IOUtils.read(channel, leftStartIndex, bytes);
         bytes.rewind();
 
         CharBuffer chars = BufferUtils.toCharBuffer(bytes);
@@ -109,7 +110,7 @@ public class MergeHalfSortedArrayHelper {
 
         BufferUtils.copy(chars, bytes);
         bytes.rewind();
-        IOOperations.write(channel, leftStartIndex, bytes);
+        IOUtils.write(channel, leftStartIndex, bytes);
     }
 
     /**
@@ -131,7 +132,7 @@ public class MergeHalfSortedArrayHelper {
         Path res = mergeToTemporaryFile(channel,
                 bufferLength, leftStartIndex, rightStartIndex, rightEndIndex);
         // copy everything back to the source channel
-        IOOperations.copy(res, channel, leftStartIndex, (int) Math.min(Integer.MAX_VALUE, bufferLength));
+        IOUtils.copy(res, channel, leftStartIndex, (int) Math.min(Integer.MAX_VALUE, bufferLength));
         // delete temporary file
         Files.delete(res);
     }
@@ -240,7 +241,7 @@ public class MergeHalfSortedArrayHelper {
         ByteBuffer bytes = allocate(lengthInBytes, charBufferSize, charStartIndex);
 
         long byteStartIndex = charIndexToByteIndex(charStartIndex, lengthInBytes) + leftShiftInBytes;
-        IOOperations.read(source, byteStartIndex, bytes);
+        IOUtils.read(source, byteStartIndex, bytes);
         BufferUtils.copy(bytes, charBuffer);
         charBuffer.rewind();
     }
@@ -266,7 +267,7 @@ public class MergeHalfSortedArrayHelper {
         BufferUtils.copy(charBuffer, lengthToCopy, bytes);
         bytes.rewind();
         long byteStartIndex = charIndexToByteIndex(charStartIndex, lengthInBytes);
-        IOOperations.write(target, bytes, byteStartIndex);
+        IOUtils.write(target, bytes, byteStartIndex);
         charBuffer.rewind();
     }
 
@@ -317,11 +318,11 @@ public class MergeHalfSortedArrayHelper {
             for (long i = 0, j = gap; j < lengthInChars; i++, j++) {
                 long bi = i * 2 + start;
                 long bj = j * 2 + start;
-                char left = IOOperations.readChar(file, bi);
-                char right = IOOperations.readChar(file, bj);
+                char left = IOUtils.readChar(file, bi);
+                char right = IOUtils.readChar(file, bj);
                 if (left > right) {
-                    IOOperations.writeChar(file, bj, left);
-                    IOOperations.writeChar(file, bi, right);
+                    IOUtils.writeChar(file, bj, left);
+                    IOUtils.writeChar(file, bi, right);
                 }
             }
         }
