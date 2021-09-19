@@ -222,6 +222,7 @@ public class MergeHalfSortedArrayHelper {
         }
         int index = (int) charIndex % charBufferSize;
         char res = charBuffer.get(index);
+        charBuffer.position(index + 1);
         if (index == charBufferSize - 1) {
             // buffer is full -> rewind it
             charBuffer.rewind();
