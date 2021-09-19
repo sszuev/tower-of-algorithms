@@ -38,6 +38,7 @@ Right now there are following algorithmic tasks:
   * [Heap sort](src/main/java/com/gitlab/sszuev/tasks/sorting/HeapSortAlgorithm.java)
   * [Iterative quick sort](src/main/java/com/gitlab/sszuev/tasks/sorting/IterativeQuickSortAlgorithm.java)
   * [Plain (in-memory) merge sort](src/main/java/com/gitlab/sszuev/tasks/sorting/MergeSortAlgorithm.java)
+  * [Radix sort](src/main/java/com/gitlab/sszuev/tasks/sorting/RadixSortAlgorithm.java)
   * [External (merge) sort](src/main/java/com/gitlab/sszuev/tasks/sorting/ExternalSortAlgorithm.java)
 
 ##### Requirements:

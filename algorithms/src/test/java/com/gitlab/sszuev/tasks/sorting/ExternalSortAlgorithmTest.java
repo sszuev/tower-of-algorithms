@@ -31,7 +31,11 @@ public class ExternalSortAlgorithmTest {
     }
 
     public static Stream<CharSort> innerSorts() {
-        return Stream.of(new JDKDualPivotQuickSortAlgorithm(), new IterativeQuickSortAlgorithm(), new MergeSortAlgorithm());
+        return Stream.of(new JDKDualPivotQuickSortAlgorithm()
+                , new IterativeQuickSortAlgorithm()
+                , new MergeSortAlgorithm()
+                , new RadixSortAlgorithm()
+        );
     }
 
     @ParameterizedTest
