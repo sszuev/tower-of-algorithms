@@ -58,13 +58,13 @@ public class MergeSortedArrayHelperTest {
     @ParameterizedTest
     @MethodSource(value = {"listData"})
     public void testSimpleMergeArrays(Data data) {
-        testMergeArrays(data, MergeHalfSortedArrayHelper::mergeParts);
+        testMergeArrays(data, MergeAlgorithms::merge);
     }
 
     @ParameterizedTest
     @MethodSource(value = {"listData"})
     public void testGapMergeArrays(Data data) {
-        testMergeArrays(data, (a, m) -> MergeHalfSortedArrayHelper.mergeParts(a));
+        testMergeArrays(data, (a, m) -> MergeAlgorithms.merge(a));
     }
 
     private void testMergeArrays(Data data, BiFunction<char[], Integer, char[]> func) {
@@ -146,9 +146,9 @@ public class MergeSortedArrayHelperTest {
     @Test
     public void testMergeWithTemporaryFile() throws IOException {
         long bufferSize = 32;
-        char[] left = new char[]{5, 11, 13, 18, 19, 21, 24, 25, 27, 28, 36, 39, 39, 83, 98}; // 15
-        char[] right = new char[]{4, 6, 11, 15, 27, 35, 46, 53, 65, 72, 82, 82, 91, 93}; // 14
-        char[] given = new char[left.length + right.length]; // 29
+        char[] left = new char[]{5, 11, 13, 18, 19, 21, 24, 25, 27, 28, 36, 39, 39, 83, 98}; // length=15
+        char[] right = new char[]{4, 6, 11, 15, 27, 35, 46, 53, 65, 72, 82, 82, 91, 93}; // length=14
+        char[] given = new char[left.length + right.length]; // length=29
         System.arraycopy(left, 0, given, 0, left.length);
         System.arraycopy(right, 0, given, left.length, right.length);
         ByteBuffer res = ByteBuffer.allocate((left.length + right.length) * 2 - 1);
