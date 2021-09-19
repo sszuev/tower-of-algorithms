@@ -102,7 +102,7 @@ public class CharMergeSortEngine {
                     final long rightEnd = k == chunks ? info.end(chunks - 1) : info.start(k) - 1;
 
                     futures.add(service.submit(() -> {
-                        MergeHalfSortedArrayHelper.merge(channel, bufferLength, leftStart, rightStart, rightEnd);
+                        MergeFileHelper.merge(channel, bufferLength, leftStart, rightStart, rightEnd);
                         return Boolean.TRUE;
                     }));
                 }

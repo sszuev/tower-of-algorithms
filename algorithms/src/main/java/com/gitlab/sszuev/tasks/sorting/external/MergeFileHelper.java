@@ -17,7 +17,7 @@ import java.nio.file.StandardOpenOption;
  * <p>
  * Created by @ssz on 11.09.2021.
  */
-public class MergeHalfSortedArrayHelper {
+public class MergeFileHelper {
 
     /**
      * Merges two sorted parts of a file using different approaches:
@@ -210,7 +210,7 @@ public class MergeHalfSortedArrayHelper {
     }
 
     private static Path createTempFile(long i, long j) throws IOException {
-        return Files.createTempFile(MergeHalfSortedArrayHelper.class.getSimpleName() + "-" + i + "-" + j + "-", ".bin");
+        return Files.createTempFile(MergeFileHelper.class.getSimpleName() + "-" + i + "-" + j + "-", ".bin");
     }
 
     private static char get(AsynchronousFileChannel channel,

@@ -31,17 +31,27 @@ public class ExternalSortAlgorithmTest {
     }
 
     public static Stream<CharSort> innerSorts() {
-        return Stream.of(new JDKDualPivotQuickSortAlgorithm());
+        return Stream.of(new JDKDualPivotQuickSortAlgorithm(), new IterativeQuickSortAlgorithm(), new MergeSortAlgorithm());
     }
 
     @ParameterizedTest
     @MethodSource({"innerSorts"})
-    public void testMergeSorting(CharSort sort) throws IOException {
+    public void testMergeSortingInMem(CharSort sort) throws IOException {
+        testMergeSorting(sort, 2 * 1024 * 1024, 5 * 1024 * 1024);
+    }
+
+    @ParameterizedTest
+    @MethodSource({"innerSorts"})
+    public void testMergeSortingExternal(CharSort sort) throws IOException {
+        testMergeSorting(sort, 4 * 1024 * 1024, 1024 * 1024);
+    }
+
+    private void testMergeSorting(CharSort sort, long fileSize, long bufferSize) throws IOException {
         Path file = IOUtils.newTempFile(ExternalSortAlgorithmTest.class.getSimpleName() + "-testExternalSorting-", ".bytes");
 
-        new RandomFileGenerator().generate(file, 2 * 1024 * 1024); // 2 MB
+        new RandomFileGenerator().generate(file, fileSize); // 2 MB
 
-        ExternalSortAlgorithm alg = new ExternalSortAlgorithm(sort, 5 * 1024 * 1024); // sort in mem for this test
+        ExternalSortAlgorithm alg = new ExternalSortAlgorithm(sort, bufferSize); // sort in mem for this test
 
         Instant s = Instant.now();
         Assertions.assertEquals(file, alg.sort(file.toString()));
@@ -49,7 +59,7 @@ public class ExternalSortAlgorithmTest {
 
         boolean res = isSorted(file);
 
-        String name = ((Algorithm) sort).name();
+        String name = ((Algorithm) sort).name() + "-" + (fileSize / 1024 / 1024) + "KB";
         String msg = RunTestEngine.formatMessage(ExternalSortAlgorithm.class.getSimpleName(), name, res, Duration.between(s, e));
         System.out.println(msg);
 

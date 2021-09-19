@@ -126,7 +126,7 @@ public class MergeSortedArrayHelperTest {
             long leftStartIndex = start.capacity();
             long rightStartIndex = start.capacity() + leftSize * 2;
             long rightEndIndex = start.capacity() + (leftSize + rightSize) * 2 - 1;
-            MergeHalfSortedArrayHelper.merge(channel, upperLimit, leftStartIndex, rightStartIndex, rightEndIndex);
+            MergeFileHelper.merge(channel, upperLimit, leftStartIndex, rightStartIndex, rightEndIndex);
         }
 
         byte[] actual = ByteBuffer.wrap(Files.readAllBytes(file)).array();
@@ -177,7 +177,7 @@ public class MergeSortedArrayHelperTest {
             long leftStartIndex = 0;
             long rightStartIndex = res.limit() - right.length * 2L;
             long rightEndIndex = res.limit() - 1;
-            MergeHalfSortedArrayHelper.mergeWithTemporaryFile(channel, bufferSize, leftStartIndex, rightStartIndex, rightEndIndex);
+            MergeFileHelper.mergeWithTemporaryFile(channel, bufferSize, leftStartIndex, rightStartIndex, rightEndIndex);
         }
 
         char[] expected = Arrays.copyOf(given, given.length);
@@ -199,7 +199,7 @@ public class MergeSortedArrayHelperTest {
 
         try (AsynchronousFileChannel channel = AsynchronousFileChannel.open(file,
                 StandardOpenOption.WRITE, StandardOpenOption.READ)) {
-            MergeHalfSortedArrayHelper.mergeParts(channel);
+            MergeFileHelper.mergeParts(channel);
         }
         char[] actual = BufferUtils.toCharBuffer(ByteBuffer.wrap(Files.readAllBytes(file))).array();
         System.out.println("A" + CharsUtils.toString(actual));
