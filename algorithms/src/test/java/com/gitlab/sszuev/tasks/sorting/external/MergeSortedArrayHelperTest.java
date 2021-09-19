@@ -94,7 +94,7 @@ public class MergeSortedArrayHelperTest {
     @ValueSource(ints = {
             42_000, // in memory O(n)
             100,    // in memory O(n*log(n))
-            -42     // in file
+            42      // in file
     })
     public void testMergeFile(int upperLimit) throws IOException {
         Charset charset = StandardCharsets.UTF_8;
@@ -118,15 +118,15 @@ public class MergeSortedArrayHelperTest {
         res.put(middle);
         res.put(end);
 
-        Path file = Files.createTempFile(getClass().getSimpleName() + "-in-mem-", ".bin");
+        Path file = Files.createTempFile(getClass().getSimpleName() + "-testMergeFile-", ".bin");
         Files.write(file, res.array());
 
         try (AsynchronousFileChannel channel = AsynchronousFileChannel.open(file,
                 StandardOpenOption.WRITE, StandardOpenOption.READ)) {
-            long startIndex = start.capacity() + 1;
-            long middleIndex = start.capacity() + leftSize * 2 + 1;
-            long endIndex = start.capacity() + (leftSize + rightSize) * 2 + 1;
-            MergeHalfSortedArrayHelper.merge(channel, upperLimit, startIndex, middleIndex, endIndex);
+            long leftStartIndex = start.capacity();
+            long rightStartIndex = start.capacity() + leftSize * 2;
+            long rightEndIndex = start.capacity() + (leftSize + rightSize) * 2 - 1;
+            MergeHalfSortedArrayHelper.merge(channel, upperLimit, leftStartIndex, rightStartIndex, rightEndIndex);
         }
 
         byte[] actual = ByteBuffer.wrap(Files.readAllBytes(file)).array();
@@ -141,6 +141,40 @@ public class MergeSortedArrayHelperTest {
         BufferUtils.copy(ByteBuffer.wrap(middleDataBytes), CharBuffer.wrap(actualMiddleData));
         System.out.println("A" + CharsUtils.toString(actualMiddleData));
         Assertions.assertArrayEquals(expectedMiddleData, actualMiddleData);
+    }
+
+    @Test
+    public void testMergeWithTemporaryFile() throws IOException {
+        long bufferSize = 32;
+        char[] left = new char[]{5, 11, 13, 18, 19, 21, 24, 25, 27, 28, 36, 39, 39, 83, 98}; // 15
+        char[] right = new char[]{4, 6, 11, 15, 27, 35, 46, 53, 65, 72, 82, 82, 91, 93}; // 14
+        char[] given = new char[left.length + right.length]; // 29
+        System.arraycopy(left, 0, given, 0, left.length);
+        System.arraycopy(right, 0, given, left.length, right.length);
+        ByteBuffer res = ByteBuffer.allocate((left.length + right.length) * 2 - 1);
+        BufferUtils.copy(CharBuffer.wrap(given), res);
+        System.out.println("R" + Arrays.toString(res.array()));
+        System.out.println("G" + CharsUtils.toString(given));
+
+        Path file = Files.createTempFile(getClass().getSimpleName() + "-testMergeWithTemporaryFile-", ".bin");
+        Files.write(file, res.array());
+
+        try (AsynchronousFileChannel channel = AsynchronousFileChannel.open(file,
+                StandardOpenOption.WRITE, StandardOpenOption.READ)) {
+            long leftStartIndex = 0;
+            long rightStartIndex = res.limit() - right.length * 2;
+            long rightEndIndex = res.limit() - 1;
+            MergeHalfSortedArrayHelper.mergeWithTemporaryFile(channel, bufferSize, leftStartIndex, rightStartIndex, rightEndIndex);
+        }
+
+        char[] expected = Arrays.copyOf(given, given.length);
+        Arrays.sort(expected);
+        System.out.println("E" + CharsUtils.toString(expected));
+
+        byte[] actualBytes = ByteBuffer.wrap(Files.readAllBytes(file)).array();
+        char[] actualChars = BufferUtils.toCharBuffer(ByteBuffer.wrap(actualBytes)).array();
+        System.out.println("A" + CharsUtils.toString(actualChars));
+        Assertions.assertArrayEquals(expected, actualChars);
     }
 
     private void testMergeHalfSortedFileDirectly(Path file) throws IOException {
