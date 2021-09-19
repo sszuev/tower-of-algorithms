@@ -143,7 +143,9 @@ public class MergeHalfSortedArrayHelper {
                                              long rightStartIndexInBytes,
                                              long rightEndIndexInBytes) throws IOException {
         long lengthInBytes = checkPositiveInt(rightEndIndexInBytes - leftStartIndexInBytes + 1);
-        long readBufferSizeInChars = checkPositiveInt(bufferLengthInBytes / 2 / 2 / 2);
+        long readBufferSizeInChars = bufferLengthInBytes > 16 ?
+                checkPositiveInt(bufferLengthInBytes / 2 / 2 / 2) :
+                bufferLengthInBytes;
         CharBuffer leftBuffer = CharBuffer.allocate((int) readBufferSizeInChars);
         CharBuffer rightBuffer = CharBuffer.allocate((int) readBufferSizeInChars);
 
@@ -176,20 +178,24 @@ public class MergeHalfSortedArrayHelper {
         long targetCharIndex = 0;
         while (targetCharIndex < lengthInChars) {
             char item;
-            char left = get(source, lengthInBytes, leftStartIndexInBytes, sourceLeftBuffer, i);
-            char right = get(source, lengthInBytes, leftStartIndexInBytes, sourceRightBuffer, j);
+            char left;
+            char right;
             if (i >= rightStartIndexInChars) {
-                item = right;
+                item = get(source, lengthInBytes, leftStartIndexInBytes, sourceRightBuffer, j);
                 j++;
             } else if (j >= lengthInChars) {
-                item = left;
-                i++;
-            } else if (left <= right) {
-                item = left;
+                item = get(source, lengthInBytes, leftStartIndexInBytes, sourceLeftBuffer, i);
                 i++;
             } else {
-                item = right;
-                j++;
+                left = get(source, lengthInBytes, leftStartIndexInBytes, sourceLeftBuffer, i);
+                right = get(source, lengthInBytes, leftStartIndexInBytes, sourceRightBuffer, j);
+                if (left <= right) {
+                    item = left;
+                    i++;
+                } else {
+                    item = right;
+                    j++;
+                }
             }
             if (targetBuffer.position() == targetBuffer.limit()) {
                 // flush to file and rewind
@@ -198,7 +204,7 @@ public class MergeHalfSortedArrayHelper {
             targetBuffer.put(item);
             targetCharIndex++;
         }
-        if (targetBuffer.position() != targetBuffer.limit()) {
+        if (targetBuffer.position() > 0) {
             write(target, lengthInBytes, targetCharIndex, targetBuffer);
         }
     }

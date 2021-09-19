@@ -82,6 +82,4 @@ public class MergeSortDemo {
     interface Operation {
         void run() throws Exception;
     }
-
-
 }

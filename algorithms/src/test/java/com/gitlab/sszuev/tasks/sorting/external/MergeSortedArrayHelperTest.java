@@ -33,7 +33,7 @@ public class MergeSortedArrayHelperTest {
 
     private static final Random RANDOM = new Random();
 
-    public static Stream<Data> listData() {
+    public static Stream<ArrayData> listData() {
         return Stream.of(
                 randomData(420, 810, 19, 21),
                 randomData(32, 10, 42, 21),
@@ -41,10 +41,10 @@ public class MergeSortedArrayHelperTest {
                 randomData(50, 50, 1, 42));
     }
 
-    static Data randomData(int boundLeft, int boundRight, int sizeLeft, int sizeRight) {
+    static ArrayData randomData(int boundLeft, int boundRight, int sizeLeft, int sizeRight) {
         char[] left = CharsUtils.generateSortedArray(RANDOM, boundLeft, sizeLeft);
         char[] right = CharsUtils.generateSortedArray(RANDOM, boundRight, sizeRight);
-        Data data = new Data();
+        ArrayData data = new ArrayData();
         data.arr = CharsUtils.concat(left, right);
         data.middle = sizeLeft;
         return data;
@@ -57,17 +57,17 @@ public class MergeSortedArrayHelperTest {
 
     @ParameterizedTest
     @MethodSource(value = {"listData"})
-    public void testSimpleMergeArrays(Data data) {
+    public void testSimpleMergeArrays(ArrayData data) {
         testMergeArrays(data, MergeAlgorithms::merge);
     }
 
     @ParameterizedTest
     @MethodSource(value = {"listData"})
-    public void testGapMergeArrays(Data data) {
+    public void testGapMergeArrays(ArrayData data) {
         testMergeArrays(data, (a, m) -> MergeAlgorithms.merge(a));
     }
 
-    private void testMergeArrays(Data data, BiFunction<char[], Integer, char[]> func) {
+    private void testMergeArrays(ArrayData data, BiFunction<char[], Integer, char[]> func) {
         System.out.println("G" + CharsUtils.toString(data.arr));
         char[] sorted = CharsUtils.toSorted(data.arr);
         System.out.println("E" + CharsUtils.toString(sorted));
@@ -144,15 +144,28 @@ public class MergeSortedArrayHelperTest {
     }
 
     @Test
-    public void testMergeWithTemporaryFile() throws IOException {
-        long bufferSize = 32;
-        char[] left = new char[]{5, 11, 13, 18, 19, 21, 24, 25, 27, 28, 36, 39, 39, 83, 98}; // length=15
-        char[] right = new char[]{4, 6, 11, 15, 27, 35, 46, 53, 65, 72, 82, 82, 91, 93}; // length=14
+    public void testMergeOddFileWithTemporaryFile() throws IOException {
+        testMergeWithTemporaryFile(
+                new char[]{5, 11, 13, 18, 19, 21, 24, 25, 27, 28, 36, 39, 39, 83, 98},
+                new char[]{4, 6, 11, 15, 27, 35, 46, 53, 65, 72, 82, 82, 91, 93},
+                32, true);
+    }
+
+    @Test
+    public void testMergeEvenFileWithTemporaryFile() throws IOException {
+        testMergeWithTemporaryFile(
+                new char[]{1044, 9454, 9509, 13101, 18116, 25717, 26056, 30179, 50890, 54029},
+                new char[]{1719, 6449, 14800, 25398, 35288, 37071, 49930, 52684, 56216, 59815},
+                20, false);
+    }
+
+    private void testMergeWithTemporaryFile(char[] left, char[] right, long bufferSize, boolean oddBytes) throws IOException {
         char[] given = new char[left.length + right.length]; // length=29
         System.arraycopy(left, 0, given, 0, left.length);
         System.arraycopy(right, 0, given, left.length, right.length);
-        ByteBuffer res = ByteBuffer.allocate((left.length + right.length) * 2 - 1);
+        ByteBuffer res = ByteBuffer.allocate((left.length + right.length) * 2 - (oddBytes ? 1 : 0));
         BufferUtils.copy(CharBuffer.wrap(given), res);
+
         System.out.println("R" + Arrays.toString(res.array()));
         System.out.println("G" + CharsUtils.toString(given));
 
@@ -162,7 +175,7 @@ public class MergeSortedArrayHelperTest {
         try (AsynchronousFileChannel channel = AsynchronousFileChannel.open(file,
                 StandardOpenOption.WRITE, StandardOpenOption.READ)) {
             long leftStartIndex = 0;
-            long rightStartIndex = res.limit() - right.length * 2;
+            long rightStartIndex = res.limit() - right.length * 2L;
             long rightEndIndex = res.limit() - 1;
             MergeHalfSortedArrayHelper.mergeWithTemporaryFile(channel, bufferSize, leftStartIndex, rightStartIndex, rightEndIndex);
         }
@@ -176,6 +189,7 @@ public class MergeSortedArrayHelperTest {
         System.out.println("A" + CharsUtils.toString(actualChars));
         Assertions.assertArrayEquals(expected, actualChars);
     }
+
 
     private void testMergeHalfSortedFileDirectly(Path file) throws IOException {
         char[] content = BufferUtils.toCharBuffer(ByteBuffer.wrap(Files.readAllBytes(file))).array();
@@ -223,7 +237,7 @@ public class MergeSortedArrayHelperTest {
         return res;
     }
 
-    static class Data {
+    static class ArrayData {
         char[] arr;
         int middle;
 
