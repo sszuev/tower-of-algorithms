@@ -1,0 +1,273 @@
+package com.gitlab.sszuev.trees;
+
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+/**
+ * A Binary Search Tree, and also an implementation of {@link SimpleMap}.
+ * <p>
+ * Created by @ssz on 21.09.2021.
+ */
+public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
+    protected final Comparator<K> comparator;
+    protected BiNode<K, V> root;
+    protected long size;
+
+    public BSTSimpleMap() {
+        this(null);
+    }
+
+    public BSTSimpleMap(Comparator<K> comparator) {
+        this.comparator = comparator;
+    }
+
+    @Override
+    public V put(K key, V value) {
+        if (root == null) {
+            root = BiNode.of(key, value);
+            size++;
+            return null;
+        }
+        BiNode<K, V> current = root;
+        while (true) {
+            int res = compare(key, current.key());
+            if (res == 0) {
+                // replace
+                V v = current.value();
+                current.value(value);
+                return v;
+            }
+            if (res < 0) {
+                BiNode<K, V> left = current.left();
+                if (left == null) {
+                    current.left(BiNode.of(key, value));
+                    size++;
+                    return null;
+                } else {
+                    current = left;
+                }
+                continue;
+            }
+            BiNode<K, V> right = current.right();
+            if (right == null) {
+                current.right(BiNode.of(key, value));
+                size++;
+                return null;
+            }
+            current = right;
+        }
+    }
+
+    @Override
+    public V get(K key) {
+        BiNode<K, V> current = root;
+        if (current == null) {
+            return null;
+        }
+        while (true) {
+            int res = compare(key, current.key());
+            if (res == 0) {
+                return current.value();
+            }
+            if (res < 0) {
+                BiNode<K, V> left = current.left();
+                if (left != null) {
+                    current = left;
+                } else {
+                    return null;
+                }
+                continue;
+            }
+            BiNode<K, V> right = current.right();
+            if (right == null) {
+                return null;
+            }
+            current = right;
+        }
+    }
+
+    @Override
+    public V remove(K key) {
+        BiNode<K, V> current = root;
+        if (current == null) {
+            return null;
+        }
+        BiNode<K, V> prev = null;
+        while (true) {
+            int res = compare(key, current.key());
+            if (res == 0) {
+                V value = remove(current, prev);
+                size--;
+                return value;
+            }
+            if (res < 0) {
+                BiNode<K, V> left = current.left();
+                if (left != null) {
+                    prev = current;
+                    current = left;
+                } else {
+                    return null;
+                }
+                continue;
+            }
+            BiNode<K, V> right = current.right();
+            if (right == null) {
+                return null;
+            }
+            prev = current;
+            current = right;
+        }
+    }
+
+    @Override
+    public long size() {
+        return size;
+    }
+
+    private V remove(final BiNode<K, V> current, final BiNode<K, V> prev) {
+        V value = current.value();
+        BiNode<K, V> currentLeft = current.left();
+        BiNode<K, V> currentRight = current.right();
+        if (currentLeft == null && currentRight == null) {
+            replace(prev, current, null);
+            return value;
+        }
+        if (currentRight == null || currentLeft == null) {
+            BiNode<K, V> child = currentLeft == null ? currentRight : currentLeft;
+            replace(prev, current, child);
+            return value;
+        }
+        BiNode<K, V> found = findPrevLeftInRightBranch(current);
+        BiNode<K, V> replacement;
+        if (found == null) {
+            replacement = currentRight;
+            currentRight = replacement.right();
+        } else {
+            replacement = found.left();
+            replace(found, replacement, replacement.right());
+        }
+        replacement = BiNode.of(replacement);
+        replacement.left(currentLeft);
+        replacement.right(currentRight);
+        replace(prev, current, replacement);
+        return value;
+    }
+
+    private void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
+        if (parent == null) {
+            root = newChild;
+            return;
+        }
+        if (parent.left() == oldChild) {
+            parent.left(newChild);
+        }
+        if (parent.right() == oldChild) {
+            parent.right(newChild);
+        }
+    }
+
+    private BiNode<K, V> findPrevLeftInRightBranch(BiNode<K, V> current) {
+        BiNode<K, V> prev = current.right();
+        BiNode<K, V> left = prev.left();
+        while (left == null) {
+            prev = prev.right();
+            if (prev == null) {
+                break;
+            }
+            left = prev.left();
+        }
+        if (left == null) {
+            return null;
+        }
+        while (left.left() != null) {
+            prev = left;
+            left = prev.left();
+        }
+        return prev;
+    }
+
+    private int compare(K left, K right) {
+        if (left == right) {
+            return 0;
+        }
+        if (comparator != null) {
+            return comparator.compare(left, right);
+        }
+        return asComparable(left).compareTo(right);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Comparable<? super K> asComparable(K key) {
+        return (Comparable<? super K>) key;
+    }
+
+    /**
+     * Created by @ssz on 21.09.2021.
+     */
+    public static class BiNode<K, V> implements TreeNode<K> {
+        private K key;
+        private BiNode<K, V> left, right;
+        private V value;
+
+        public static <K, V> BiNode<K, V> of(BiNode<K, V> other) {
+            return of(other.key, other.value);
+        }
+
+        public static <K, V> BiNode<K, V> of(K key, V value) {
+            BiNode<K, V> res = new BiNode<>();
+            res.key(key);
+            res.value(value);
+            return res;
+        }
+
+        protected BiNode() {
+        }
+
+        public void key(K key) {
+            this.key = Objects.requireNonNull(key);
+        }
+
+        public void value(V value) {
+            this.value = value;
+        }
+
+        public BiNode<K, V> left() {
+            return left;
+        }
+
+        public void left(BiNode<K, V> left) {
+            this.left = left;
+        }
+
+        public BiNode<K, V> right() {
+            return right;
+        }
+
+        public void right(BiNode<K, V> right) {
+            this.right = right;
+        }
+
+        @Override
+        public Stream<TreeNode<K>> children() {
+            return Stream.of(left, right);
+        }
+
+        @Override
+        public K key() {
+            return key;
+        }
+
+        public V value() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            if (left == null && right == null) {
+                return "(" + key + ")";
+            }
+            return String.format("(%s)[%s, %s]", key, left, right);
+        }
+    }
+}
