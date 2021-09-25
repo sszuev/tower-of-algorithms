@@ -56,7 +56,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
     @Override
     public V put(K key, V value) {
         if (root == null) {
-            root = node(key, value);
+            root(node(key, value));
             size++;
             return null;
         }
@@ -74,6 +74,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
                 if (left == null) {
                     current.left(node(key, value));
                     size++;
+                    afterInsert(current.left());
                     return null;
                 } else {
                     current = left;
@@ -84,6 +85,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             if (right == null) {
                 current.right(node(key, value));
                 size++;
+                afterInsert(current.right());
                 return null;
             }
             current = right;
@@ -157,9 +159,9 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         return value;
     }
 
-    private void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
+    protected void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
         if (parent == null) {
-            root = newChild;
+            root(newChild);
             return;
         }
         if (parent.left() == oldChild) {
@@ -168,6 +170,10 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         if (parent.right() == oldChild) {
             parent.right(newChild);
         }
+    }
+
+    protected void root(BiNode<K, V> newRoot) {
+        root = newRoot;
     }
 
     private BiNode<K, V> findPrevLeftInRightBranch(BiNode<K, V> current) {
@@ -188,6 +194,12 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             left = prev.left();
         }
         return prev;
+    }
+
+    protected void afterInsert(BiNode<K, V> node) {
+    }
+
+    protected void afterRemove(BiNode<K, V> node) {
     }
 
     private int compare(K left, K right) {
