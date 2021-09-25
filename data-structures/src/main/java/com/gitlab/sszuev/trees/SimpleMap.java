@@ -10,6 +10,16 @@ package com.gitlab.sszuev.trees;
 public interface SimpleMap<K, V> {
 
     /**
+     * Returns the value to which the specified key is mapped,
+     * or {@code null} if this map contains no mapping for the key.
+     *
+     * @param key {@link K} the key whose associated value is to be returned
+     * @return {@link V} the value to which the specified key is mapped,
+     * or {@code null} if this map contains no mapping for {@code key}
+     */
+    V get(K key);
+
+    /**
      * Associates the specified value with the specified key in this map.
      * If the map previously contained a mapping for the key, the old value is replaced by the specified value.
      *
@@ -19,16 +29,6 @@ public interface SimpleMap<K, V> {
      * or {@code null} if there was no mapping for {@code key}
      */
     V put(K key, V value);
-
-    /**
-     * Returns the value to which the specified key is mapped,
-     * or {@code null} if this map contains no mapping for the key.
-     *
-     * @param key {@link K} the key whose associated value is to be returned
-     * @return {@link V} the value to which the specified key is mapped,
-     * or {@code null} if this map contains no mapping for {@code key}
-     */
-    V get(K key);
 
     /**
      * Removes the mapping for a key from this map if it is present.

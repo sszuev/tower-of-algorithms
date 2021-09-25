@@ -8,6 +8,9 @@ import java.util.stream.Stream;
  * A Binary Search Tree, and also an implementation of {@link SimpleMap}.
  * <p>
  * Created by @ssz on 21.09.2021.
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Binary_search_tree'>wiki</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/BST.html'>visualization</a>
  */
 public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
     protected final Comparator<K> comparator;
@@ -20,43 +23,6 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
 
     public BSTSimpleMap(Comparator<K> comparator) {
         this.comparator = comparator;
-    }
-
-    @Override
-    public V put(K key, V value) {
-        if (root == null) {
-            root = BiNode.of(key, value);
-            size++;
-            return null;
-        }
-        BiNode<K, V> current = root;
-        while (true) {
-            int res = compare(key, current.key());
-            if (res == 0) {
-                // replace
-                V v = current.value();
-                current.value(value);
-                return v;
-            }
-            if (res < 0) {
-                BiNode<K, V> left = current.left();
-                if (left == null) {
-                    current.left(BiNode.of(key, value));
-                    size++;
-                    return null;
-                } else {
-                    current = left;
-                }
-                continue;
-            }
-            BiNode<K, V> right = current.right();
-            if (right == null) {
-                current.right(BiNode.of(key, value));
-                size++;
-                return null;
-            }
-            current = right;
-        }
     }
 
     @Override
@@ -81,6 +47,43 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             }
             BiNode<K, V> right = current.right();
             if (right == null) {
+                return null;
+            }
+            current = right;
+        }
+    }
+
+    @Override
+    public V put(K key, V value) {
+        if (root == null) {
+            root = node(key, value);
+            size++;
+            return null;
+        }
+        BiNode<K, V> current = root;
+        while (true) {
+            int res = compare(key, current.key());
+            if (res == 0) {
+                // replace
+                V v = current.value();
+                current.value(value);
+                return v;
+            }
+            if (res < 0) {
+                BiNode<K, V> left = current.left();
+                if (left == null) {
+                    current.left(node(key, value));
+                    size++;
+                    return null;
+                } else {
+                    current = left;
+                }
+                continue;
+            }
+            BiNode<K, V> right = current.right();
+            if (right == null) {
+                current.right(node(key, value));
+                size++;
                 return null;
             }
             current = right;
@@ -147,7 +150,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             replacement = found.left();
             replace(found, replacement, replacement.right());
         }
-        replacement = BiNode.of(replacement);
+        replacement = node(replacement);
         replacement.left(currentLeft);
         replacement.right(currentRight);
         replace(prev, current, replacement);
@@ -202,33 +205,29 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         return (Comparable<? super K>) key;
     }
 
+    protected BiNode<K, V> node(BiNode<K, V> other) {
+        return node(other.key, other.value);
+    }
+
+    protected BiNode<K, V> node(K key, V value) {
+        BiNode<K, V> res = new BiNode<>(key);
+        res.value(value);
+        return res;
+    }
+
     /**
      * Created by @ssz on 21.09.2021.
      */
     public static class BiNode<K, V> implements TreeNode<K> {
-        private K key;
+        private final K key;
         private BiNode<K, V> left, right;
         private V value;
 
-        public static <K, V> BiNode<K, V> of(BiNode<K, V> other) {
-            return of(other.key, other.value);
-        }
-
-        public static <K, V> BiNode<K, V> of(K key, V value) {
-            BiNode<K, V> res = new BiNode<>();
-            res.key(key);
-            res.value(value);
-            return res;
-        }
-
-        protected BiNode() {
-        }
-
-        public void key(K key) {
+        protected BiNode(K key) {
             this.key = Objects.requireNonNull(key);
         }
 
-        public void value(V value) {
+        protected void value(V value) {
             this.value = value;
         }
 
@@ -236,16 +235,16 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             return left;
         }
 
-        public void left(BiNode<K, V> left) {
-            this.left = left;
-        }
-
         public BiNode<K, V> right() {
             return right;
         }
 
-        public void right(BiNode<K, V> right) {
+        protected void right(BiNode<K, V> right) {
             this.right = right;
+        }
+
+        protected void left(BiNode<K, V> left) {
+            this.left = left;
         }
 
         @Override

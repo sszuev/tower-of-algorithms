@@ -1,26 +1,45 @@
 package com.gitlab.sszuev.trees;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Created by @ssz on 22.09.2021.
  */
 public class SimpleMapTest {
 
-    private static <K extends Comparable<K>, V> void assertBST(SimpleMap<K, V> map) {
-        if (!(map instanceof BSTSimpleMap)) {
-            return;
-        }
-        System.out.println(TreeMapUtils.print(map));
-        Assertions.assertTrue(TreeMapUtils.isBST(((BSTSimpleMap<K, V>) map).root));
-        Assertions.assertEquals(TreeMapUtils.size(((BSTSimpleMap<K, V>) map).root), map.size());
-        System.out.println("-".repeat(42));
+    private static <K, V> Stream<Supplier<SimpleMap<K, V>>> maps() {
+        return Stream.of(new Supplier<>() {
+            @Override
+            public String toString() {
+                return "BST";
+            }
+
+            @Override
+            public SimpleMap<K, V> get() {
+                return new BSTSimpleMap<>();
+            }
+        }, new Supplier<>() {
+            @Override
+            public String toString() {
+                return "AVL";
+            }
+
+            @Override
+            public SimpleMap<K, V> get() {
+                return new AVLTSimpleMap<>();
+            }
+        });
     }
 
-    @Test
-    public void testStringMap() {
-        SimpleMap<String, Integer> map = new BSTSimpleMap<>();
+    @ParameterizedTest
+    @MethodSource("maps")
+    public void testStringMap(Supplier<SimpleMap<String, Integer>> factory) {
+        SimpleMap<String, Integer> map = factory.get();
         Assertions.assertNull(map.get("A"));
         Assertions.assertNull(map.put("A", -21));
         Assertions.assertNull(map.put("b", 25));
@@ -37,19 +56,20 @@ public class SimpleMapTest {
         Assertions.assertEquals(25, map.get("C"));
         Assertions.assertEquals(21, map.get("42"));
 
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
     }
 
-    @Test
-    public void testIntegerMapRemoveNilItem() {
-        SimpleMap<String, Boolean> map = new BSTSimpleMap<>();
+    @ParameterizedTest
+    @MethodSource("maps")
+    public void testIntegerMapRemoveNilItem(Supplier<SimpleMap<String, Boolean>> factory) {
+        SimpleMap<String, Boolean> map = factory.get();
         Assertions.assertNull(map.remove("X"));
         map.put("X", Boolean.TRUE);
         Assertions.assertEquals(1, map.size());
         Assertions.assertNull(map.remove("Y"));
         Assertions.assertTrue(map.remove("X"));
         Assertions.assertEquals(0, map.size());
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
 
         map.put("f", Boolean.TRUE);
         map.put("g", Boolean.TRUE);
@@ -58,27 +78,28 @@ public class SimpleMapTest {
         map.put("d", Boolean.TRUE);
 
         Assertions.assertEquals(5, map.size());
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
 
         Assertions.assertTrue(map.remove("h"));
         Assertions.assertTrue(map.remove("d"));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(3, map.size());
 
 
         Assertions.assertTrue(map.remove("c"));
         Assertions.assertTrue(map.remove("g"));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(1, map.size());
 
         Assertions.assertTrue(map.remove("f"));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(0, map.size());
     }
 
-    @Test
-    public void testLongMapRemoveItemWithSingleChild() {
-        SimpleMap<Long, Boolean> map = new BSTSimpleMap<>();
+    @ParameterizedTest
+    @MethodSource("maps")
+    public void testLongMapRemoveItemWithSingleChild(Supplier<SimpleMap<Long, Boolean>> factory) {
+        SimpleMap<Long, Boolean> map = factory.get();
         map.put(40L, Boolean.TRUE);
         map.put(50L, Boolean.TRUE);
         map.put(60L, Boolean.TRUE);
@@ -87,34 +108,35 @@ public class SimpleMapTest {
         map.put(65L, Boolean.TRUE);
 
         Assertions.assertEquals(6, map.size());
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
 
         Assertions.assertNull(map.remove(42L));
 
         Assertions.assertTrue(map.remove(60L));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(5, map.size());
 
         Assertions.assertTrue(map.remove(30L));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(4, map.size());
 
         Assertions.assertTrue(map.remove(35L));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(3, map.size());
 
         Assertions.assertTrue(map.remove(50L));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(2, map.size());
 
         Assertions.assertTrue(map.remove(40L));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(1, map.size());
     }
 
-    @Test
-    public void testIntegerMapRemoveItemWithTwoChildren() {
-        SimpleMap<Integer, Integer> map = new BSTSimpleMap<>();
+    @ParameterizedTest
+    @MethodSource("maps")
+    public void testIntegerMapRemoveItemWithTwoChildren(Supplier<SimpleMap<Integer, Integer>> factory) {
+        SimpleMap<Integer, Integer> map = factory.get();
         map.put(40, 0);
         map.put(50, 1);
         map.put(55, 2);
@@ -130,47 +152,47 @@ public class SimpleMapTest {
         map.put(22, 4);
         map.put(28, 5);
 
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(14, map.size());
 
         Assertions.assertEquals(1, map.remove(20));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(13, map.size());
 
         Assertions.assertEquals(0, map.remove(40));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(12, map.size());
 
         Assertions.assertEquals(2, map.remove(45));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(11, map.size());
 
         Assertions.assertEquals(2, map.remove(10));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(10, map.size());
 
         Assertions.assertEquals(4, map.remove(22));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(9, map.size());
 
         Assertions.assertEquals(5, map.remove(28));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(8, map.size());
 
         Assertions.assertEquals(3, map.remove(30));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(7, map.size());
 
         Assertions.assertEquals(1, map.remove(50));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(6, map.size());
 
         Assertions.assertEquals(3, map.remove(12));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(5, map.size());
 
         Assertions.assertEquals(2, map.remove(55));
-        assertBST(map);
+        TreeMapUtils.assertBST(map);
         Assertions.assertEquals(4, map.size());
     }
 }

@@ -1,5 +1,7 @@
 package com.gitlab.sszuev.trees;
 
+import org.junit.jupiter.api.Assertions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -88,6 +90,16 @@ public class TreeMapUtils {
         int left = (length - str.length()) / 2;
         int right = length - left - str.length();
         return withSpaces(space, left) + str + withSpaces(space, right);
+    }
+
+    public static <K extends Comparable<K>, V> void assertBST(SimpleMap<K, V> map) {
+        if (!(map instanceof BSTSimpleMap)) {
+            return;
+        }
+        System.out.println(print(map));
+        Assertions.assertTrue(isBST(((BSTSimpleMap<K, V>) map).root));
+        Assertions.assertEquals(size(((BSTSimpleMap<K, V>) map).root), map.size());
+        System.out.println("-".repeat(42));
     }
 
     private static class StringBlock {
