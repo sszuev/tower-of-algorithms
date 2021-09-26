@@ -389,7 +389,7 @@ public class SimpleMapTest {
     }
 
     enum TestType {
-        BST {
+        SIMPLE_BST {
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new BSTSimpleMap<>();
@@ -401,7 +401,7 @@ public class SimpleMapTest {
                 TreeMapUtils.assertBST(map);
             }
         },
-        AVL {
+        AVL_BST {
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new AVLTSimpleMap<>();
@@ -433,6 +433,13 @@ public class SimpleMapTest {
             @SuppressWarnings("unchecked")
             private <K, V> AVLTSimpleMap.AVLBiNode<K, V> asAVL(TreeNode<?> node) {
                 return (AVLTSimpleMap.AVLBiNode<K, V>) node;
+            }
+        },
+
+        JDK_TREE_MAP {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new JDKTreeSimpleMap<>();
             }
         };
 
