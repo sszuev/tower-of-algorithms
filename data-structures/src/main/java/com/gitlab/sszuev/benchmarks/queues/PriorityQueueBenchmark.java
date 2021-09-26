@@ -2,6 +2,7 @@ package com.gitlab.sszuev.benchmarks.queues;
 
 import com.gitlab.sszuev.queues.PriorityQueue;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -34,24 +35,29 @@ public class PriorityQueueBenchmark {
         queue = factory.createPriorityQueue();
     }
 
+    @TearDown(Level.Invocation)
+    public void doTearDown(Blackhole blackhole) {
+        blackhole.consume(queue);
+    }
+
     @Benchmark
     @Group("ADD_REMOVE_100_000_WITHOUT_MAX")
-    public void testAddRemove100000Unlimited() {
-        testAddRemove(TEST_PRIORITIES_100_000_WITH_MAX_INT);
+    public void testAddRemove100000Unlimited(Blackhole blackhole) {
+        testAddRemove(TEST_PRIORITIES_100_000_WITH_MAX_INT, blackhole);
     }
 
     @Benchmark
     @Group("ADD_REMOVE_200_000_WITH_MAX100")
-    public void testAddRemove200000WithMax100() {
-        testAddRemove(TEST_PRIORITIES_200_000_WITH_MAX_100);
+    public void testAddRemove200000WithMax100(Blackhole blackhole) {
+        testAddRemove(TEST_PRIORITIES_200_000_WITH_MAX_100, blackhole);
     }
 
-    private void testAddRemove(int[] priorities) {
+    private void testAddRemove(int[] priorities, Blackhole blackhole) {
         for (int p : priorities) {
             queue.enqueue(TEST_ITEM, p);
         }
         for (int i = 0; i < priorities.length; i++) {
-            queue.dequeue();
+            blackhole.consume(queue.dequeue());
         }
     }
 

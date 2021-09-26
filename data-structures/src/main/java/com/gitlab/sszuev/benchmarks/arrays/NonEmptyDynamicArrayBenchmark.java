@@ -2,6 +2,7 @@ package com.gitlab.sszuev.benchmarks.arrays;
 
 import com.gitlab.sszuev.arrays.DynamicArray;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,11 @@ public class NonEmptyDynamicArrayBenchmark {
         array = factory.createListOf(TEST_CONTENT);
     }
 
+    @TearDown(Level.Invocation)
+    public void doTearDown(Blackhole blackhole) {
+        blackhole.consume(array);
+    }
+
     @Benchmark
     @Group("ADD_9999")
     public void testAdd9999() {
@@ -43,9 +49,9 @@ public class NonEmptyDynamicArrayBenchmark {
 
     @Benchmark
     @Group("REMOVE_9999")
-    public void testRemove9999() {
+    public void testRemove9999(Blackhole blackhole) {
         for (int i = 0; i < 9999; i++) {
-            array.remove(TEST_CONTENT_LENGTH / 2);
+            blackhole.consume(array.remove(TEST_CONTENT_LENGTH / 2));
         }
     }
 
