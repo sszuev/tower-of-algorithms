@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.trees;
+package com.gitlab.sszuev.maps;
 
 import java.util.Comparator;
 import java.util.Map;

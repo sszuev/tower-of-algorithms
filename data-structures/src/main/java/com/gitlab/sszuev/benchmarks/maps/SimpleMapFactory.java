@@ -1,9 +1,9 @@
-package com.gitlab.sszuev.benchmarks.trees;
+package com.gitlab.sszuev.benchmarks.maps;
 
-import com.gitlab.sszuev.trees.AVLTSimpleMap;
-import com.gitlab.sszuev.trees.BSTSimpleMap;
-import com.gitlab.sszuev.trees.JDKTreeSimpleMap;
-import com.gitlab.sszuev.trees.SimpleMap;
+import com.gitlab.sszuev.maps.AVLTSimpleMap;
+import com.gitlab.sszuev.maps.BSTSimpleMap;
+import com.gitlab.sszuev.maps.JDKTreeSimpleMap;
+import com.gitlab.sszuev.maps.SimpleMap;
 
 /**
  * Created by @ssz on 26.09.2021.

@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.trees;
+package com.gitlab.sszuev.maps;
 
 import org.junit.jupiter.api.Assertions;
 

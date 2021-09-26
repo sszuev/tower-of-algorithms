@@ -1,6 +1,6 @@
-package com.gitlab.sszuev.benchmarks.trees;
+package com.gitlab.sszuev.benchmarks.maps;
 
-import com.gitlab.sszuev.trees.SimpleMap;
+import com.gitlab.sszuev.maps.SimpleMap;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 

@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.trees;
+package com.gitlab.sszuev.maps;
 
 /**
  * Created by @ssz on 22.09.2021.
