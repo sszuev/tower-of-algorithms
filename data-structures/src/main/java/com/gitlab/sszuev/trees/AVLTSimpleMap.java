@@ -30,7 +30,7 @@ public class AVLTSimpleMap<K, V> extends BSTSimpleMap<K, V> {
     protected void afterRemove(BiNode<K, V> node) {
         AVLBiNode<K, V> n = AVLBiNode.asAVL(node);
         AVLBiNode.reset(n);
-        // TODO: run rebalance
+        rebalance(n);
     }
 
     public void rebalance(AVLBiNode<K, V> node) {
@@ -43,7 +43,7 @@ public class AVLTSimpleMap<K, V> extends BSTSimpleMap<K, V> {
         }
     }
 
-    private boolean needRebalance(AVLBiNode<K, V> node) {
+    protected boolean needRebalance(AVLBiNode<K, V> node) {
         if (node == null) {
             return false;
         }
@@ -52,7 +52,7 @@ public class AVLTSimpleMap<K, V> extends BSTSimpleMap<K, V> {
         return Math.abs(leftHeight - rightHeight) > 1;
     }
 
-    private AVLBiNode<K, V> performRebalance(final AVLBiNode<K, V> a) {
+    protected AVLBiNode<K, V> performRebalance(final AVLBiNode<K, V> a) {
         AVLBiNode<K, V> b = a.right();
 
         AVLBiNode<K, V> c = AVLBiNode.leftOrNull(b);
@@ -178,7 +178,7 @@ public class AVLTSimpleMap<K, V> extends BSTSimpleMap<K, V> {
 
         protected static void reset(AVLBiNode<?, ?> node) {
             while (node != null) {
-                node.height = 0;
+                node.reset();
                 node = node.parent;
             }
         }

@@ -14,11 +14,17 @@ public class AVLTreeSimpleMapTest {
         }
         TreeMapUtils.assertBST(map);
         AVLTSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLTSimpleMap<K, V>) map));
+        if (root == null) {
+            return;
+        }
+        AssertionError error = new AssertionError("Three is not balanced");
         root.preOrder(node -> {
             AVLTSimpleMap.AVLBiNode<K, V> n = asAVL(node);
             int leftHeight = AVLTSimpleMap.AVLBiNode.height(n.left());
             int rightHeight = AVLTSimpleMap.AVLBiNode.height(n.right());
-            Assertions.assertFalse(Math.abs(rightHeight - leftHeight) > 1, "Not balanced");
+            if (Math.abs(rightHeight - leftHeight) > 1) {
+                throw error;
+            }
         });
     }
 
@@ -32,7 +38,7 @@ public class AVLTreeSimpleMapTest {
     }
 
     @Test
-    public void testInsert() {
+    public void testInsertFixedData() {
         AVLTSimpleMap<Integer, String> map = new AVLTSimpleMap<>();
         map.put(40, "a");
         assertAVLT(map);
@@ -81,5 +87,95 @@ public class AVLTreeSimpleMapTest {
         Assertions.assertEquals(1, root.right().left().height());
         Assertions.assertEquals(50, root.right().right().parent().key());
         Assertions.assertEquals(50, root.right().left().parent().key());
+    }
+
+    @Test
+    public void testInsertSequentialDataAndRemove() {
+        Object data = "X";
+        AVLTSimpleMap<Long, Object> map = new AVLTSimpleMap<>();
+        for (long i = 0; i < 20; i++) {
+            map.put(i, data);
+        }
+        assertAVLT(map);
+
+        Assertions.assertEquals(data, map.remove(15L));
+        assertAVLT(map);
+        Assertions.assertEquals(19, map.size());
+
+        Assertions.assertEquals(data, map.remove(19L));
+        assertAVLT(map);
+        Assertions.assertEquals(18, map.size());
+
+        Assertions.assertEquals(data, map.remove(17L));
+        assertAVLT(map);
+        Assertions.assertEquals(17, map.size());
+
+        Assertions.assertEquals(data, map.remove(2L));
+        assertAVLT(map);
+        Assertions.assertEquals(16, map.size());
+
+        Assertions.assertEquals(data, map.remove(1L));
+        assertAVLT(map);
+        Assertions.assertEquals(15, map.size());
+
+        Assertions.assertEquals(data, map.remove(5L));
+        assertAVLT(map);
+        Assertions.assertEquals(14, map.size());
+
+        Assertions.assertEquals(data, map.remove(0L));
+        assertAVLT(map);
+        Assertions.assertEquals(13, map.size());
+
+        Assertions.assertEquals(data, map.remove(11L));
+        assertAVLT(map);
+        Assertions.assertEquals(12, map.size());
+
+        Assertions.assertEquals(data, map.remove(16L));
+        assertAVLT(map);
+        Assertions.assertEquals(11, map.size());
+
+        Assertions.assertEquals(data, map.remove(7L));
+        assertAVLT(map);
+        Assertions.assertEquals(10, map.size());
+
+        Assertions.assertEquals(data, map.remove(9L));
+        assertAVLT(map);
+        Assertions.assertEquals(9, map.size());
+
+        Assertions.assertEquals(data, map.remove(13L));
+        assertAVLT(map);
+        Assertions.assertEquals(8, map.size());
+
+        Assertions.assertEquals(data, map.remove(14L));
+        assertAVLT(map);
+        Assertions.assertEquals(7, map.size());
+
+        Assertions.assertEquals(data, map.remove(8L));
+        assertAVLT(map);
+        Assertions.assertEquals(6, map.size());
+
+        Assertions.assertEquals(data, map.remove(18L));
+        assertAVLT(map);
+        Assertions.assertEquals(5, map.size());
+
+        Assertions.assertEquals(data, map.remove(12L));
+        assertAVLT(map);
+        Assertions.assertEquals(4, map.size());
+
+        Assertions.assertEquals(data, map.remove(4L));
+        assertAVLT(map);
+        Assertions.assertEquals(3, map.size());
+
+        Assertions.assertEquals(data, map.remove(6L));
+        assertAVLT(map);
+        Assertions.assertEquals(2, map.size());
+
+        Assertions.assertEquals(data, map.remove(10L));
+        assertAVLT(map);
+        Assertions.assertEquals(1, map.size());
+
+        Assertions.assertEquals(data, map.remove(3L));
+        assertAVLT(map);
+        Assertions.assertEquals(0, map.size());
     }
 }

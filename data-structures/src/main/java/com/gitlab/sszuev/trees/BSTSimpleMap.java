@@ -102,8 +102,10 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         while (true) {
             int res = compare(key, current.key());
             if (res == 0) {
-                V value = remove(current, prev);
+                V value = current.value();
+                BiNode<K, V> x = remove(current, prev);
                 size--;
+                afterRemove(x);
                 return value;
             }
             if (res < 0) {
@@ -130,18 +132,17 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         return size;
     }
 
-    private V remove(final BiNode<K, V> current, final BiNode<K, V> prev) {
-        V value = current.value();
+    protected BiNode<K, V> remove(final BiNode<K, V> current, final BiNode<K, V> prev) {
         BiNode<K, V> currentLeft = current.left();
         BiNode<K, V> currentRight = current.right();
         if (currentLeft == null && currentRight == null) {
             replace(prev, current, null);
-            return value;
+            return prev;
         }
         if (currentRight == null || currentLeft == null) {
             BiNode<K, V> child = currentLeft == null ? currentRight : currentLeft;
             replace(prev, current, child);
-            return value;
+            return child;
         }
         BiNode<K, V> found = findPrevLeftInRightBranch(current);
         BiNode<K, V> replacement;
@@ -156,7 +157,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         replacement.left(currentLeft);
         replacement.right(currentRight);
         replace(prev, current, replacement);
-        return value;
+        return currentRight == null ? replacement : currentRight;
     }
 
     protected void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
@@ -172,11 +173,7 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         }
     }
 
-    protected void root(BiNode<K, V> newRoot) {
-        root = newRoot;
-    }
-
-    private BiNode<K, V> findPrevLeftInRightBranch(BiNode<K, V> current) {
+    protected BiNode<K, V> findPrevLeftInRightBranch(BiNode<K, V> current) {
         BiNode<K, V> prev = current.right();
         BiNode<K, V> left = prev.left();
         while (left == null) {
@@ -194,6 +191,10 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             left = prev.left();
         }
         return prev;
+    }
+
+    protected void root(BiNode<K, V> newRoot) {
+        root = newRoot;
     }
 
     protected void afterInsert(BiNode<K, V> node) {
