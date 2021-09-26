@@ -97,8 +97,8 @@ public class TreeMapUtils {
             return;
         }
         System.out.println(print(map));
-        Assertions.assertTrue(isBST(((BSTSimpleMap<K, V>) map).root));
-        Assertions.assertEquals(size(((BSTSimpleMap<K, V>) map).root), map.size());
+        Assertions.assertTrue(isBST(((BSTSimpleMap<K, V>) map).root), "Not a BST");
+        Assertions.assertEquals(size(((BSTSimpleMap<K, V>) map).root), map.size(), "Wrong size");
         System.out.println("-".repeat(42));
     }
 
