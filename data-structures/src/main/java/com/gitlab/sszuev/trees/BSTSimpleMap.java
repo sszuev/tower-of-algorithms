@@ -26,6 +26,11 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
     }
 
     @Override
+    public long size() {
+        return size;
+    }
+
+    @Override
     public V get(K key) {
         BiNode<K, V> current = root;
         if (current == null) {
@@ -127,11 +132,13 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         }
     }
 
-    @Override
-    public long size() {
-        return size;
-    }
-
+    /**
+     * Removes a {@code current} node and returns a node for possible rebalance.
+     *
+     * @param current {@link BiNode} - a node to remove
+     * @param prev    {@link BiNode} - a parent of {@code current} node
+     * @return {@link BiNode} to start rebalance
+     */
     protected BiNode<K, V> remove(final BiNode<K, V> current, final BiNode<K, V> prev) {
         BiNode<K, V> currentLeft = current.left();
         BiNode<K, V> currentRight = current.right();
@@ -144,7 +151,8 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
             replace(prev, current, child);
             return child;
         }
-        BiNode<K, V> found = findPrevLeftInRightBranch(current);
+        BiNode<K, V> res = null;
+        BiNode<K, V> found = findPrevMinInRightBranch(current);
         BiNode<K, V> replacement;
         if (found == null) {
             replacement = currentRight;
@@ -152,12 +160,32 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         } else {
             replacement = found.left();
             replace(found, replacement, replacement.right());
+            res = found;
         }
         replacement = node(replacement);
         replacement.left(currentLeft);
         replacement.right(currentRight);
         replace(prev, current, replacement);
-        return currentRight == null ? replacement : currentRight;
+        return res == null ? replacement : res;
+    }
+
+    /**
+     * Finds a parent of minimal item in the right branch, which is not a root of subtree.
+     *
+     * @param current a {@link BiNode} whose right child is a root of considered subtree
+     * @return {@link BiNode} or {@code null} if there is no left branch in a subtree
+     */
+    protected BiNode<K, V> findPrevMinInRightBranch(BiNode<K, V> current) {
+        BiNode<K, V> prev = current.right();
+        BiNode<K, V> left = prev.left();
+        if (left == null) {
+            return null;
+        }
+        while (left.left() != null) {
+            prev = left;
+            left = prev.left();
+        }
+        return prev;
     }
 
     protected void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
@@ -171,26 +199,6 @@ public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
         if (parent.right() == oldChild) {
             parent.right(newChild);
         }
-    }
-
-    protected BiNode<K, V> findPrevLeftInRightBranch(BiNode<K, V> current) {
-        BiNode<K, V> prev = current.right();
-        BiNode<K, V> left = prev.left();
-        while (left == null) {
-            prev = prev.right();
-            if (prev == null) {
-                break;
-            }
-            left = prev.left();
-        }
-        if (left == null) {
-            return null;
-        }
-        while (left.left() != null) {
-            prev = left;
-            left = prev.left();
-        }
-        return prev;
     }
 
     protected void root(BiNode<K, V> newRoot) {
