@@ -9,9 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Created by @ssz on 29.08.2021.
  */
-abstract class BaseIntegerSortAlgorithm implements Algorithm {
-
-    abstract void performSorting(int[] array);
+abstract class BaseIntegerSortAlgorithm implements Algorithm, IntSort {
 
     @Override
     public final List<String> run(String arg, String... other) {
@@ -20,7 +18,7 @@ abstract class BaseIntegerSortAlgorithm implements Algorithm {
         if (array.length != length) {
             throw new IllegalArgumentException("Wrong length: " + length);
         }
-        performSorting(array);
+        sort(array);
         return List.of(Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(" ")));
     }
 }

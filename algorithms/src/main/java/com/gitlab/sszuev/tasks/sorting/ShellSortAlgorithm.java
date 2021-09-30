@@ -27,7 +27,7 @@ public class ShellSortAlgorithm extends BaseIntegerSortAlgorithm {
         this.factor = factor;
     }
 
-    public static void sort(int factor, int[] array) {
+    public static void sortInts(int factor, int[] array) {
         for (int gap = Math.max(1, array.length / factor); gap > 0; gap /= 2) {
             for (int i = gap; i < array.length; i++) {
                 for (int j = i - gap; j >= 0 && array[j] > array[j + gap]; j -= gap) {
@@ -46,8 +46,8 @@ public class ShellSortAlgorithm extends BaseIntegerSortAlgorithm {
     }
 
     @Override
-    void performSorting(int[] array) {
-        sort(factor, array);
+    public void sort(int[] array) {
+        sortInts(factor, array);
     }
 
     @Override

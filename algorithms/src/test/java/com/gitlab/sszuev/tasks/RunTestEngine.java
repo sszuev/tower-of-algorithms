@@ -71,10 +71,10 @@ public abstract class RunTestEngine {
         Assertions.assertEquals(expected, actual);
     }
 
-    private static String formatMessage(String className, String displayName, boolean status, Duration duration) {
+    public static String formatMessage(String className, String displayName, boolean status, Duration duration) {
         return String.format("%s\t%s\t\t%s\t%s",
                 StringUtils.rightPad(className, 42),
-                StringUtils.rightPad(displayName, 4),
+                StringUtils.rightPad(displayName, 42),
                 status ? "  OK" : "FAIL",
                 formatDuration(duration));
     }

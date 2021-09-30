@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 /**
  * Created by @ssz on 28.08.2021.
  */
-class TestPropertiesSupport {
+public class TestPropertiesSupport {
     /**
      * Specify VM option '-Duse.assertions=true' to throw {@link AssertionError} if testcase has wrong status.
      * To provide nice-looking console output this option is disabled by default.
      */
-    static final boolean USE_ASSERTIONS = Boolean.parseBoolean(System.getProperty("use.assertions",
+    public static final boolean USE_ASSERTIONS = Boolean.parseBoolean(System.getProperty("use.assertions",
             Boolean.FALSE.toString()));
 
     private static final String BASE = RunTestEngine.class.getPackageName();

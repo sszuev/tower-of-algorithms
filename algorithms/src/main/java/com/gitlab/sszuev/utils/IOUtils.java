@@ -1,0 +1,130 @@
+package com.gitlab.sszuev.utils;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+/**
+ * Created by @ssz on 19.09.2021.
+ */
+public class IOUtils {
+    private static final int IO_TIMEOUT_IN_SECONDS = 5;
+
+    public static char readChar(AsynchronousFileChannel source, long byteIndex) throws IOException {
+        ByteBuffer bytes;
+        if (byteIndex == -1) {
+            byteIndex = 0;
+            bytes = ByteBuffer.allocate(1);
+        } else {
+            bytes = ByteBuffer.allocate(2);
+        }
+        read(source, byteIndex, bytes);
+        bytes.rewind();
+        return bytes.limit() == 1 ? (char) bytes.get() : bytes.getChar();
+    }
+
+    public static void writeChar(AsynchronousFileChannel source, long byteIndex, char value) throws IOException {
+        ByteBuffer bytes = ByteBuffer.allocate(2);
+        if (byteIndex == -1) {
+            byteIndex = 0;
+            bytes.put(0, (byte) value);
+        } else {
+            bytes.putChar(value);
+        }
+        bytes.rewind();
+        write(source, byteIndex, bytes);
+    }
+
+    public static void copy(Path source, AsynchronousFileChannel target, long targetPosition, int bufferSize) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+        try (SeekableByteChannel channel = Files.newByteChannel(source, StandardOpenOption.READ)) {
+            long length = channel.size();
+            long sourcePosition = 0;
+            while (sourcePosition < length) {
+                channel.position(sourcePosition);
+                channel.read(buffer);
+                int current = buffer.position();
+                buffer.rewind();
+                buffer.limit(current);
+                write(target, targetPosition, buffer, current);
+                buffer.rewind();
+                sourcePosition += current;
+                targetPosition += current;
+            }
+        }
+    }
+
+    public static void read(AsynchronousFileChannel channel, long position, ByteBuffer bytes) throws IOException {
+        performAsync(channel.read(bytes, position), bytes.limit());
+    }
+
+    public static void write(AsynchronousFileChannel channel, long position, ByteBuffer bytes) throws IOException {
+        write(channel, position, bytes, bytes.limit());
+    }
+
+    public static void write(AsynchronousFileChannel channel,
+                             long position,
+                             ByteBuffer bytes,
+                             int expectedReadBytes) throws IOException {
+        performAsync(channel.write(bytes, position), expectedReadBytes);
+    }
+
+    public static void write(SeekableByteChannel channel, ByteBuffer bytes, long position) throws IOException {
+        channel.position(position);
+        ensureIsOk(bytes.limit(), channel.write(bytes));
+    }
+
+    private static void performAsync(Future<Integer> operation, int expected) throws IOException {
+        try {
+            ensureIsOk(expected, operation.get(IO_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+        } catch (InterruptedException | TimeoutException e) {
+            throw new IllegalStateException(e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof IOException) {
+                throw (IOException) cause;
+            }
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void ensureIsOk(int expected, int actual) {
+        if (actual != expected) {
+            throw new IllegalStateException("Expected " + expected + ", got " + actual);
+        }
+    }
+
+    /**
+     * Prepares a place for a new temporary file.
+     *
+     * @param prefix the prefix string to be used in generating the file's name; may be {@code null}
+     * @param suffix the suffix string to be used in generating the file's name;
+     *               may be {@code null}, in which case "{@code .tmp}" is used
+     * @return a {@link Path} to non-existent (yet) file
+     * @throws IOException something is wrong
+     * @see Files#createTempFile(String, String, FileAttribute[])
+     */
+    @SuppressWarnings("SameParameterValue")
+    public static Path newTempFile(String prefix, String suffix) throws IOException {
+        Path dir = Paths.get(System.getProperty("java.io.tmpdir")).toRealPath();
+        if (prefix == null) {
+            prefix = "";
+        }
+        if (suffix == null) {
+            suffix = ".tmp";
+        }
+        Path file = dir.resolve(prefix + System.currentTimeMillis() + suffix);
+        Files.deleteIfExists(file);
+        return file;
+    }
+}
