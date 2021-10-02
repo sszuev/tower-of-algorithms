@@ -12,16 +12,16 @@ import java.util.stream.Stream;
  * @see <a href='https://en.wikipedia.org/wiki/Binary_search_tree'>wiki</a>
  * @see <a href='https://www.cs.usfca.edu/~galles/visualization/BST.html'>visualization</a>
  */
-public class BSTSimpleMap<K, V> implements SimpleMap<K, V> {
+public class BinarySearchTreeSimpleMap<K, V> implements SimpleMap<K, V> {
     protected final Comparator<K> comparator;
     protected BiNode<K, V> root;
     protected long size;
 
-    public BSTSimpleMap() {
+    public BinarySearchTreeSimpleMap() {
         this(null);
     }
 
-    public BSTSimpleMap(Comparator<K> comparator) {
+    public BinarySearchTreeSimpleMap(Comparator<K> comparator) {
         this.comparator = comparator;
     }
 

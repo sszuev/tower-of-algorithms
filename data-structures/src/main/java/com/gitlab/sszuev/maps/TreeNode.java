@@ -6,9 +6,12 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
+ * A technical interface for a node.
+ * Used in BST.
+ * <p>
  * Created by @ssz on 21.09.2021.
  */
-public interface TreeNode<X> {
+interface TreeNode<X> {
 
     Stream<TreeNode<X>> children();
 

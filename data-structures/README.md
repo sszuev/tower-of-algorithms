@@ -18,9 +18,8 @@ Right now there are following data structures:
   * [A `java.util.Map`-based implementation](src/main/java/com/gitlab/sszuev/queues/MapPriorityQueue.java)
   
 - [Map (Key-Value Dictionary)](src/main/java/com/gitlab/sszuev/maps/SimpleMap.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.*`):
-  * [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/BSTSimpleMap.java)
-  * [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/AVLTSimpleMap.java)
-  * [A wrapper for JDK `java.util.TreeMap` (Red-Black Tree)](src/main/java/com/gitlab/sszuev/maps/JDKTreeSimpleMap.java)
+  * [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/BinarySearchTreeSimpleMap.java)
+  * [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/AVLBinarySearchTreeSimpleMap.java)
 
 ##### Requirements:
 

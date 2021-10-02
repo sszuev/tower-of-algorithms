@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -392,54 +393,55 @@ public class SimpleMapTest {
         SIMPLE_BST {
             @Override
             public <K, V> SimpleMap<K, V> create() {
-                return new BSTSimpleMap<>();
+                return new BinarySearchTreeSimpleMap<>();
             }
 
             @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(BSTSimpleMap.class, map.getClass());
+                Assertions.assertEquals(BinarySearchTreeSimpleMap.class, map.getClass());
                 TreeMapUtils.assertBST(map);
             }
         },
         AVL_BST {
             @Override
             public <K, V> SimpleMap<K, V> create() {
-                return new AVLTSimpleMap<>();
+                return new AVLBinarySearchTreeSimpleMap<>();
             }
 
             @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(AVLTSimpleMap.class, map.getClass());
+                Assertions.assertEquals(AVLBinarySearchTreeSimpleMap.class, map.getClass());
                 TreeMapUtils.assertBST(map);
-                AVLTSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLTSimpleMap<K, V>) map));
+                AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
                 if (root == null) {
                     return;
                 }
                 AssertionError error = new AssertionError("Three is not balanced");
                 root.preOrder(node -> {
-                    AVLTSimpleMap.AVLBiNode<K, V> n = asAVL(node);
-                    int leftHeight = AVLTSimpleMap.AVLBiNode.height(n.left());
-                    int rightHeight = AVLTSimpleMap.AVLBiNode.height(n.right());
+                    AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> n = asAVL(node);
+                    int leftHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.left());
+                    int rightHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.right());
                     if (Math.abs(rightHeight - leftHeight) > 1) {
                         throw error;
                     }
                 });
             }
 
-            private <K, V> AVLTSimpleMap.AVLBiNode<K, V> getRoot(AVLTSimpleMap<K, V> map) {
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
                 return asAVL(map.root);
             }
 
             @SuppressWarnings("unchecked")
-            private <K, V> AVLTSimpleMap.AVLBiNode<K, V> asAVL(TreeNode<?> node) {
-                return (AVLTSimpleMap.AVLBiNode<K, V>) node;
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> asAVL(TreeNode<?> node) {
+                return (AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V>) node;
             }
         },
 
         JDK_TREE_MAP {
+            @SuppressWarnings("SortedCollectionWithNonComparableKeys")
             @Override
             public <K, V> SimpleMap<K, V> create() {
-                return new JDKTreeSimpleMap<>();
+                return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
             }
         };
 

@@ -9,13 +9,13 @@ import java.util.Comparator;
  * @see <a href='https://en.wikipedia.org/wiki/AVL_tree'>wiki</a>
  * @see <a href='https://www.cs.usfca.edu/~galles/visualization/AVLtree.html'>visualization</a>
  */
-public class AVLTSimpleMap<K, V> extends BSTSimpleMap<K, V> {
+public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMap<K, V> {
 
-    public AVLTSimpleMap() {
+    public AVLBinarySearchTreeSimpleMap() {
         this(null);
     }
 
-    public AVLTSimpleMap(Comparator<K> comparator) {
+    public AVLBinarySearchTreeSimpleMap(Comparator<K> comparator) {
         super(comparator);
     }
 
