@@ -463,12 +463,18 @@ public class SimpleMapTest {
                 return (AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V>) node;
             }
         },
-
         JDK_TREE_MAP {
             @SuppressWarnings("SortedCollectionWithNonComparableKeys")
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
+            }
+        },
+
+        SC_HASHTABLE {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new SeparateChainingHashtableSimpleMap<>();
             }
         };
 
