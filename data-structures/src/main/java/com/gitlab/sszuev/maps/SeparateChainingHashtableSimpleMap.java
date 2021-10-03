@@ -47,10 +47,6 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
         return new Entry[size];
     }
 
-    private int threshold() {
-        return (int) Math.min(table.length * loadFactor, MAX_ARRAY_SIZE);
-    }
-
     @Override
     public long size() {
         return size;
@@ -77,7 +73,7 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
                 return entry.value(value);
             }
         }
-        if (size >= threshold()) {
+        if (size >= threshold(table.length)) {
             grow();
             index = hash(keyHash, table.length);
         }
@@ -104,7 +100,7 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
                 table[index] = entry.next();
             }
             size--;
-            if (size < threshold()) {
+            if (size < threshold(prevArrayLength(table.length))) {
                 shrink();
             }
             return entry.value(null);
@@ -131,7 +127,7 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
      */
     protected void grow() {
         final int thisLength = table.length;
-        int resLength = thisLength << 1 + 1;
+        int resLength = nextArrayLength(thisLength);
         if (resLength - MAX_ARRAY_SIZE > 0) {
             if (thisLength == MAX_ARRAY_SIZE) {
                 // can't grow anymore
@@ -154,7 +150,7 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
         if (thisLength <= MIN_ARRAY_SIZE) {
             return;
         }
-        int resLength = thisLength >> 1 + 1;
+        int resLength = prevArrayLength(thisLength);
         Entry<K, V>[] res = newTable(resLength);
         resettle(this.table, thisLength, res, resLength);
         this.table = res;
@@ -170,6 +166,18 @@ public class SeparateChainingHashtableSimpleMap<K, V> implements SimpleMap<K, V>
                 target[index] = entry;
             }
         }
+    }
+
+    private int threshold(int length) {
+        return (int) Math.min(length * loadFactor, MAX_ARRAY_SIZE);
+    }
+
+    private int nextArrayLength(int length) {
+        return length << 1 + 1;
+    }
+
+    private int prevArrayLength(int length) {
+        return length >> 1 + 1;
     }
 
     protected Entry<K, V> newEntry(K key, int hashCode) {

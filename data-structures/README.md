@@ -21,6 +21,7 @@ Right now there are following data structures:
   * [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/BinarySearchTreeSimpleMap.java)
   * [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/AVLBinarySearchTreeSimpleMap.java)
   * [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/SeparateChainingHashtableSimpleMap.java)
+  * [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/OpenAddressingHashtableSimpleMap.java)
 
 ##### Requirements:
 

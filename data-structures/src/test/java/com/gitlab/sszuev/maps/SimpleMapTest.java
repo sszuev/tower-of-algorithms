@@ -476,7 +476,14 @@ public class SimpleMapTest {
             public <K, V> SimpleMap<K, V> create() {
                 return new SeparateChainingHashtableSimpleMap<>();
             }
-        };
+        },
+        OA_HASHTABLE {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new OpenAddressingHashtableSimpleMap<>();
+            }
+        },
+        ;
 
         public abstract <K, V> SimpleMap<K, V> create();
 
