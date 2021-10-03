@@ -1,10 +1,9 @@
 package com.gitlab.sszuev.benchmarks.maps;
 
-import com.gitlab.sszuev.maps.AVLBinarySearchTreeSimpleMap;
-import com.gitlab.sszuev.maps.BinarySearchTreeSimpleMap;
-import com.gitlab.sszuev.maps.JDKMapWrapperSimpleMap;
-import com.gitlab.sszuev.maps.SimpleMap;
+import com.gitlab.sszuev.maps.*;
 
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.TreeMap;
 
 /**
@@ -24,11 +23,35 @@ public enum SimpleMapFactory {
             return new AVLBinarySearchTreeSimpleMap<>();
         }
     },
+    SEPARATE_CHAINING_HASHTABLE {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new SeparateChainingHashtableSimpleMap<>();
+        }
+    },
+    OPEN_ADDRESSING_HASHTABLE {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new OpenAddressingHashtableSimpleMap<>();
+        }
+    },
     JDK_TREE_MAP {
         @SuppressWarnings("SortedCollectionWithNonComparableKeys")
         @Override
         public <K, V> SimpleMap<K, V> createEmptyMap() {
             return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
+        }
+    },
+    JDK_HASHMAP {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new JDKMapWrapperSimpleMap<>(new HashMap<>());
+        }
+    },
+    JDK_HASHTABLE {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new JDKMapWrapperSimpleMap<>(new Hashtable<>());
         }
     },
     ;
