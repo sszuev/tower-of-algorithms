@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /**
  * Created by @ssz on 22.09.2021.
@@ -51,7 +52,7 @@ public class SimpleMapTest {
 
     @ParameterizedTest
     @EnumSource(TestType.class)
-    public void testIntegerMapInsertAndRemoveNilItem(TestType type) {
+    public void testStringMapInsertAndRemoveNilItem(TestType type) {
         SimpleMap<String, Boolean> map = type.create();
         Assertions.assertNull(map.remove("X"));
         map.put("X", Boolean.TRUE);
@@ -354,6 +355,32 @@ public class SimpleMapTest {
             Assertions.assertNotNull(map.remove(i));
             type.assertTree(map);
         }
+        Assertions.assertEquals(0, map.size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(TestType.class)
+    public void testLongMapFixedDelete3(TestType type) {
+        Object value = "XXX";
+        SimpleMap<Long, Object> map = type.create();
+        LongStream.of(
+                299L, 302L, 190L, 295L, 369L, 156L, 326L, 194L, 236L, 296L, 239L, 310L, 292L, 148L,
+                161L, 182L, 137L, 371L, 353L, 126L, 387L, 132L, 128L, 192L, 149L, 28L, 93L, 77L,
+                350L, 196L, 274L, 318L, 248L, 117L, 234L, 341L, 312L, 46L, 84L, 277L, 342L, 315L
+        ).forEach(k -> map.put(k, value));
+
+        type.assertTree(map);
+
+        LongStream.of(
+                369L, 156L, 194L, 296L, 310L, 148L, 182L, 137L, 371L, 128L, 192L, 28L, 93L, 350L,
+                46, 77, 84, 117, 126, 132, 149, 161, 190, 196, 234, 236, 239, 248, 274, 277, 292,
+                295, 299, 302, 312, 315, 318, 326, 341, 342, 353, 387
+        ).forEach(i -> {
+            System.out.printf("REMOVE [%d]%n", i);
+            Assertions.assertNotNull(map.remove(i));
+            type.assertTree(map);
+        });
+        System.out.println(map);
         Assertions.assertEquals(0, map.size());
     }
 
