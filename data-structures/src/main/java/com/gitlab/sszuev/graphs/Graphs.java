@@ -1,8 +1,8 @@
 package com.gitlab.sszuev.graphs;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Utilities to work with the {@link Graph graph}s.
@@ -47,6 +47,66 @@ public class Graphs {
                 }
                 res[i][j] = (byte) (vi.equals(vj) ? 2 : 1);
             }
+        }
+        return res;
+    }
+
+    /**
+     * Performs a topological sort on the specified graph.
+     * The graph must be acyclic and directed.
+     * The method returns a list of levels,
+     * each level contains vertices with the same length of path (shortest for first, longest for last).
+     *
+     * @param graph {@link Graph} acyclic digraph, not {@code null}
+     * @param <X>   anything
+     * @return a {@code List} of {@code List} of {@link Graph.Vertex vertexes}
+     * @see <a href='https://en.wikipedia.org/wiki/Topological_sorting'>wiki: topological sorting</a>
+     */
+    public static <X> List<List<Graph.Vertex<X>>> topologicalSort(Graph<X> graph) {
+        List<Graph.Vertex<X>> vertices = graph.getVector();
+        byte[][] matrix = toAdjacencyMatrix(vertices);
+        List<List<Integer>> levels = demucronTopologicalSort(matrix);
+        List<List<Graph.Vertex<X>>> res = new ArrayList<>();
+        for (List<Integer> indexes : levels) {
+            res.add(indexes.stream().map(vertices::get).collect(Collectors.toList()));
+        }
+        return res;
+    }
+
+    /**
+     * Runs a Demucron's algorithm (optimized Kahn's algorithm) for the given adjacency matrix.
+     * The result is an array of levels which contain vertex indexes.
+     *
+     * @param matrix {@code byte[][]} - a square adjacency matrix
+     * @return a {@code List} of {@code List} of {@code int}-indexes
+     * @see <a href='https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm'>wiki: Kahn's algorithm</a>
+     */
+    public static List<List<Integer>> demucronTopologicalSort(byte[][] matrix) {
+        if (matrix.length == 0) {
+            return Collections.emptyList();
+        }
+        if (Arrays.stream(matrix).anyMatch(row -> row.length != matrix.length)) {
+            throw new IllegalArgumentException();
+        }
+
+        int[] sum = new int[matrix.length];
+        IntStream.range(0, sum.length)
+                .forEach(index -> sum[index] = Arrays.stream(matrix).mapToInt(row -> row[index]).sum());
+
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> level;
+        Set<Integer> processed = new HashSet<>();
+        while (true) {
+            level = IntStream.range(0, sum.length).filter(x -> !processed.contains(x))
+                    .filter(i -> sum[i] == 0).boxed().collect(Collectors.toList());
+            if (level.isEmpty()) {
+                break;
+            }
+            res.add(level);
+            processed.addAll(level);
+            List<Integer> prev = level;
+            IntStream.range(0, sum.length)
+                    .forEach(index -> sum[index] -= prev.stream().map(i -> matrix[i]).mapToInt(row -> row[index]).sum());
         }
         return res;
     }

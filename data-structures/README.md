@@ -21,6 +21,9 @@ Right now there are following data structures:
   * [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/BinarySearchTreeSimpleMap.java)
   * [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/AVLBinarySearchTreeSimpleMap.java)
 
+- [Graph algorithms](src/main/java/com/gitlab/sszuev/graphs/Graph.java) 
+  * [Demucron's algorithm (topological sorting)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L65)
+
 ##### Requirements:
 
 - Git
