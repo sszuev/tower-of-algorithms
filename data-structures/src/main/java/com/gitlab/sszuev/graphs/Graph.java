@@ -71,9 +71,18 @@ public interface Graph<X> {
         /**
          * Lists all edges that connect this vertex with others.
          *
-         * @return a {@code Stream} of {@link Edge}s
+         * @return a {@code Stream} of {@link Edge}s, where {@link Edge#left()} is this vertex
          */
         Stream<Edge<P>> edges();
+
+        /**
+         * Lists all adjacent vertices.
+         *
+         * @return a {@code Stream} of adjacent {@link Vertex}s
+         */
+        default Stream<Vertex<P>> adjacent() {
+            return edges().map(Edge::right);
+        }
     }
 
     /**

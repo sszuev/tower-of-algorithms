@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
     protected final Map<X, VertexImpl<X>> vertexes = new LinkedHashMap<>();
 
+    @SuppressWarnings("unchecked")
+    private static <X> Comparable<X> asComparable(X value) {
+        return (Comparable<X>) value;
+    }
+
     @Override
     public Edge<X> add(X left, X right) {
         return createEdge(left, right);
@@ -44,11 +49,6 @@ abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
             stream = stream.sorted(comp);
         }
         return stream.collect(Collectors.toUnmodifiableList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <X> Comparable<X> asComparable(X value) {
-        return (Comparable<X>) value;
     }
 
     protected VertexImpl<X> fetchVertex(X key) {

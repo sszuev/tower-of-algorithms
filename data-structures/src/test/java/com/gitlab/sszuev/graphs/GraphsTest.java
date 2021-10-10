@@ -3,10 +3,9 @@ package com.gitlab.sszuev.graphs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by @ssz on 09.10.2021.
@@ -208,6 +207,52 @@ public class GraphsTest {
 
         Assertions.assertEquals(1, graph.vertex("C").orElseThrow().edges().count());
         Assertions.assertEquals(3, invert.vertex("C").orElseThrow().edges().count());
+    }
+
+    @Test
+    public void testDFS() {
+        DirectedGraph<String> graph = new DirectedGraphImpl<String>()
+                .addNode("F", "G", "E")
+                .addNode("G", "E", "A", "H")
+                .addNode("E", "D", "A")
+                .addNode("H", "A")
+                .addNode("A", "K", "B")
+                .addNode("D", "A", "C")
+                .addNode("C", "B")
+                .addNode("X", "Y");
+
+        List<String> vertexes = new ArrayList<>();
+        Graphs.dfs(graph, v -> vertexes.add(v.payload()));
+        System.out.println(vertexes);
+
+        Assertions.assertEquals(9, vertexes.size());
+        Assertions.assertEquals(Set.of("B", "C", "K", "A", "D", "E", "H", "G", "F"), new HashSet<>(vertexes));
+    }
+
+    @Test
+    public void testFindStronglyConnectedComponents() {
+        DirectedGraph<String> graph = new DirectedGraphImpl<String>()
+                .addNode("G", "F", "C", "H")
+                .addNode("F", "G")
+                .addNode("C", "D")
+                .addNode("H", "D")
+                .addNode("D", "C", "H")
+                .addNode("A", "B")
+                .addNode("B", "C", "F", "E")
+                .addNode("E", "A", "F");
+
+        System.out.println(print(graph));
+
+        List<List<Graph.Vertex<String>>> components = Graphs.findStronglyConnectedComponents(graph);
+
+        Assertions.assertEquals(3, components.size());
+        Assertions.assertEquals(Set.of("C", "D", "H"), data(components.get(0)).collect(Collectors.toSet()));
+        Assertions.assertEquals(Set.of("F", "G"), data(components.get(1)).collect(Collectors.toSet()));
+        Assertions.assertEquals(Set.of("A", "E", "B"), data(components.get(2)).collect(Collectors.toSet()));
+    }
+
+    private static Stream<String> data(Collection<Graph.Vertex<String>> component) {
+        return component.stream().map(Graph.Vertex::payload);
     }
 
     private static <X> String print(Graph<X> graph) {

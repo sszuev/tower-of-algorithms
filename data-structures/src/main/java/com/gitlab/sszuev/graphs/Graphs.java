@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.graphs;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -52,7 +53,7 @@ public class Graphs {
     }
 
     /**
-     * Performs a topological sort on the specified graph.
+     * Performs a topological sort on the specified graph using Demucron's algorithm.
      * The graph must be acyclic and directed.
      * The method returns a list of levels,
      * each level contains vertices with the same length of path (shortest for first, longest for last).
@@ -109,5 +110,62 @@ public class Graphs {
                     .forEach(index -> sum[index] -= prev.stream().map(i -> matrix[i]).mapToInt(row -> row[index]).sum());
         }
         return res;
+    }
+
+    /**
+     * Searches for strongly connected components in the given graph using Kosaraju's algorithm.
+     * Returns a list of found components as a list of vertices.
+     *
+     * @param graph {@link DirectedGraph} a digraph, not {@code null}
+     * @param <X>   anything
+     * @return a {@code List} of {@code List} of {@link Graph.Vertex vertexes}
+     * @see <a href='https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm'>wiki: Kosaraju's algorithm</a>
+     */
+    public static <X> List<List<Graph.Vertex<X>>> findStronglyConnectedComponents(DirectedGraph<X> graph) {
+        LinkedList<X> ordered = new LinkedList<>();
+        Set<Graph.Vertex<X>> invert = graph.invert().vertexes().collect(Collectors.toSet());
+        Set<Graph.Vertex<X>> seen = new HashSet<>();
+        while (!invert.isEmpty()) {
+            Graph.Vertex<X> v = invert.iterator().next();
+            dfs(v, seen, u -> {
+                invert.remove(u);
+                ordered.addFirst(u.payload());
+            });
+        }
+        List<List<Graph.Vertex<X>>> res = new ArrayList<>();
+        seen.clear();
+        while (!ordered.isEmpty()) {
+            Graph.Vertex<X> v = graph.vertex(ordered.get(0)).orElseThrow();
+            List<Graph.Vertex<X>> component = new ArrayList<>();
+            res.add(component);
+            dfs(v, seen, u -> {
+                ordered.remove(u.payload());
+                component.add(u);
+            });
+        }
+        return res;
+    }
+
+    /**
+     * Performs depth-first search on the given graph.
+     *
+     * @param graph  {@link Graph}
+     * @param action {@link Consumer} - an action to perform on every vertex
+     * @param <X>    anything
+     * @see <a href='https://en.wikipedia.org/wiki/Depth-first_search'>wiki: DFS</a>
+     */
+    public static <X> void dfs(Graph<X> graph, Consumer<Graph.Vertex<X>> action) {
+        Graph.Vertex<X> v = graph.vertexes().findFirst().orElseThrow();
+        dfs(v, new HashSet<>(), action);
+    }
+
+    private static <X> void dfs(Graph.Vertex<X> vertex,
+                                Set<Graph.Vertex<X>> seen,
+                                Consumer<Graph.Vertex<X>> action) {
+        if (!seen.add(vertex)) {
+            return;
+        }
+        vertex.adjacent().forEach(u -> dfs(u, seen, action));
+        action.accept(vertex);
     }
 }
