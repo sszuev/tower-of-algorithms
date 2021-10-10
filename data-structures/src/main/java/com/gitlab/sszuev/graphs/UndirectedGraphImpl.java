@@ -40,5 +40,10 @@ public class UndirectedGraphImpl<X> extends BaseGraphImpl<X> {
         public int hashCode() {
             return left.hashCode() + right.hashCode();
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s <=> %s", left.payload(), right.payload());
+        }
     }
 }

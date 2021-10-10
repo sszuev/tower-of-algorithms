@@ -57,12 +57,12 @@ public class Graphs {
      * The method returns a list of levels,
      * each level contains vertices with the same length of path (shortest for first, longest for last).
      *
-     * @param graph {@link Graph} acyclic digraph, not {@code null}
+     * @param graph {@link DirectedGraph} acyclic digraph, not {@code null}
      * @param <X>   anything
      * @return a {@code List} of {@code List} of {@link Graph.Vertex vertexes}
      * @see <a href='https://en.wikipedia.org/wiki/Topological_sorting'>wiki: topological sorting</a>
      */
-    public static <X> List<List<Graph.Vertex<X>>> topologicalSort(Graph<X> graph) {
+    public static <X> List<List<Graph.Vertex<X>>> topologicalSort(DirectedGraph<X> graph) {
         List<Graph.Vertex<X>> vertices = graph.getVector();
         byte[][] matrix = toAdjacencyMatrix(vertices);
         List<List<Integer>> levels = demucronTopologicalSort(matrix);

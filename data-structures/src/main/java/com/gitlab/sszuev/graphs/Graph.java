@@ -1,6 +1,8 @@
 package com.gitlab.sszuev.graphs;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +24,17 @@ public interface Graph<X> {
     Stream<Vertex<X>> vertexes();
 
     /**
+     * Finds vertex by its content.
+     *
+     * @param key {@link X}, not {@code null}
+     * @return an {@code Optional} of {@link Vertex}
+     */
+    default Optional<Vertex<X>> vertex(X key) {
+        Objects.requireNonNull(key);
+        return vertexes().filter(v -> Objects.equals(key, v.payload())).findFirst();
+    }
+
+    /**
      * Lists all the edges that connect all this graph vertices.
      *
      * @return a {@code Stream} of {@link Edge}
@@ -36,7 +49,7 @@ public interface Graph<X> {
      * usually it is the natural order if the {@link X} is {@link Comparable comparable}
      * or can be the order of insertion.
      *
-     * @return a {@code List} of {@link Vertex}es
+     * @return an unmodifiable {@code List} of {@link Vertex}es
      */
     default List<Vertex<X>> getVector() {
         return vertexes().collect(Collectors.toUnmodifiableList());

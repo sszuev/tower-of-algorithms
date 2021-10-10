@@ -8,7 +8,7 @@ import java.util.stream.Stream;
  * Created by @ssz on 09.10.2021.
  */
 abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
-    private final Map<X, VertexImpl<X>> vertexes = new LinkedHashMap<>();
+    protected final Map<X, VertexImpl<X>> vertexes = new LinkedHashMap<>();
 
     @Override
     public Edge<X> add(X left, X right) {
@@ -18,6 +18,11 @@ abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
     @Override
     public Stream<Vertex<X>> vertexes() {
         return vertexes.values().stream().map(x -> x);
+    }
+
+    @Override
+    public Optional<Vertex<X>> vertex(X key) {
+        return Optional.ofNullable(vertexes.get(Objects.requireNonNull(key)));
     }
 
     @SuppressWarnings("unchecked")
@@ -59,8 +64,8 @@ abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
     protected abstract EdgeImpl<X> newEdge(VertexImpl<X> left, VertexImpl<X> right);
 
     protected static class VertexImpl<X> implements Vertex<X> {
-        private final X key;
-        private final Collection<EdgeImpl<X>> edges = new HashSet<>();
+        protected final X key;
+        protected final Collection<EdgeImpl<X>> edges = new HashSet<>();
 
         public VertexImpl(X key) {
             this.key = Objects.requireNonNull(key);
@@ -132,6 +137,7 @@ abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
 
         @Override
         public abstract int hashCode();
+
     }
 
 }

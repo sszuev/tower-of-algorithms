@@ -38,7 +38,7 @@ public class GraphsTest {
         graph.add(6, 4);
 
         byte[][] matrix = Graphs.toAdjacencyMatrix(graph);
-        String res = matrixToString(matrix);
+        String res = print(matrix);
         System.out.println(res);
 
         byte[][] expected = new byte[][]{
@@ -81,7 +81,7 @@ public class GraphsTest {
         graph.add("v14", "v11");
 
         byte[][] matrix = Graphs.toAdjacencyMatrix(graph);
-        String res = matrixToString(matrix);
+        String res = print(matrix);
         System.out.println(res);
 
         Assertions.assertEquals(14, graph.getVector().size());
@@ -137,7 +137,7 @@ public class GraphsTest {
 
     @Test
     public void testTopologicalSort() {
-        ModifiableGraph<String> graph = new DirectedGraphImpl<String>()
+        DirectedGraph<String> graph = new DirectedGraphImpl<String>()
                 .addNode("org.openjdk.jmh:jmh-core:jar",
                         "net.sf.jopt-simple:jopt-simple",
                         "org.apache.commons:commons-math3")
@@ -185,7 +185,48 @@ public class GraphsTest {
                 levels.get(levels.size() - 1).stream().map(Graph.Vertex::payload).collect(Collectors.toSet()));
     }
 
-    private static String matrixToString(byte[][] matrix) {
+    @Test
+    public void testInvertDirectGraph() {
+        DirectedGraph<String> graph = new DirectedGraphImpl<String>()
+                .addNode("A", "B")
+                .addNode("B", "E", "F", "C")
+                .addNode("E", "A", "F")
+                .addNode("F", "G")
+                .addNode("G", "F", "C", "H")
+                .addNode("C", "D")
+                .addNode("D", "C", "H")
+                .addNode("H", "D");
+
+        System.out.println(print(graph));
+
+        DirectedGraph<String> invert = graph.invert();
+        System.out.println(print(invert));
+
+        Set<String> expected = graph.edges().map(e -> print(e.right(), e.left())).collect(Collectors.toSet());
+        Set<String> actual = invert.edges().map(GraphsTest::print).collect(Collectors.toSet());
+        Assertions.assertEquals(expected, actual);
+
+        Assertions.assertEquals(1, graph.vertex("C").orElseThrow().edges().count());
+        Assertions.assertEquals(3, invert.vertex("C").orElseThrow().edges().count());
+    }
+
+    private static <X> String print(Graph<X> graph) {
+        return graph.edges().map(GraphsTest::print).collect(Collectors.joining(", "));
+    }
+
+    private static String print(Graph.Edge<?> edge) {
+        return print(edge.left(), edge.right());
+    }
+
+    private static String print(Graph.Vertex<?> left, Graph.Vertex<?> right) {
+        return String.format("%s => %s", print(left), print(right));
+    }
+
+    private static String print(Graph.Vertex<?> vertex) {
+        return String.valueOf(vertex.payload());
+    }
+
+    private static String print(byte[][] matrix) {
         return Arrays.deepToString(matrix).replace("], [", "],\n [");
     }
 
