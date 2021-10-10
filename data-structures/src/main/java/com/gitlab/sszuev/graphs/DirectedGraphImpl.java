@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Created by @ssz on 09.10.2021.
  */
-public class DirectedGraph<X> extends BaseGraph<X> {
+public class DirectedGraphImpl<X> extends BaseGraphImpl<X> {
 
     @Override
     protected DirectEdgeImpl<X> createEdge(X left, X right) {

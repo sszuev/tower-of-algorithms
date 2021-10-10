@@ -3,7 +3,7 @@ package com.gitlab.sszuev.graphs;
 /**
  * Created by @ssz on 09.10.2021.
  */
-public class UndirectedGraph<X> extends BaseGraph<X> {
+public class UndirectedGraphImpl<X> extends BaseGraphImpl<X> {
 
     @Override
     protected UndirectedEdgeImpl<X> createEdge(X left, X right) {

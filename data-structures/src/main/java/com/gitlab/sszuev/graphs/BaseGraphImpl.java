@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 09.10.2021.
  */
-abstract class BaseGraph<X> implements ModifiableGraph<X> {
+abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
     private final Map<X, VertexImpl<X>> vertexes = new LinkedHashMap<>();
 
     @Override

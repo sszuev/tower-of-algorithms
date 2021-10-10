@@ -15,7 +15,7 @@ public class GraphsTest {
 
     @Test
     public void testAdjacencyMatrixForUndirectedGraph() {
-        ModifiableGraph<Integer> graph = new UndirectedGraph<>();
+        ModifiableGraph<Integer> graph = new UndirectedGraphImpl<>();
         graph.add(1, 1);
         graph.add(1, 2);
         graph.add(1, 5);
@@ -54,7 +54,7 @@ public class GraphsTest {
 
     @Test
     public void testAdjacencyMatrixForDirectedGraph() {
-        ModifiableGraph<String> graph = new DirectedGraph<>();
+        ModifiableGraph<String> graph = new DirectedGraphImpl<>();
         graph.add("v01", "v13");
         graph.add("v01", "v03");
         graph.add("v02", "v13");
@@ -137,7 +137,7 @@ public class GraphsTest {
 
     @Test
     public void testTopologicalSort() {
-        ModifiableGraph<String> graph = new DirectedGraph<String>()
+        ModifiableGraph<String> graph = new DirectedGraphImpl<String>()
                 .addNode("org.openjdk.jmh:jmh-core:jar",
                         "net.sf.jopt-simple:jopt-simple",
                         "org.apache.commons:commons-math3")
