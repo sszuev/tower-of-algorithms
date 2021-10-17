@@ -147,7 +147,7 @@ public class Graphs {
     }
 
     /**
-     * Performs depth-first search on the given graph.
+     * Performs the Depth-First Search on the given graph (recursive implementation).
      *
      * @param graph  {@link Graph}
      * @param action {@link Consumer} - an action to perform on every vertex
@@ -168,4 +168,52 @@ public class Graphs {
         vertex.adjacent().forEach(u -> dfs(u, seen, action));
         action.accept(vertex);
     }
+
+    /**
+     * Returns a Minimum Spanning Tree for the specified {@code WeightedGraph}.
+     * Calculations are performed using Borůvka's algorithm, which is an optimized Kruskal's algorithm.
+     *
+     * @param graph a {@link WeightedGraph}, not {@code null}
+     * @param <X>   anything
+     * @return a {@code List} of {@link Graph.Edge}s
+     * @see <a href='https://en.wikipedia.org/wiki/Minimum_spanning_tree'>wiki: MST</a>
+     * @see <a href='https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm'>wiki: Borůvka's algorithm</a>
+     * @see <a href='https://en.wikipedia.org/wiki/Kruskal%27s_algorithm'>wiki: Kruskal's algorithm</a>
+     */
+    public static <X> List<Graph.Edge<X>> findMinimumSpanningTree(WeightedGraph<X> graph) {
+        List<Graph.Edge<X>> edges = graph.edges()
+                .sorted(Comparator.comparing(graph::weight))
+                .collect(Collectors.toList());
+        long vertexes = graph.vertexes().count();
+        Map<Graph.Vertex<X>, Graph.Vertex<X>> parents = new HashMap<>();
+        List<Graph.Edge<X>> res = new ArrayList<>();
+        while (res.size() < vertexes - 1) {
+            boruvkaAddEdge(res, parents, edges.remove(0));
+        }
+        return res;
+    }
+
+    private static <X> void boruvkaAddEdge(List<Graph.Edge<X>> res,
+                                           Map<Graph.Vertex<X>, Graph.Vertex<X>> parents,
+                                           Graph.Edge<X> edge) {
+        Graph.Vertex<X> p1 = findParent(parents, edge.left());
+        Graph.Vertex<X> p2 = findParent(parents, edge.right());
+        if (Objects.equals(p1, p2)) {
+            // already connected
+            return;
+        }
+        parents.put(p1, p2);
+        res.add(edge);
+    }
+
+    private static <X> X findParent(Map<X, X> parents, X key) {
+        X res = parents.get(key);
+        if (res == null) {
+            return key;
+        }
+        res = findParent(parents, res);
+        parents.put(key, res);
+        return res;
+    }
+
 }

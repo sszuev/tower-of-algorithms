@@ -276,6 +276,51 @@ public class GraphsTest {
         Assertions.assertEquals(11, graph.weight(graph.getEdge("F", "G")));
     }
 
+    @Test
+    public void testMST() {
+        // graph from wiki: https://en.wikipedia.org/wiki/Minimum_spanning_tree#/media/File:Minimum_spanning_tree.svg
+        WeightedGraph<String> graph = new UndirectedWeightedGraphImpl<String>()
+                .addEdge("a", "b", 6)
+                .addEdge("a", "c", 3)
+                .addEdge("a", "e", 9)
+
+                .addEdge("b", "c", 4)
+                .addEdge("b", "d", 2)
+                .addEdge("b", "g", 9)
+
+                .addEdge("c", "d", 2)
+                .addEdge("c", "e", 9)
+                .addEdge("c", "f", 9)
+
+                .addEdge("d", "g", 9)
+                .addEdge("d", "f", 8)
+
+                .addEdge("e", "f", 8)
+                .addEdge("e", "j", 18)
+
+                .addEdge("f", "g", 7)
+                .addEdge("f", "i", 9)
+                .addEdge("f", "j", 10)
+
+                .addEdge("g", "h", 4)
+                .addEdge("g", "i", 5)
+
+                .addEdge("h", "i", 1)
+                .addEdge("h", "j", 4)
+
+                .addEdge("i", "j", 3);
+
+        Assertions.assertEquals(21, graph.edges().count());
+
+        List<Graph.Edge<String>> actual = Graphs.findMinimumSpanningTree(graph);
+        System.out.println(actual);
+        Assertions.assertEquals(9, actual.size());
+        Map.of("h", "i", "b", "d", "c", "d", "a", "c", "i", "j", "g", "h", "f", "g", "d", "f", "e", "f")
+                .forEach((left, right) -> Assertions.assertTrue(actual.stream()
+                                .anyMatch(e -> right.equals(e.right().payload()) && left.equals(e.left().payload())),
+                        "Can't find edge [" + left + " <=> " + right + "]"));
+    }
+
     private static Stream<String> data(Collection<Graph.Vertex<String>> component) {
         return component.stream().map(Graph.Vertex::payload);
     }
