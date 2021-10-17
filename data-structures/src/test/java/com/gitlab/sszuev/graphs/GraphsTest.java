@@ -1,5 +1,7 @@
 package com.gitlab.sszuev.graphs;
 
+import com.gitlab.sszuev.graphs.impl.DirectedGraphImpl;
+import com.gitlab.sszuev.graphs.impl.UndirectedGraphImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

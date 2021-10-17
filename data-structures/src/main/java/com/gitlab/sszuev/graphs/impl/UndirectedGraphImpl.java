@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.graphs;
+package com.gitlab.sszuev.graphs.impl;
 
 /**
  * Created by @ssz on 09.10.2021.

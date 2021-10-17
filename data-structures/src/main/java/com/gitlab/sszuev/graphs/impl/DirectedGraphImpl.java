@@ -1,4 +1,6 @@
-package com.gitlab.sszuev.graphs;
+package com.gitlab.sszuev.graphs.impl;
+
+import com.gitlab.sszuev.graphs.DirectedGraph;
 
 import java.util.Objects;
 

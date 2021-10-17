@@ -1,4 +1,6 @@
-package com.gitlab.sszuev.graphs;
+package com.gitlab.sszuev.graphs.impl;
+
+import com.gitlab.sszuev.graphs.ModifiableGraph;
 
 import java.util.*;
 import java.util.stream.Collectors;
