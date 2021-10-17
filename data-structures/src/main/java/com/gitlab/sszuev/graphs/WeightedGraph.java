@@ -12,7 +12,8 @@ public interface WeightedGraph<X> extends Graph<X> {
      * Returns a weight of the given edge.
      *
      * @param edge {@link Graph.Edge} - must belong to this graph
-     * @return {@code long}
+     * @return {@code double}
+     * @throws java.util.NoSuchElementException if the edge does not belong to the graph
      */
-    long weight(Edge<X> edge);
+    double weight(Edge<X> edge);
 }

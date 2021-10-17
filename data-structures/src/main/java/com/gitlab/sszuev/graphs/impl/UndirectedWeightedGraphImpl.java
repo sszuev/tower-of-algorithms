@@ -4,30 +4,31 @@ import com.gitlab.sszuev.graphs.ModifiableWeightedGraph;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 /**
  * Created by @ssz on 17.10.2021.
  */
 public class UndirectedWeightedGraphImpl<X> extends BaseGraphImpl<X> implements ModifiableWeightedGraph<X> {
-    protected final Map<Edge<X>, Long> edges = new HashMap<>();
+    protected final Map<Edge<X>, Double> edges = new HashMap<>();
 
     @Override
-    public long weight(Edge<X> edge) {
-        Long res = edges.get(edge);
+    public double weight(Edge<X> edge) {
+        Double res = edges.get(edge);
         if (res == null) {
-            throw new IllegalArgumentException("Can't find edge");
+            throw new NoSuchElementException("Edge " + edge + " does not belong to the graph");
         }
         return res;
     }
 
     @Override
-    public Edge<X> add(X left, X right, long weight) {
+    public Edge<X> add(X left, X right, double weight) {
         return createEdge(left, right, weight);
     }
 
     @Override
-    public UndirectedWeightedGraphImpl<X> addEdge(X left, X right, long weight) {
+    public UndirectedWeightedGraphImpl<X> addEdge(X left, X right, double weight) {
         ModifiableWeightedGraph.super.addEdge(left, right, weight);
         return this;
     }
@@ -37,7 +38,7 @@ public class UndirectedWeightedGraphImpl<X> extends BaseGraphImpl<X> implements 
         return new UndirectedEdgeImpl<>(left, right);
     }
 
-    protected BaseEdgeImpl<X> createEdge(X left, X right, long weight) {
+    protected BaseEdgeImpl<X> createEdge(X left, X right, double weight) {
         VertexImpl<X> a = fetchVertex(left);
         VertexImpl<X> b = fetchVertex(right);
         BaseEdgeImpl<X> res = newEdge(a, b);
