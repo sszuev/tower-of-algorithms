@@ -1,6 +1,6 @@
 package com.gitlab.sszuev.graphs.impl;
 
-import com.gitlab.sszuev.graphs.ModifiableGraph;
+import com.gitlab.sszuev.graphs.Graph;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,17 +9,12 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 09.10.2021.
  */
-abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
+abstract class BaseGraphImpl<X> implements Graph<X> {
     protected final Map<X, VertexImpl<X>> vertexes = new LinkedHashMap<>();
 
     @SuppressWarnings("unchecked")
     private static <X> Comparable<X> asComparable(X value) {
         return (Comparable<X>) value;
-    }
-
-    @Override
-    public Edge<X> add(X left, X right) {
-        return createEdge(left, right);
     }
 
     @Override
@@ -57,89 +52,10 @@ abstract class BaseGraphImpl<X> implements ModifiableGraph<X> {
         return vertexes.computeIfAbsent(key, this::newVertex);
     }
 
-    protected abstract EdgeImpl<X> createEdge(X left, X right);
-
     protected VertexImpl<X> newVertex(X k) {
         return new VertexImpl<>(k);
     }
 
-    protected abstract EdgeImpl<X> newEdge(VertexImpl<X> left, VertexImpl<X> right);
-
-    protected static class VertexImpl<X> implements Vertex<X> {
-        protected final X key;
-        protected final Collection<EdgeImpl<X>> edges = new HashSet<>();
-
-        public VertexImpl(X key) {
-            this.key = Objects.requireNonNull(key);
-        }
-
-        @Override
-        public X payload() {
-            return key;
-        }
-
-        public Stream<EdgeImpl<X>> listEdges() {
-            return edges.stream();
-        }
-
-        @Override
-        public final Stream<Edge<X>> edges() {
-            return listEdges().map(x -> x);
-        }
-
-        protected void addEdge(EdgeImpl<X> edge) {
-            edges.add(edge);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            VertexImpl<?> vertex = (VertexImpl<?>) o;
-            return Objects.equals(key, vertex.key);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(key);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("VertexImpl{key=%s, edges=%s}", key, edges.size());
-        }
-    }
-
-    protected abstract static class EdgeImpl<X> implements Edge<X> {
-        protected final VertexImpl<X> left, right;
-
-        public EdgeImpl(VertexImpl<X> left, VertexImpl<X> right) {
-            this.left = Objects.requireNonNull(left);
-            this.right = Objects.requireNonNull(right);
-        }
-
-        @Override
-        public VertexImpl<X> left() {
-            return left;
-        }
-
-        @Override
-        public VertexImpl<X> right() {
-            return right;
-        }
-
-        @Override
-        public final boolean equals(Object other) {
-            if (this == other) return true;
-            if (other == null || getClass() != other.getClass()) return false;
-            return matchEdge((EdgeImpl<?>) other);
-        }
-
-        protected abstract boolean matchEdge(EdgeImpl<?> other);
-
-        @Override
-        public abstract int hashCode();
-
-    }
+    protected abstract BaseEdgeImpl<X> newEdge(VertexImpl<X> left, VertexImpl<X> right);
 
 }

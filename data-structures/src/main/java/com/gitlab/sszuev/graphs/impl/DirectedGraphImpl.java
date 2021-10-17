@@ -1,15 +1,18 @@
 package com.gitlab.sszuev.graphs.impl;
 
 import com.gitlab.sszuev.graphs.DirectedGraph;
-
-import java.util.Objects;
+import com.gitlab.sszuev.graphs.ModifiableGraph;
 
 /**
  * Created by @ssz on 09.10.2021.
  */
-public class DirectedGraphImpl<X> extends BaseGraphImpl<X> implements DirectedGraph<X> {
+public class DirectedGraphImpl<X> extends BaseGraphImpl<X> implements DirectedGraph<X>, ModifiableGraph<X> {
 
     @Override
+    public Edge<X> add(X left, X right) {
+        return createEdge(left, right);
+    }
+
     protected DirectEdgeImpl<X> createEdge(X left, X right) {
         VertexImpl<X> a = fetchVertex(left);
         VertexImpl<X> b = fetchVertex(right);
@@ -19,8 +22,8 @@ public class DirectedGraphImpl<X> extends BaseGraphImpl<X> implements DirectedGr
     }
 
     @Override
-    protected DirectVertexImpl<X> newVertex(X k) {
-        return new DirectVertexImpl<>(k);
+    protected VertexImpl<X> newVertex(X k) {
+        return new VertexImpl<>(k);
     }
 
     @Override
@@ -38,34 +41,7 @@ public class DirectedGraphImpl<X> extends BaseGraphImpl<X> implements DirectedGr
     @SafeVarargs
     @Override
     public final DirectedGraphImpl<X> addNode(X left, X right, X... other) {
-        return (DirectedGraphImpl<X>) super.addNode(left, right, other);
-    }
-
-    protected static class DirectVertexImpl<X> extends VertexImpl<X> {
-
-        public DirectVertexImpl(X key) {
-            super(key);
-        }
-    }
-
-    protected static class DirectEdgeImpl<X> extends EdgeImpl<X> {
-        public DirectEdgeImpl(VertexImpl<X> left, VertexImpl<X> right) {
-            super(left, right);
-        }
-
-        @Override
-        protected boolean matchEdge(EdgeImpl<?> other) {
-            return Objects.equals(this.left, other.left) && Objects.equals(this.right, other.right);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.left, this.right);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s => %s", left.payload(), right.payload());
-        }
+        ModifiableGraph.super.addNode(left, right, other);
+        return this;
     }
 }

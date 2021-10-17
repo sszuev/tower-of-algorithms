@@ -2,6 +2,7 @@ package com.gitlab.sszuev.graphs;
 
 import com.gitlab.sszuev.graphs.impl.DirectedGraphImpl;
 import com.gitlab.sszuev.graphs.impl.UndirectedGraphImpl;
+import com.gitlab.sszuev.graphs.impl.UndirectedWeightedGraphImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -251,6 +252,28 @@ public class GraphsTest {
         Assertions.assertEquals(Set.of("C", "D", "H"), data(components.get(0)).collect(Collectors.toSet()));
         Assertions.assertEquals(Set.of("F", "G"), data(components.get(1)).collect(Collectors.toSet()));
         Assertions.assertEquals(Set.of("A", "E", "B"), data(components.get(2)).collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void testUndirectedWeightedGraph() {
+        WeightedGraph<String> graph = new UndirectedWeightedGraphImpl<String>()
+                .addEdge("A", "D", 5)
+                .addEdge("A", "B", 7)
+                .addEdge("D", "B", 9)
+                .addEdge("B", "C", 8)
+                .addEdge("B", "E", 7)
+                .addEdge("C", "E", 5)
+                .addEdge("D", "E", 15)
+                .addEdge("D", "F", 6)
+                .addEdge("F", "E", 8)
+                .addEdge("F", "G", 11)
+                .addEdge("E", "G", 9);
+        Assertions.assertEquals(11, graph.edges().count());
+
+        Assertions.assertEquals(7, graph.weight(graph.getEdge("A", "B")));
+        Assertions.assertEquals(15, graph.weight(graph.getEdge("D", "E")));
+        Assertions.assertEquals(8, graph.weight(graph.getEdge("B", "C")));
+        Assertions.assertEquals(11, graph.weight(graph.getEdge("F", "G")));
     }
 
     private static Stream<String> data(Collection<Graph.Vertex<String>> component) {

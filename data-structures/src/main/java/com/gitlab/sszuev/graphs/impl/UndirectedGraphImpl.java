@@ -1,11 +1,19 @@
 package com.gitlab.sszuev.graphs.impl;
 
+import com.gitlab.sszuev.graphs.ModifiableGraph;
+
+import java.util.stream.Stream;
+
 /**
  * Created by @ssz on 09.10.2021.
  */
-public class UndirectedGraphImpl<X> extends BaseGraphImpl<X> {
+public class UndirectedGraphImpl<X> extends BaseGraphImpl<X> implements ModifiableGraph<X> {
 
     @Override
+    public Edge<X> add(X left, X right) {
+        return createEdge(left, right);
+    }
+
     protected UndirectedEdgeImpl<X> createEdge(X left, X right) {
         VertexImpl<X> a = fetchVertex(left);
         VertexImpl<X> b = fetchVertex(right);
@@ -20,30 +28,15 @@ public class UndirectedGraphImpl<X> extends BaseGraphImpl<X> {
         return new UndirectedEdgeImpl<>(left, right);
     }
 
-    protected static class UndirectedEdgeImpl<X> extends EdgeImpl<X> {
+    @SafeVarargs
+    @Override
+    public final UndirectedGraphImpl<X> addNode(X left, X right, X... other) {
+        ModifiableGraph.super.addNode(left, right, other);
+        return this;
+    }
 
-        public UndirectedEdgeImpl(VertexImpl<X> left, VertexImpl<X> right) {
-            super(left, right);
-        }
-
-        @Override
-        protected boolean matchEdge(EdgeImpl<?> other) {
-            return matchVertex(other.left) && matchVertex(other.right);
-        }
-
-        protected boolean matchVertex(VertexImpl<?> v) {
-            if (v == null) return false;
-            return left.equals(v) || right.equals(v);
-        }
-
-        @Override
-        public int hashCode() {
-            return left.hashCode() + right.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s <=> %s", left.payload(), right.payload());
-        }
+    @Override
+    public Stream<Edge<X>> edges() {
+        return super.edges().distinct();
     }
 }

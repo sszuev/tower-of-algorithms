@@ -37,10 +37,22 @@ public interface Graph<X> {
     /**
      * Lists all the edges that connect all this graph vertices.
      *
-     * @return a {@code Stream} of {@link Edge}
+     * @return a {@code Stream} of {@link Edge}s
      */
     default Stream<Edge<X>> edges() {
         return vertexes().flatMap(Vertex::edges);
+    }
+
+    /**
+     * Returns an edge by the specified vertexes.
+     *
+     * @param left  {@link X} - a payload for the left vertex, not {@code null}
+     * @param right {@link X} - a payload for the right vertex, not {@code null}
+     * @return {@link Edge}
+     * @throws java.util.NoSuchElementException if no edge is present
+     */
+    default Edge<X> getEdge(X left, X right) {
+        return vertex(left).orElseThrow().edge(right).orElseThrow();
     }
 
     /**
@@ -58,30 +70,41 @@ public interface Graph<X> {
     /**
      * Represents a vertex.
      *
-     * @param <P> anything
+     * @param <K> anything
      */
-    interface Vertex<P> {
+    interface Vertex<K> {
         /**
          * Returns an encapsulated payload.
          *
-         * @return {@link P}
+         * @return {@link K}
          */
-        P payload();
+        K payload();
 
         /**
          * Lists all edges that connect this vertex with others.
          *
          * @return a {@code Stream} of {@link Edge}s, where {@link Edge#left()} is this vertex
          */
-        Stream<Edge<P>> edges();
+        Stream<Edge<K>> edges();
 
         /**
          * Lists all adjacent vertices.
          *
          * @return a {@code Stream} of adjacent {@link Vertex}s
          */
-        default Stream<Vertex<P>> adjacent() {
+        default Stream<Vertex<K>> adjacent() {
             return edges().map(Edge::right);
+        }
+
+        /**
+         * Finds an edge by the destination vertex payload.
+         *
+         * @param other {@link K} - the right vertex payload, not {@code null}
+         * @return an {@code Optional}
+         */
+        default Optional<Edge<K>> edge(K other) {
+            Objects.requireNonNull(other);
+            return edges().filter(v -> Objects.equals(other, v.right().payload())).findFirst();
         }
     }
 
