@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.graphs;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +36,15 @@ public interface Graph<X> {
     }
 
     /**
+     * Returns a total number of vertexes in the graph.
+     *
+     * @return {@code long}
+     */
+    default long size() {
+        return vertexes().count();
+    }
+
+    /**
      * Lists all the edges that connect all this graph vertices.
      *
      * @return a {@code Stream} of {@link Edge}s
@@ -49,10 +59,25 @@ public interface Graph<X> {
      * @param left  {@link X} - a payload for the left vertex, not {@code null}
      * @param right {@link X} - a payload for the right vertex, not {@code null}
      * @return {@link Edge}
-     * @throws java.util.NoSuchElementException if no edge is present
+     * @throws NoSuchElementException if no edge is present
      */
     default Edge<X> getEdge(X left, X right) {
         return vertex(left).orElseThrow().edge(right).orElseThrow();
+    }
+
+    /**
+     * Gets the vertex by its content.
+     *
+     * @param key {@link X} a vertex payload
+     * @return {@link Vertex}, never {@code null}
+     * @throws NoSuchElementException if no vertex is found
+     */
+    default Vertex<X> getVertex(X key) {
+        Graph.Vertex<X> res = vertex(key).orElse(null);
+        if (res == null) {
+            throw new NoSuchElementException("Can't find vertex = " + key);
+        }
+        return res;
     }
 
     /**

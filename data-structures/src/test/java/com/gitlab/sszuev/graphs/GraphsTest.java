@@ -321,8 +321,91 @@ public class GraphsTest {
                         "Can't find edge [" + left + " <=> " + right + "]"));
     }
 
+    @Test
+    public void testFindAllShortestPaths() {
+        WeightedGraph<String> graph = new UndirectedWeightedGraphImpl<String>()
+                .addEdge("A", "B", 2)
+                .addEdge("A", "C", 3)
+                .addEdge("A", "D", 6)
+
+                .addEdge("B", "C", 4)
+                .addEdge("B", "E", 9)
+
+                .addEdge("C", "D", 1)
+                .addEdge("C", "E", 7)
+                .addEdge("C", "F", 6)
+
+                .addEdge("D", "F", 4)
+
+                .addEdge("E", "F", 1)
+                .addEdge("E", "G", 5)
+
+                .addEdge("F", "G", 8);
+
+        Map<String, List<Graph.Edge<String>>> res = Graphs.findShortestPaths(graph, "A");
+        Assertions.assertEquals(7, res.size());
+        System.out.println(res.get("G"));
+
+        Assertions.assertEquals(List.of(3., 1., 4., 1., 5.), getWeights(graph, res.get("G")));
+        Assertions.assertEquals(List.of(), getWeights(graph, res.get("A")));
+        Assertions.assertEquals(List.of(3.), getWeights(graph, res.get("C")));
+        Assertions.assertEquals(List.of(3., 1., 4.), getWeights(graph, res.get("F")));
+        Assertions.assertEquals(List.of(2.), getWeights(graph, res.get("B")));
+        Assertions.assertEquals(List.of(3., 1., 4., 1.), getWeights(graph, res.get("E")));
+    }
+
+    @Test
+    public void testFindShortestPath() {
+        WeightedGraph<Integer> graph = new UndirectedWeightedGraphImpl<Integer>()
+                .addEdge(0, 2, 1.)
+                .addEdge(0, 4, 5.)
+
+                .addEdge(1, 2, 5.)
+                .addEdge(1, 3, 8.5)
+                .addEdge(1, 5, 5.)
+
+                .addEdge(2, 6, 1.)
+
+                .addEdge(3, 5, 4.)
+                .addEdge(3, 7, 6.)
+
+                .addEdge(5, 6, 8.)
+                .addEdge(5, 7, 2.)
+
+                .addEdge(6, 7, 6.5);
+
+        Assertions.assertEquals(List.of(0, 2, 6, 5), getVertexes(Graphs.findShortestPath(graph, 0, 5)));
+        Assertions.assertEquals(List.of(0, 2, 6, 7), getVertexes(Graphs.findShortestPath(graph, 0, 7)));
+        Assertions.assertEquals(List.of(0, 2, 6, 5, 3), getVertexes(Graphs.findShortestPath(graph, 0, 3)));
+        Assertions.assertEquals(List.of(0, 2, 1), getVertexes(Graphs.findShortestPath(graph, 0, 1)));
+        Assertions.assertEquals(List.of(0, 2, 6), getVertexes(Graphs.findShortestPath(graph, 0, 6)));
+        Assertions.assertEquals(List.of(0, 2), getVertexes(Graphs.findShortestPath(graph, 0, 2)));
+        Assertions.assertEquals(List.of(0, 4), getVertexes(Graphs.findShortestPath(graph, 0, 4)));
+        Assertions.assertEquals(List.of(), getVertexes(Graphs.findShortestPath(graph, 0, 0)));
+    }
+
     private static Stream<String> data(Collection<Graph.Vertex<String>> component) {
         return component.stream().map(Graph.Vertex::payload);
+    }
+
+    private static <T> List<Double> getWeights(WeightedGraph<T> graph, List<Graph.Edge<T>> edges) {
+        return edges.stream().map(graph::weight).collect(Collectors.toUnmodifiableList());
+    }
+
+    private static <T> List<T> getVertexes(List<Graph.Edge<T>> edges) {
+        LinkedList<T> res = new LinkedList<>();
+        for (int i = 0; i < edges.size(); i++) {
+            Graph.Edge<T> e = edges.get(i);
+            T left = e.left().payload();
+            T right = e.right().payload();
+            if (i == 0) {
+                res.add(left);
+            } else if (!Objects.equals(res.getLast(), left)) {
+                throw new IllegalStateException();
+            }
+            res.add(right);
+        }
+        return res;
     }
 
     private static <X> String print(Graph<X> graph) {

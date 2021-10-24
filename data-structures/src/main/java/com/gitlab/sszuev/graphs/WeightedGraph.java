@@ -16,4 +16,13 @@ public interface WeightedGraph<X> extends Graph<X> {
      * @throws java.util.NoSuchElementException if the edge does not belong to the graph
      */
     double weight(Edge<X> edge);
+
+    /**
+     * Answers {@code true} if there is negative weights in the graph.
+     *
+     * @return {@code boolean}
+     */
+    default boolean hasNegativeWeights() {
+        return edges().anyMatch(e -> weight(e) < 0);
+    }
 }

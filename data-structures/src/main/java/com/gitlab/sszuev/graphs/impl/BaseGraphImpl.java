@@ -23,6 +23,11 @@ abstract class BaseGraphImpl<X> implements Graph<X> {
     }
 
     @Override
+    public long size() {
+        return vertexes.size();
+    }
+
+    @Override
     public Optional<Vertex<X>> vertex(X key) {
         return Optional.ofNullable(vertexes.get(Objects.requireNonNull(key)));
     }

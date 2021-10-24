@@ -216,4 +216,151 @@ public class Graphs {
         return res;
     }
 
+    /**
+     * Finds all shortest paths in the weighted graph for the specified source vertex.
+     * The method returns a {@code Map},
+     * where keys are target vertexes and values are paths from the source to that target.
+     * <p>
+     * Right now the method is based on the pure Dijkstra's algorithm
+     * and therefore cannot be applicable to the graph with negative weights.
+     *
+     * @param graph  {@link WeightedGraph}
+     * @param source {@link X} - a source vertex payload
+     * @param <X>    - anything
+     * @return a {@code Map}, key is a target {@link X}-vertex, value is a path - a {@code List} of {@link Graph.Edge}s
+     * @see <a href='https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm'>wiki: Dijkstra's algorithm</a>
+     * @see <a href='https://www.cs.usfca.edu/~galles/visualization/Dijkstra.html'>visualization: Dijkstra's algorithm</a>
+     */
+    public static <X> Map<X, List<Graph.Edge<X>>> findShortestPaths(WeightedGraph<X> graph, X source) {
+        if (graph.hasNegativeWeights()) {
+            throw new IllegalArgumentException("Not supported: graph contains negative weights");
+        }
+        Graph.Vertex<X> start = graph.getVertex(source);
+        long size = graph.size();
+        Set<Graph.Vertex<X>> seen = new HashSet<>();
+        Comparator<Map.Entry<Graph.Vertex<X>, Cost<X>>> comp = Comparator.comparing(e -> e.getValue().value);
+        Map<Graph.Vertex<X>, Cost<X>> costs = new HashMap<>();
+        costs.computeIfAbsent(start, x -> new Cost<>()).put(null, 0.);
+
+        do {
+            if (calcCosts(graph, costs, comp, seen) == null) {
+                break;
+            }
+        } while (seen.size() < size);
+
+        return costs.keySet().stream()
+                .collect(Collectors.toUnmodifiableMap(Graph.Vertex::payload, v -> extractPath(graph, costs, v)));
+    }
+
+    /**
+     * Finds a shortest path in the weighted graph for the specified source and target vertexes.
+     * <p>
+     * Right now the method is based on the pure Dijkstra's algorithm
+     * and therefore cannot be applicable to the graph with negative weights.
+     *
+     * @param graph  {@link WeightedGraph}
+     * @param source {@link X} - a source vertex payload
+     * @param target {@link X} - a target vertex payload
+     * @param <X>    - anything
+     * @return a {@code List} of {@link Graph.Edge}s
+     * @see <a href='https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm'>wiki: Dijkstra's algorithm</a>
+     * @see <a href='https://www.cs.usfca.edu/~galles/visualization/Dijkstra.html'>visualization: Dijkstra's algorithm</a>
+     */
+    public static <X> List<Graph.Edge<X>> findShortestPath(WeightedGraph<X> graph, X source, X target) {
+        if (graph.hasNegativeWeights()) {
+            throw new IllegalArgumentException("Not supported: graph contains negative weights");
+        }
+        Graph.Vertex<X> start = graph.getVertex(source);
+        Graph.Vertex<X> end = graph.getVertex(target);
+        long size = graph.size();
+        Set<Graph.Vertex<X>> seen = new HashSet<>();
+        Comparator<Map.Entry<Graph.Vertex<X>, Cost<X>>> comp = Comparator.comparing(e -> e.getValue().value);
+        Map<Graph.Vertex<X>, Cost<X>> costs = new HashMap<>();
+        costs.computeIfAbsent(start, x -> new Cost<>()).put(null, 0.);
+
+        do {
+            Graph.Vertex<X> res = calcCosts(graph, costs, comp, seen);
+            if (res == null) {
+                break;
+            }
+            if (res.equals(end)) {
+                return extractPath(graph, costs, res);
+            }
+        } while (seen.size() < size);
+
+        // nothing found -> empty path
+        return List.of();
+    }
+
+    private static <X> Graph.Vertex<X> calcCosts(WeightedGraph<X> graph,
+                                                 Map<Graph.Vertex<X>, Cost<X>> costs,
+                                                 Comparator<Map.Entry<Graph.Vertex<X>, Cost<X>>> comp,
+                                                 Set<Graph.Vertex<X>> seen) {
+        Map.Entry<Graph.Vertex<X>, Cost<X>> min = costs.entrySet().stream()
+                .filter(x -> !seen.contains(x.getKey()))
+                .min(comp).orElse(null);
+        if (min == null) {
+            return null;
+        }
+        Graph.Vertex<X> vertex = min.getKey();
+        Cost<X> cost = min.getValue();
+        vertex.edges().forEach(e -> {
+            Graph.Vertex<X> u = e.right();
+            if (seen.contains(u)) {
+                return;
+            }
+            double w = graph.weight(e) + cost.value;
+            costs.computeIfAbsent(u, x -> new Cost<>()).put(vertex, w);
+        });
+        seen.add(vertex);
+        return vertex;
+    }
+
+    private static <X> List<Graph.Edge<X>> extractPath(Graph<X> graph,
+                                                       Map<Graph.Vertex<X>, Cost<X>> costs,
+                                                       Graph.Vertex<X> target) {
+        LinkedList<Graph.Edge<X>> res = new LinkedList<>();
+        Graph.Vertex<X> to = target;
+        Graph.Vertex<X> from;
+        for (int i = 0; i < costs.size(); i++) {
+            Cost<X> cost = costs.get(to);
+            if (cost == null) {
+                break;
+            }
+            from = cost.from;
+            if (from == null) {
+                break;
+            }
+            Graph.Edge<X> edge = graph.getEdge(from.payload(), to.payload());
+            res.addFirst(edge);
+            to = from;
+        }
+        return Collections.unmodifiableList(res);
+    }
+
+    /**
+     * An auxiliary object that is used in the Dijkstra's algorithm.
+     * Contains vertex-source and weight.
+     *
+     * @param <X> anything
+     */
+    private static class Cost<X> {
+        Graph.Vertex<X> from;
+        double value = Double.POSITIVE_INFINITY;
+
+        private void put(Graph.Vertex<X> vertex, Double cost) {
+            if (cost > this.value) {
+                return;
+            }
+            this.from = vertex;
+            this.value = cost;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s-%s", value, from == null ? null : from.payload());
+        }
+    }
+
+
 }
