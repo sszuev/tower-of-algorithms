@@ -29,7 +29,6 @@ Right now there are following algorithmic tasks:
   * [Sieve of Eratosthenes algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesAlgorithm.java)
   * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java) 
 
-
 - Sorting algorithms (command to run: `mvn -q test -Dtest=*SortlgorithmTest`):
   * [Bubble sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BubbleSortAlgorithm.java)
   * [Insertion sort](src/main/java/com/gitlab/sszuev/tasks/sorting/InsertionSortAlgorithm.java)
@@ -41,6 +40,9 @@ Right now there are following algorithmic tasks:
   * [Radix sort](src/main/java/com/gitlab/sszuev/tasks/sorting/RadixSortAlgorithm.java)
   * [Bucket sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BucketSortAlgorithm.java)
   * [External (merge) sort](src/main/java/com/gitlab/sszuev/tasks/sorting/ExternalSortAlgorithm.java)
+
+- String algorithms (command to run: `mvn -q test -Dtest=strings/*AlgorithmTest`):
+  * [Boyer–Moore–Horspool algorithm to search substring](src/main/java/com/gitlab/sszuev/tasks/strings/BMHSubstringSearchAlgorithm.java)
 
 ##### Requirements:
 
