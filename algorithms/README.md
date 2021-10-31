@@ -43,6 +43,7 @@ Right now there are following algorithmic tasks:
 
 - String algorithms (command to run: `mvn -q test -Dtest=strings/*AlgorithmTest`):
   * [Boyer–Moore–Horspool algorithm to search substring](src/main/java/com/gitlab/sszuev/tasks/strings/BMHSubstringSearchAlgorithm.java)
+  * [Boyer–Moore algorithm to search substring, wiki variant](src/main/java/com/gitlab/sszuev/tasks/strings/WikiBMSubstringSearchAlgorithm.java)
 
 ##### Requirements:
 
