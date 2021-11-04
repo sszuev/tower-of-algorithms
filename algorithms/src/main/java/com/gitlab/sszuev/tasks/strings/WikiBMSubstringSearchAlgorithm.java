@@ -1,10 +1,10 @@
 package com.gitlab.sszuev.tasks.strings;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * This is the Boyer–Moore algorithm to search substring.
+ * This concrete implementation is copy-pasted from wiki.
  * <p>
  * Created by @ssz on 31.10.2021.
  *
@@ -25,7 +25,7 @@ public class WikiBMSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm
     }
 
     public static int indexOf(char[] text, char[] str) {
-        Map<Character, Integer> charTable = makeCharTable(str);
+        int[] charTable = makeCharTable(str);
         int[] offsetTable = makeOffsetTable(str);
         int t = str.length - 1;
         while (t < text.length) {
@@ -37,7 +37,7 @@ public class WikiBMSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm
                 t--;
                 p--;
             }
-            int shift = Math.max(offsetTable[str.length - 1 - p], charTable.getOrDefault(text[t], str.length));
+            int shift = Math.max(offsetTable[str.length - 1 - p], charTable[text[t]]);
             t += shift;
         }
         return -1;
@@ -47,13 +47,13 @@ public class WikiBMSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm
      * Makes the jump table based on the mismatched character information.
      *
      * @param string {@code Array} of {@code char}s
-     * @return a {@code Map} of {@code char}-{@code int} pairs
+     * @return a {@code Array} of {@code int}s
      */
-    private static Map<Character, Integer> makeCharTable(char[] string) {
-        // originally there is array with length 65536
-        Map<Character, Integer> res = new HashMap<>(string.length);
+    private static int[] makeCharTable(char[] string) {
+        int[] res = new int[Character.MAX_VALUE + 1]; // 65536
+        Arrays.fill(res, string.length);
         for (int i = 0; i < string.length - 1; ++i) {
-            res.put(string[i], string.length - 1 - i);
+            res[string[i]] = string.length - 1 - i;
         }
         return res;
     }

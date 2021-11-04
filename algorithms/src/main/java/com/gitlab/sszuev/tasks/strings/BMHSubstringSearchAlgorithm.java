@@ -35,8 +35,9 @@ public class BMHSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
             if (p < 0) {
                 return t;
             }
-            int index = text[t + str.length - 1];
-            t += index > shifts.length ? str.length : shifts[index];
+            char ch = text[t + str.length - 1];
+            int shift = ch > shifts.length ? str.length : shifts[ch];
+            t += shift;
         }
         return -1;
     }
@@ -58,5 +59,4 @@ public class BMHSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
     int find(String text, String str) {
         return indexOf(text, str);
     }
-
 }
