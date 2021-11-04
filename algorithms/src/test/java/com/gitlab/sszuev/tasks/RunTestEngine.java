@@ -49,11 +49,11 @@ public abstract class RunTestEngine {
 
     @ParameterizedTest
     @MethodSource("listData")
-    public void testRunTask(Data data) {
+    public final void testRunTask(Data data) {
         Algorithm task = getTaskToTest();
 
         Instant start = Instant.now();
-        List<String> actual = task.run(data.given);
+        List<String> actual = runTask(task, data.given);
         Duration duration = Duration.between(start, Instant.now());
 
         String msg = formatMessage(task.name(), data.displayName(), isEquals(data.expected, actual), duration);
@@ -61,6 +61,10 @@ public abstract class RunTestEngine {
         if (TestPropertiesSupport.USE_ASSERTIONS) {
             assertEquals(data.expected, actual);
         }
+    }
+
+    protected List<String> runTask(Algorithm task, List<String> args) {
+        return task.run(args);
     }
 
     protected boolean isEquals(List<String> expected, List<String> actual) {

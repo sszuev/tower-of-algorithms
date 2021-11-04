@@ -1,7 +1,6 @@
 package com.gitlab.sszuev.tasks.strings;
 
 import com.gitlab.sszuev.tasks.Algorithm;
-import com.gitlab.sszuev.tasks.RunTestEngine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,11 +12,7 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 04.11.2021.
  */
-public class MyBMSubstringSearchAlgorithmTest extends RunTestEngine {
-
-    public static Stream<Data> listData() throws Exception {
-        return listData("/substring-search");
-    }
+public class MyBMSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {
