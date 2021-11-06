@@ -23,6 +23,12 @@ public enum SimpleMapFactory {
             return new AVLBinarySearchTreeSimpleMap<>();
         }
     },
+    TREAP_BST {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new TreapSimpleMap<>();
+        }
+    },
 
     SEPARATE_CHAINING_HASHTABLE {
         @Override
