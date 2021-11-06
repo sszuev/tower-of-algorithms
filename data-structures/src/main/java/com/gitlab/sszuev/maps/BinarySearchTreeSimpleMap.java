@@ -9,8 +9,8 @@ import java.util.stream.Stream;
  * <p>
  * Created by @ssz on 21.09.2021.
  *
- * @see <a href='https://en.wikipedia.org/wiki/Binary_search_tree'>wiki</a>
- * @see <a href='https://www.cs.usfca.edu/~galles/visualization/BST.html'>visualization</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Binary_search_tree'>wiki: Binary search tree</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/BST.html'>visualization: Binary search tree</a>
  */
 public class BinarySearchTreeSimpleMap<K, V> implements SimpleMap<K, V> {
     protected final Comparator<K> comparator;
@@ -211,7 +211,7 @@ public class BinarySearchTreeSimpleMap<K, V> implements SimpleMap<K, V> {
     protected void afterRemove(BiNode<K, V> node) {
     }
 
-    private int compare(K left, K right) {
+    protected int compare(K left, K right) {
         if (left == right) {
             return 0;
         }

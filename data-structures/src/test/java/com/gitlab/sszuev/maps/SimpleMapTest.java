@@ -463,6 +463,18 @@ public class SimpleMapTest {
                 return (AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V>) node;
             }
         },
+        TREAP_BST {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new TreapSimpleMap<>();
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                Assertions.assertEquals(TreapSimpleMap.class, map.getClass());
+                TreeMapUtils.assertBST(map);
+            }
+        },
         JDK_TREE_MAP {
             @SuppressWarnings("SortedCollectionWithNonComparableKeys")
             @Override
