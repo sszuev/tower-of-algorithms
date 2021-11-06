@@ -416,6 +416,7 @@ public class SimpleMapTest {
         });
     }
 
+    @SuppressWarnings("rawtypes")
     enum TestType {
         SIMPLE_BST {
             @Override
@@ -424,8 +425,13 @@ public class SimpleMapTest {
             }
 
             @Override
+            Class<? extends SimpleMap> type() {
+                return BinarySearchTreeSimpleMap.class;
+            }
+
+            @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(BinarySearchTreeSimpleMap.class, map.getClass());
+                super.assertTree(map);
                 TreeMapUtils.assertBST(map);
             }
         },
@@ -436,8 +442,13 @@ public class SimpleMapTest {
             }
 
             @Override
+            Class<? extends SimpleMap> type() {
+                return AVLBinarySearchTreeSimpleMap.class;
+            }
+
+            @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(AVLBinarySearchTreeSimpleMap.class, map.getClass());
+                super.assertTree(map);
                 TreeMapUtils.assertBST(map);
                 AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
                 if (root == null) {
@@ -470,8 +481,13 @@ public class SimpleMapTest {
             }
 
             @Override
+            Class<? extends SimpleMap> type() {
+                return TreapSimpleMap.class;
+            }
+
+            @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(TreapSimpleMap.class, map.getClass());
+                super.assertTree(map);
                 TreeMapUtils.assertBST(map);
             }
         },
@@ -481,6 +497,11 @@ public class SimpleMapTest {
             public <K, V> SimpleMap<K, V> create() {
                 return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return JDKMapWrapperSimpleMap.class;
+            }
         },
 
         SC_HASHTABLE {
@@ -488,18 +509,31 @@ public class SimpleMapTest {
             public <K, V> SimpleMap<K, V> create() {
                 return new SeparateChainingHashtableSimpleMap<>();
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return SeparateChainingHashtableSimpleMap.class;
+            }
         },
         OA_HASHTABLE {
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new OpenAddressingHashtableSimpleMap<>();
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return OpenAddressingHashtableSimpleMap.class;
+            }
         },
         ;
 
         public abstract <K, V> SimpleMap<K, V> create();
 
+        abstract Class<? extends SimpleMap> type();
+
         public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+            Assertions.assertEquals(type(), map.getClass());
         }
     }
 }

@@ -7,12 +7,12 @@ import java.util.function.ToDoubleBiFunction;
 import java.util.function.UnaryOperator;
 
 /**
- * A Treap (a Cartesian Binary Search Tree).
+ * A Treap (a Cartesian Randomized Binary Search Tree).
  * Created by @ssz on 05.11.2021.
  *
  * @see <a href='https://en.wikipedia.org/wiki/Treap'>wiki: Treap</a>
  */
-public class TreapSimpleMap<K, V> extends BinarySearchTreeSimpleMap<K, V> {
+public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
     private static final Random RANDOM = new Random();
     private final ToDoubleBiFunction<K, V> priorityFunction;
 

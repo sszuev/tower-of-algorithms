@@ -34,8 +34,8 @@ public class TreeMapUtils {
     }
 
     public static String print(SimpleMap<?, ?> map) {
-        if (map instanceof BinarySearchTreeSimpleMap) {
-            return print(((BinarySearchTreeSimpleMap<?, ?>) map).root);
+        if (map instanceof BaseBSTSimpleMap) {
+            return print(((BaseBSTSimpleMap<?, ?>) map).root);
         }
         return map.toString();
     }
@@ -44,17 +44,17 @@ public class TreeMapUtils {
         return root == null ? "(empty)" : doPrint(root).toString();
     }
 
-    public static long size(BinarySearchTreeSimpleMap.BiNode<?, ?> node) {
+    public static long size(BaseBSTSimpleMap.BiNode<?, ?> node) {
         return node == null ? 0 : node.size();
     }
 
-    public static <X extends Comparable<X>, V> boolean isBST(BinarySearchTreeSimpleMap.BiNode<X, V> node) {
+    public static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNode<X, V> node) {
         return isBST(node, null, null);
     }
 
-    private static <X extends Comparable<X>, V> boolean isBST(BinarySearchTreeSimpleMap.BiNode<X, V> root,
-                                                              BinarySearchTreeSimpleMap.BiNode<X, V> min,
-                                                              BinarySearchTreeSimpleMap.BiNode<X, V> max) {
+    private static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNode<X, V> root,
+                                                              BaseBSTSimpleMap.BiNode<X, V> min,
+                                                              BaseBSTSimpleMap.BiNode<X, V> max) {
         if (root == null)
             return true;
         X data = root.key();
@@ -93,12 +93,12 @@ public class TreeMapUtils {
     }
 
     public static <K extends Comparable<K>, V> void assertBST(SimpleMap<K, V> map) {
-        if (!(map instanceof BinarySearchTreeSimpleMap)) {
+        if (!(map instanceof BaseBSTSimpleMap)) {
             return;
         }
         System.out.println(print(map));
-        Assertions.assertTrue(isBST(((BinarySearchTreeSimpleMap<K, V>) map).root), "Not a BST");
-        Assertions.assertEquals(size(((BinarySearchTreeSimpleMap<K, V>) map).root), map.size(), "Wrong size");
+        Assertions.assertTrue(isBST(((BaseBSTSimpleMap<K, V>) map).root), "Not a BST");
+        Assertions.assertEquals(size(((BaseBSTSimpleMap<K, V>) map).root), map.size(), "Wrong size");
         System.out.println("-".repeat(42));
     }
 
