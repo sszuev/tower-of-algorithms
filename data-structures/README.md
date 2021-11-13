@@ -23,6 +23,12 @@ Right now there are following data structures:
   * [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/SeparateChainingHashtableSimpleMap.java)
   * [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/OpenAddressingHashtableSimpleMap.java)
 
+- [Graph algorithms](src/main/java/com/gitlab/sszuev/graphs/Graph.java) 
+  * [Demucron's algorithm (topological sorting)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L66)
+  * [Kosaraju's algorithm (strongly connected component searching)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L124)
+  * [Borůvka's algorithm (optimized Kruskal's algorithm, a searching of minimum spanning tree)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L183)
+  * [Dijkstra's algorithm (an algorithm for finding the shortest paths in weighted graph)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L234)
+
 ##### Requirements:
 
 - Git

@@ -30,6 +30,11 @@ public class PriorityQueueBenchmark {
     private PriorityQueueFactory factory;
     private PriorityQueue<Object> queue;
 
+    private static int[] generateTestData(int size, int maxPriority) {
+        return IntStream.generate(() -> maxPriority > 0 ? RANDOM.nextInt(maxPriority) : RANDOM.nextInt())
+                .limit(size).toArray();
+    }
+
     @Setup(Level.Invocation)
     public void doSetup() {
         queue = factory.createPriorityQueue();
@@ -59,11 +64,6 @@ public class PriorityQueueBenchmark {
         for (int i = 0; i < priorities.length; i++) {
             blackhole.consume(queue.dequeue());
         }
-    }
-
-    private static int[] generateTestData(int size, int maxPriority) {
-        return IntStream.generate(() -> maxPriority > 0 ? RANDOM.nextInt(maxPriority) : RANDOM.nextInt())
-                .limit(size).toArray();
     }
 
 }
