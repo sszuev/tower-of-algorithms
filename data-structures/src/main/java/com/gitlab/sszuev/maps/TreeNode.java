@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  */
 interface TreeNode<X> {
 
-    Stream<TreeNode<X>> children();
+    Stream<? extends TreeNode<X>> children();
 
     X key();
 

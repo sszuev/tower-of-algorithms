@@ -33,9 +33,18 @@ public class TreeMapUtils {
         return (TreeNode<X>) EMPTY;
     }
 
+    /**
+     * Represents a {@code SimpleMap} as a {@code String}.
+     *
+     * @param map {@link SimpleMap}
+     * @return {@code String}
+     */
     public static String print(SimpleMap<?, ?> map) {
         if (map instanceof BaseBSTSimpleMap) {
             return print(((BaseBSTSimpleMap<?, ?>) map).root);
+        }
+        if (map instanceof BTreeSimpleMap) {
+            return print(((BTreeSimpleMap<?, ?>) map).root);
         }
         return map.toString();
     }
