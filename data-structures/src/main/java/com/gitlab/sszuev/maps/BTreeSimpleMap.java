@@ -1,5 +1,6 @@
 package com.gitlab.sszuev.maps;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -16,20 +17,27 @@ import java.util.stream.Stream;
  */
 public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
     protected final Comparator<K> comparator;
+    protected final int degree;
+    protected final int middle;
+
     protected long size;
     protected BNodeImpl<K, V> root;
 
     public BTreeSimpleMap() {
-        this(null);
+        this(3);
     }
 
-    public BTreeSimpleMap(Comparator<K> comparator) {
+    public BTreeSimpleMap(int degree) {
+        this(degree, null);
+    }
+
+    public BTreeSimpleMap(int degree, Comparator<K> comparator) {
+        if (degree < 3) {
+            throw new IllegalArgumentException("Degree must be >= 3");
+        }
+        this.degree = degree;
+        this.middle = calcMiddleIndex(degree);
         this.comparator = comparator;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <X> X[] newArray(int size) {
-        return (X[]) new Object[size];
     }
 
     @Override
@@ -51,10 +59,9 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
             }
             int insertionPoint = -res - 1;
             if (insertionPoint < 2) {
-                BNodeImpl.ItemImpl<K, V> item = items[0];
-                current = insertionPoint == 0 ? item.left() : item.right();
+                current = insertionPoint == 0 ? current.left() : current.right(0);
             } else {
-                current = items[insertionPoint - 1].right();
+                current = current.right(insertionPoint - 1);
             }
         }
         return null;
@@ -62,8 +69,92 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
 
     @Override
     public V put(K key, V value) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (root == null) {
+            root = new BNodeImpl<>(degree);
+        }
+        BNodeImpl<K, V> current = root;
+        while (true) {
+            BNodeImpl.ItemImpl<K, V>[] items = current.items();
+            int res = binarySearch(items, current.lastIndex(), key);
+            if (res >= 0) {
+                return items[res].value(value);
+            }
+            int insertIndex = -res - 1;
+            if (current.isLeaf()) {
+                BNodeImpl.ItemImpl<K, V> item = new BNodeImpl.ItemImpl<>(key);
+                current.insertItem(item, insertIndex);
+                if (needRebalance(current)) { // need rebalance
+                    rebalance(current);
+                }
+                size++;
+                return item.value(value);
+            }
+            if (insertIndex < 2) {
+                current = insertIndex == 0 ? current.left() : current.right(0);
+            } else {
+                current = current.right(insertIndex - 1);
+            }
+        }
+    }
+
+    protected boolean needRebalance(BNodeImpl<K, V> current) {
+        return current.lastIndex() >= degree - 1;
+    }
+
+    protected void rebalance(BNodeImpl<K, V> node) {
+        BNodeImpl<K, V> left = splitLeft(node);
+        BNodeImpl<K, V> right = splitRight(node);
+        BNodeImpl.ItemImpl<K, V> middle = node.item(this.middle);
+
+        BNodeImpl<K, V> parent = node.parent();
+        int insertIndex;
+        if (parent == null) { // new root
+            parent = new BNodeImpl<>(degree);
+            insertIndex = 0;
+            this.root = parent;
+        } else {
+            int res = binarySearch(parent.items(), parent.lastIndex(), middle.key());
+            if (res >= 0) {
+                throw new IllegalStateException();
+            }
+            insertIndex = -res - 1;
+        }
+        parent.insertItem(middle, insertIndex);
+        if (insertIndex == 0) { // for new root
+            parent.left(left);
+            BNodeImpl<K, V> prevRight = parent.right(0, right);
+            right.left(prevRight);
+        } else {
+            parent.right(insertIndex - 1, left);
+            parent.right(insertIndex, right);
+        }
+
+        if (needRebalance(parent)) {
+            rebalance(parent);
+        }
+    }
+
+    protected BNodeImpl<K, V> splitLeft(BNodeImpl<K, V> node) {
+        BNodeImpl<K, V> res = new BNodeImpl<>(degree);
+        BNodeImpl.ItemImpl<K, V>[] leftArray = res.items();
+        BNodeImpl.ItemImpl<K, V>[] nodeArray = node.items();
+        for (int i = 0; i < middle; i++) {
+            BNodeImpl.parent((leftArray[i] = nodeArray[i]).link, res);
+        }
+        res.left(node.left());
+        return res;
+    }
+
+    protected BNodeImpl<K, V> splitRight(BNodeImpl<K, V> node) {
+        BNodeImpl<K, V> res = new BNodeImpl<>(degree);
+        BNodeImpl.ItemImpl<K, V>[] rightArray = res.items();
+        BNodeImpl.ItemImpl<K, V>[] nodeArray = node.items();
+        int start = middle + 1;
+        for (int i = start; i < nodeArray.length; i++) {
+            rightArray[i - start] = nodeArray[i];
+            BNodeImpl.parent((rightArray[i - start] = nodeArray[i]).link, res);
+        }
+        return res;
     }
 
     @Override
@@ -120,31 +211,31 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
         return (Comparable<? super K>) key;
     }
 
+    private static int calcMiddleIndex(int length) {
+        int res = length / 2;
+        if (length % 2 == 0) {
+            res--;
+        }
+        return res;
+    }
+
     public static class BNodeImpl<K, V> implements BNode<K> {
         private final ItemImpl<K, V>[] items;
         private int lastIndex;
+        private BNodeImpl<K, V> parent;
+        private BNodeImpl<K, V> left;
 
         public BNodeImpl(int degree) {
-            this(newArray(degree));
+            this(newItemArray(degree));
         }
 
         protected BNodeImpl(ItemImpl<K, V>[] items) {
             this.items = Objects.requireNonNull(items);
         }
 
-        private static <X> Stream<BNode<X>> nodes(ItemImpl<X, ?> e) {
-            if (e == null) {
-                return Stream.empty();
-            }
-            BNode<X> left = e.left();
-            BNode<X> right = e.right();
-            if (left != null && right != null) {
-                return Stream.of(left, right);
-            }
-            if (right != null) {
-                return Stream.of(right);
-            }
-            return Stream.ofNullable(left);
+        @SuppressWarnings("unchecked")
+        private static <X, Y> BNodeImpl.ItemImpl<X, Y>[] newItemArray(int size) {
+            return (BNodeImpl.ItemImpl<X, Y>[]) Array.newInstance(BNodeImpl.ItemImpl.class, size);
         }
 
         protected BNodeImpl.ItemImpl<K, V> item(int i) {
@@ -159,22 +250,87 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
             return items[0] == null;
         }
 
-        public int lastIndex() {
-            if (lastIndex > 0) {
-                return lastIndex;
+        protected void insertItem(ItemImpl<K, V> item, int index) {
+            if (index == 0 && items[0] == null) {
+                items[0] = item;
+                this.lastIndex = 0;
+                return;
             }
+            int lastIndex = lastIndex();
+            if (index > lastIndex) {
+                items[index] = item;
+                this.lastIndex = index;
+                return;
+            }
+            System.arraycopy(items, index, items, index + 1, lastIndex + 1 - index);
+            items[index] = item;
+            this.lastIndex++;
+        }
+
+        public int lastIndex() {
+            return lastIndex <= 0 ? lastIndex = calcLastIndex() : lastIndex;
+        }
+
+        private int calcLastIndex() {
             int index = items.length - 1;
             for (; index >= 0; index--) {
                 if (items[index] != null) {
                     break;
                 }
             }
-            return lastIndex = index;
+            return index;
         }
 
         @Override
         public Stream<BNode<K>> children() {
-            return Arrays.stream(items).flatMap(BNodeImpl::nodes);
+            Stream<BNode<K>> res = Arrays.stream(items).flatMap(BNodeImpl::right);
+            if (left != null) {
+                res = Stream.concat(Stream.of(left), res);
+            }
+            return res;
+        }
+
+        private static <X> Stream<BNode<X>> right(ItemImpl<X, ?> e) {
+            return e == null ? Stream.empty() : Stream.ofNullable(e.link);
+        }
+
+        public boolean isLeaf() {
+            return left == null;
+        }
+
+        protected BNodeImpl<K, V> parent() {
+            return parent;
+        }
+
+        public BNodeImpl<K, V> left() {
+            return left;
+        }
+
+        protected BNodeImpl<K, V> left(BNodeImpl<K, V> leftRef) {
+            BNodeImpl<K, V> prev = this.left;
+            this.left = leftRef;
+            parent(leftRef, this);
+            parent(prev, null);
+            return prev;
+        }
+
+        public BNodeImpl<K, V> right(int index) {
+            return items[index].link;
+        }
+
+        protected BNodeImpl<K, V> right(int index, BNodeImpl<K, V> rightRef) {
+            ItemImpl<K, V> item = items[index];
+            BNodeImpl<K, V> prev = item.link;
+            item.link = rightRef;
+            parent(rightRef, this);
+            parent(prev, null);
+            return prev;
+        }
+
+        private static <X, Y> void parent(BNodeImpl<X, Y> child, BNodeImpl<X, Y> parent) {
+            if (child != null) {
+                child.parent = parent;
+            }
         }
 
         @Override
@@ -186,8 +342,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
         public static class ItemImpl<K, V> {
             private final K key;
             private V value;
-            private BNodeImpl<K, V> left;
-            private BNodeImpl<K, V> right;
+            private BNodeImpl<K, V> link;
 
             public ItemImpl(K key) {
                 this.key = Objects.requireNonNull(key);
@@ -201,30 +356,15 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
                 return value;
             }
 
-            public BNodeImpl<K, V> left() {
-                return left;
-            }
-
-            public BNodeImpl<K, V> right() {
-                return right;
-            }
-
             protected V value(V value) {
                 V prev = this.value;
                 this.value = value;
                 return prev;
             }
 
-            protected BNodeImpl<K, V> left(BNodeImpl<K, V> child) {
-                BNodeImpl<K, V> prev = this.left;
-                this.left = child;
-                return prev;
-            }
-
-            protected BNodeImpl<K, V> right(BNodeImpl<K, V> child) {
-                BNodeImpl<K, V> prev = this.right;
-                this.right = child;
-                return prev;
+            @Override
+            public String toString() {
+                return String.format("{%s}", key);
             }
         }
 

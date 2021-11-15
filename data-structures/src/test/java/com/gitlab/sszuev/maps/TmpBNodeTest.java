@@ -11,6 +11,57 @@ import java.util.Arrays;
 public class TmpBNodeTest {
 
     @Test
+    public void testPut3() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>();
+        long count = 0;
+        String res = null;
+        for (int k : new int[]{10, 20, 30, 40, 5, 50, 60, 70, 45, 55, 15, 25, 26, 16}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            Assertions.assertNull(map.put(k, "V-" + k));
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(++count, map.size());
+            Assertions.assertEquals(count, res.split("[]|]").length - 1);
+        }
+        Assertions.assertEquals(3, res.split("\\|").length - 1);
+        Assertions.assertTrue(res.contains("[20|40]") && res.contains("[15|16]") && res.contains("[50|60]"));
+        Assertions.assertEquals(3, res.split("\n").length);
+        Assertions.assertEquals("[20|40]", map.root.toString());
+
+        for (int k : new int[]{18, 6, 8}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            Assertions.assertNull(map.put(k, "V-" + k));
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(++count, map.size());
+            Assertions.assertEquals(count, res.split("[]|]").length - 1);
+        }
+        Assertions.assertEquals(1, res.split("\\|").length - 1);
+        Assertions.assertTrue(res.contains("[50|60]"));
+        Assertions.assertEquals(4, res.split("\n").length);
+        Assertions.assertEquals("[20]", map.root.toString());
+    }
+
+    @Test
+    public void testPut4() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(4);
+        long count = 0;
+        String res = null;
+        for (int k : new int[]{60, 40, 50, 100, 10, 80, 70, 90, 30, 20}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            Assertions.assertNull(map.put(k, "V-" + k));
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(++count, map.size());
+            Assertions.assertEquals(count, res.split("[]|]").length - 1);
+        }
+        Assertions.assertEquals(5, res.split("\\|").length - 1);
+        Assertions.assertEquals(2, res.split("\n").length);
+        Assertions.assertEquals("[20|50|70]", map.root.toString());
+        Assertions.assertTrue(res.contains("[80|90|100]") && res.contains("[30|40]"));
+    }
+
+    @Test
     public void testGet() {
         BTreeSimpleMap<Integer, String> map = createTestMap();
         System.out.println(TreeMapUtils.print(map));
@@ -46,18 +97,18 @@ public class TmpBNodeTest {
 
         BTreeSimpleMap.BNodeImpl<Integer, String> a1 = createTestBNode(6, 33);
 
-        a1.item(0).left(a2);
-        a1.item(0).right(b2);
-        a1.item(1).right(c2);
+        a1.left(a2);
+        a1.right(0, b2);
+        a1.right(1, c2);
 
-        a2.item(0).left(a3);
-        a2.item(0).right(b3);
-        b2.item(0).left(c3);
-        b2.item(0).right(d3);
-        b2.item(1).right(e3);
-        c2.item(0).left(f3);
-        c2.item(0).right(g3);
-        c2.item(1).right(h3);
+        a2.left(a3);
+        a2.right(0, b3);
+        b2.left(c3);
+        b2.right(0, d3);
+        b2.right(1, e3);
+        c2.left(f3);
+        c2.right(0, g3);
+        c2.right(1, h3);
 
         return a1;
     }
@@ -74,4 +125,6 @@ public class TmpBNodeTest {
         res.value("v=" + key);
         return res;
     }
+
+
 }
