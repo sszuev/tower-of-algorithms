@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @see <a href='https://en.wikipedia.org/wiki/B-tree'>wiki: B-tree</a>
  * @see <a href='https://www.cs.usfca.edu/~galles/visualization/BTree.html'>visualization: B-tree</a>
  */
-public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
+public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
     protected final Comparator<K> comparator;
     protected final int degree;
     protected final int middle;
@@ -43,6 +43,11 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
     @Override
     public long size() {
         return size;
+    }
+
+    @Override
+    public BNodeImpl<K, V> getRoot() {
+        return root;
     }
 
     @Override
@@ -219,7 +224,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
         return res;
     }
 
-    public static class BNodeImpl<K, V> implements BNode<K> {
+    public static class BNodeImpl<K, V> implements MultiNode<V> {
         private final ItemImpl<K, V>[] items;
         private int lastIndex;
         private BNodeImpl<K, V> parent;
@@ -282,15 +287,20 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V> {
         }
 
         @Override
-        public Stream<BNode<K>> children() {
-            Stream<BNode<K>> res = Arrays.stream(items).flatMap(BNodeImpl::right);
+        public Stream<MultiNode<V>> children() {
+            Stream<MultiNode<V>> res = Arrays.stream(items).flatMap(BNodeImpl::right);
             if (left != null) {
                 res = Stream.concat(Stream.of(left), res);
             }
             return res;
         }
 
-        private static <X> Stream<BNode<X>> right(ItemImpl<X, ?> e) {
+        @Override
+        public Stream<V> keys() {
+            return Arrays.stream(items, 0, lastIndex() + 1).map(ItemImpl::value);
+        }
+
+        private static <X> Stream<MultiNode<X>> right(ItemImpl<?, X> e) {
             return e == null ? Stream.empty() : Stream.ofNullable(e.link);
         }
 

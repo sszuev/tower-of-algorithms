@@ -28,7 +28,7 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
             size++;
             return null;
         }
-        BiNode<K, V> current = root;
+        BiNodeImpl<K, V> current = root;
         while (true) {
             int res = compare(key, current.key());
             if (res == 0) {
@@ -38,7 +38,7 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
                 return v;
             }
             if (res < 0) {
-                BiNode<K, V> left = current.left();
+                BiNodeImpl<K, V> left = current.left();
                 if (left == null) {
                     current.left(node(key, value));
                     size++;
@@ -49,7 +49,7 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
                 }
                 continue;
             }
-            BiNode<K, V> right = current.right();
+            BiNodeImpl<K, V> right = current.right();
             if (right == null) {
                 current.right(node(key, value));
                 size++;
@@ -62,22 +62,22 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
 
     @Override
     public V remove(K key) {
-        BiNode<K, V> current = root;
+        BiNodeImpl<K, V> current = root;
         if (current == null) {
             return null;
         }
-        BiNode<K, V> prev = null;
+        BiNodeImpl<K, V> prev = null;
         while (true) {
             int res = compare(key, current.key());
             if (res == 0) {
                 V value = current.value();
-                BiNode<K, V> x = remove(current, prev);
+                BiNodeImpl<K, V> x = remove(current, prev);
                 size--;
                 afterRemove(x);
                 return value;
             }
             if (res < 0) {
-                BiNode<K, V> left = current.left();
+                BiNodeImpl<K, V> left = current.left();
                 if (left != null) {
                     prev = current;
                     current = left;
@@ -86,7 +86,7 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
                 }
                 continue;
             }
-            BiNode<K, V> right = current.right();
+            BiNodeImpl<K, V> right = current.right();
             if (right == null) {
                 return null;
             }
@@ -98,25 +98,25 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
     /**
      * Removes a {@code current} node and returns a node for possible rebalance.
      *
-     * @param current {@link BiNode} - a node to remove
-     * @param prev    {@link BiNode} - a parent of {@code current} node
-     * @return {@link BiNode} to start rebalance
+     * @param current {@link BiNodeImpl} - a node to remove
+     * @param prev    {@link BiNodeImpl} - a parent of {@code current} node
+     * @return {@link BiNodeImpl} to start rebalance
      */
-    protected BiNode<K, V> remove(final BiNode<K, V> current, final BiNode<K, V> prev) {
-        BiNode<K, V> currentLeft = current.left();
-        BiNode<K, V> currentRight = current.right();
+    protected BiNodeImpl<K, V> remove(final BiNodeImpl<K, V> current, final BiNodeImpl<K, V> prev) {
+        BiNodeImpl<K, V> currentLeft = current.left();
+        BiNodeImpl<K, V> currentRight = current.right();
         if (currentLeft == null && currentRight == null) {
             replace(prev, current, null);
             return prev;
         }
         if (currentRight == null || currentLeft == null) {
-            BiNode<K, V> child = currentLeft == null ? currentRight : currentLeft;
+            BiNodeImpl<K, V> child = currentLeft == null ? currentRight : currentLeft;
             replace(prev, current, child);
             return child;
         }
-        BiNode<K, V> res = null;
-        BiNode<K, V> found = findPrevMinInRightBranch(current);
-        BiNode<K, V> replacement;
+        BiNodeImpl<K, V> res = null;
+        BiNodeImpl<K, V> found = findPrevMinInRightBranch(current);
+        BiNodeImpl<K, V> replacement;
         if (found == null) {
             replacement = currentRight;
             currentRight = replacement.right();
@@ -135,12 +135,12 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
     /**
      * Finds a parent of minimal item in the right branch, which is not a root of subtree.
      *
-     * @param current a {@link BiNode} whose right child is a root of considered subtree
-     * @return {@link BiNode} or {@code null} if there is no left branch in a subtree
+     * @param current a {@link BiNodeImpl} whose right child is a root of considered subtree
+     * @return {@link BiNodeImpl} or {@code null} if there is no left branch in a subtree
      */
-    protected BiNode<K, V> findPrevMinInRightBranch(BiNode<K, V> current) {
-        BiNode<K, V> prev = current.right();
-        BiNode<K, V> left = prev.left();
+    protected BiNodeImpl<K, V> findPrevMinInRightBranch(BiNodeImpl<K, V> current) {
+        BiNodeImpl<K, V> prev = current.right();
+        BiNodeImpl<K, V> left = prev.left();
         if (left == null) {
             return null;
         }
@@ -151,7 +151,7 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
         return prev;
     }
 
-    protected void replace(BiNode<K, V> parent, BiNode<K, V> oldChild, BiNode<K, V> newChild) {
+    protected void replace(BiNodeImpl<K, V> parent, BiNodeImpl<K, V> oldChild, BiNodeImpl<K, V> newChild) {
         if (parent == null) {
             root(newChild);
             return;
@@ -164,9 +164,9 @@ public class BinarySearchTreeSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
         }
     }
 
-    protected void afterInsert(BiNode<K, V> node) {
+    protected void afterInsert(BiNodeImpl<K, V> node) {
     }
 
-    protected void afterRemove(BiNode<K, V> node) {
+    protected void afterRemove(BiNodeImpl<K, V> node) {
     }
 }

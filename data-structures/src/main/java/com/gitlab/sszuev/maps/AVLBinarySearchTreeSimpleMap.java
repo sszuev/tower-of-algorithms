@@ -20,47 +20,47 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
     }
 
     @Override
-    protected void afterInsert(BiNode<K, V> node) {
-        AVLBiNode<K, V> n = AVLBiNode.asAVL(node);
-        AVLBiNode.reset(n);
+    protected void afterInsert(BiNodeImpl<K, V> node) {
+        AVLBiNodeImpl<K, V> n = AVLBiNodeImpl.asAVL(node);
+        AVLBiNodeImpl.reset(n);
         rebalance(n);
     }
 
     @Override
-    protected void afterRemove(BiNode<K, V> node) {
-        AVLBiNode<K, V> n = AVLBiNode.asAVL(node);
-        AVLBiNode.reset(n);
+    protected void afterRemove(BiNodeImpl<K, V> node) {
+        AVLBiNodeImpl<K, V> n = AVLBiNodeImpl.asAVL(node);
+        AVLBiNodeImpl.reset(n);
         rebalance(n);
     }
 
-    public void rebalance(AVLBiNode<K, V> node) {
+    public void rebalance(AVLBiNodeImpl<K, V> node) {
         while (node != null) {
             if (needRebalance(node)) {
                 node = performRebalance(node);
-                AVLBiNode.reset(node);
+                AVLBiNodeImpl.reset(node);
             }
             node = node.parent();
         }
     }
 
-    protected boolean needRebalance(AVLBiNode<K, V> node) {
+    protected boolean needRebalance(AVLBiNodeImpl<K, V> node) {
         if (node == null) {
             return false;
         }
-        int leftHeight = AVLBiNode.height(node.left());
-        int rightHeight = AVLBiNode.height(node.right());
+        int leftHeight = AVLBiNodeImpl.height(node.left());
+        int rightHeight = AVLBiNodeImpl.height(node.right());
         return Math.abs(leftHeight - rightHeight) > 1;
     }
 
-    protected AVLBiNode<K, V> performRebalance(final AVLBiNode<K, V> a) {
-        AVLBiNode<K, V> b = a.right();
+    protected AVLBiNodeImpl<K, V> performRebalance(final AVLBiNodeImpl<K, V> a) {
+        AVLBiNodeImpl<K, V> b = a.right();
 
-        AVLBiNode<K, V> c = AVLBiNode.leftOrNull(b);
-        AVLBiNode<K, V> r = AVLBiNode.rightOrNull(b);
-        AVLBiNode<K, V> l = AVLBiNode.leftOrNull(a);
+        AVLBiNodeImpl<K, V> c = AVLBiNodeImpl.leftOrNull(b);
+        AVLBiNodeImpl<K, V> r = AVLBiNodeImpl.rightOrNull(b);
+        AVLBiNodeImpl<K, V> l = AVLBiNodeImpl.leftOrNull(a);
 
-        if (AVLBiNode.height(b) - AVLBiNode.height(l) == 2) {
-            if (AVLBiNode.height(c) <= AVLBiNode.height(r)) {
+        if (AVLBiNodeImpl.height(b) - AVLBiNodeImpl.height(l) == 2) {
+            if (AVLBiNodeImpl.height(c) <= AVLBiNodeImpl.height(r)) {
                 return smallLeftRotation(a);
             } else {
                 return bigLeftRotation(a);
@@ -68,12 +68,12 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         }
 
         b = a.left();
-        c = AVLBiNode.rightOrNull(b);
-        r = AVLBiNode.rightOrNull(a);
-        l = AVLBiNode.leftOrNull(b);
+        c = AVLBiNodeImpl.rightOrNull(b);
+        r = AVLBiNodeImpl.rightOrNull(a);
+        l = AVLBiNodeImpl.leftOrNull(b);
 
-        if (AVLBiNode.height(b) - AVLBiNode.height(r) == 2) {
-            if (AVLBiNode.height(c) <= AVLBiNode.height(l)) {
+        if (AVLBiNodeImpl.height(b) - AVLBiNodeImpl.height(r) == 2) {
+            if (AVLBiNodeImpl.height(c) <= AVLBiNodeImpl.height(l)) {
                 return smallRightRotation(a);
             } else {
                 return bigRightRotation(a);
@@ -82,11 +82,11 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         throw new IllegalStateException();
     }
 
-    public AVLBiNode<K, V> smallLeftRotation(AVLBiNode<K, V> a) {
-        AVLBiNode<K, V> p = a.parent();
+    public AVLBiNodeImpl<K, V> smallLeftRotation(AVLBiNodeImpl<K, V> a) {
+        AVLBiNodeImpl<K, V> p = a.parent();
 
-        AVLBiNode<K, V> b = a.right();
-        AVLBiNode<K, V> c = b.left();
+        AVLBiNodeImpl<K, V> b = a.right();
+        AVLBiNodeImpl<K, V> c = b.left();
 
         a.right(c);
         b.left(a);
@@ -95,13 +95,13 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         return b;
     }
 
-    public AVLBiNode<K, V> bigLeftRotation(AVLBiNode<K, V> a) {
-        AVLBiNode<K, V> p = a.parent();
+    public AVLBiNodeImpl<K, V> bigLeftRotation(AVLBiNodeImpl<K, V> a) {
+        AVLBiNodeImpl<K, V> p = a.parent();
 
-        AVLBiNode<K, V> b = a.right();
-        AVLBiNode<K, V> c = b.left();
-        AVLBiNode<K, V> m = c.left();
-        AVLBiNode<K, V> n = c.right();
+        AVLBiNodeImpl<K, V> b = a.right();
+        AVLBiNodeImpl<K, V> c = b.left();
+        AVLBiNodeImpl<K, V> m = c.left();
+        AVLBiNodeImpl<K, V> n = c.right();
 
         a.right(m);
         b.left(n);
@@ -112,11 +112,11 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         return c;
     }
 
-    public AVLBiNode<K, V> smallRightRotation(AVLBiNode<K, V> a) {
-        AVLBiNode<K, V> p = a.parent();
+    public AVLBiNodeImpl<K, V> smallRightRotation(AVLBiNodeImpl<K, V> a) {
+        AVLBiNodeImpl<K, V> p = a.parent();
 
-        AVLBiNode<K, V> b = a.left();
-        AVLBiNode<K, V> c = b.right();
+        AVLBiNodeImpl<K, V> b = a.left();
+        AVLBiNodeImpl<K, V> c = b.right();
 
         b.right(a);
         a.left(c);
@@ -125,13 +125,13 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         return b;
     }
 
-    public AVLBiNode<K, V> bigRightRotation(AVLBiNode<K, V> a) {
-        AVLBiNode<K, V> p = a.parent();
+    public AVLBiNodeImpl<K, V> bigRightRotation(AVLBiNodeImpl<K, V> a) {
+        AVLBiNodeImpl<K, V> p = a.parent();
 
-        AVLBiNode<K, V> b = a.left();
-        AVLBiNode<K, V> c = b.right();
-        AVLBiNode<K, V> m = c.left();
-        AVLBiNode<K, V> n = c.right();
+        AVLBiNodeImpl<K, V> b = a.left();
+        AVLBiNodeImpl<K, V> c = b.right();
+        AVLBiNodeImpl<K, V> m = c.left();
+        AVLBiNodeImpl<K, V> n = c.right();
 
         b.right(m);
         a.left(n);
@@ -143,8 +143,8 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
     }
 
     @Override
-    protected void root(BiNode<K, V> newRoot) {
-        AVLBiNode<K, V> root = AVLBiNode.asAVL(newRoot);
+    protected void root(BiNodeImpl<K, V> newRoot) {
+        AVLBiNodeImpl<K, V> root = AVLBiNodeImpl.asAVL(newRoot);
         super.root(root);
         if (root != null) {
             root.parent(null);
@@ -153,64 +153,64 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
     }
 
     @Override
-    protected AVLBiNode<K, V> node(BiNode<K, V> other) {
+    protected AVLBiNodeImpl<K, V> node(BiNodeImpl<K, V> other) {
         return node(other.key(), other.value());
     }
 
     @Override
-    protected AVLBiNode<K, V> node(K key, V value) {
-        AVLBiNode<K, V> res = new AVLBiNode<>(key);
+    protected AVLBiNodeImpl<K, V> node(K key, V value) {
+        AVLBiNodeImpl<K, V> res = new AVLBiNodeImpl<>(key);
         res.value(value);
         return res;
     }
 
-    public static class AVLBiNode<K, V> extends BiNode<K, V> {
+    public static class AVLBiNodeImpl<K, V> extends BiNodeImpl<K, V> {
         private int height;
-        private AVLBiNode<K, V> parent;
+        private AVLBiNodeImpl<K, V> parent;
 
-        protected AVLBiNode(K key) {
+        protected AVLBiNodeImpl(K key) {
             super(key);
         }
 
-        public static int height(AVLBiNode<?, ?> node) {
+        public static int height(AVLBiNodeImpl<?, ?> node) {
             return node == null ? 0 : node.height();
         }
 
-        protected static void reset(AVLBiNode<?, ?> node) {
+        protected static void reset(AVLBiNodeImpl<?, ?> node) {
             while (node != null) {
                 node.reset();
                 node = node.parent;
             }
         }
 
-        public static <X, Y> AVLBiNode<X, Y> leftOrNull(AVLBiNode<X, Y> node) {
+        public static <X, Y> AVLBiNodeImpl<X, Y> leftOrNull(AVLBiNodeImpl<X, Y> node) {
             return node == null ? null : node.left();
         }
 
-        public static <X, Y> AVLBiNode<X, Y> rightOrNull(AVLBiNode<X, Y> node) {
+        public static <X, Y> AVLBiNodeImpl<X, Y> rightOrNull(AVLBiNodeImpl<X, Y> node) {
             return node == null ? null : node.right();
         }
 
-        private static <X, Y> AVLBiNode<X, Y> asAVL(BiNode<X, Y> node) {
-            return (AVLBiNode<X, Y>) node;
+        private static <X, Y> AVLBiNodeImpl<X, Y> asAVL(BiNodeImpl<X, Y> node) {
+            return (AVLBiNodeImpl<X, Y>) node;
         }
 
-        public AVLBiNode<K, V> parent() {
+        public AVLBiNodeImpl<K, V> parent() {
             return parent;
         }
 
         @Override
-        public AVLBiNode<K, V> left() {
+        public AVLBiNodeImpl<K, V> left() {
             return asAVL(super.left());
         }
 
         @Override
-        public AVLBiNode<K, V> right() {
+        public AVLBiNodeImpl<K, V> right() {
             return asAVL(super.right());
         }
 
         @Override
-        public void right(BiNode<K, V> right) {
+        public void right(BiNodeImpl<K, V> right) {
             super.right(right);
             if (right != null) {
                 asAVL(right).parent(this);
@@ -219,7 +219,7 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
         }
 
         @Override
-        public void left(BiNode<K, V> left) {
+        public void left(BiNodeImpl<K, V> left) {
             super.left(left);
             if (left != null) {
                 asAVL(left).parent(this);
@@ -227,7 +227,7 @@ public class AVLBinarySearchTreeSimpleMap<K, V> extends BinarySearchTreeSimpleMa
             reset();
         }
 
-        protected void parent(AVLBiNode<K, V> parent) {
+        protected void parent(AVLBiNodeImpl<K, V> parent) {
             this.parent = parent;
         }
 

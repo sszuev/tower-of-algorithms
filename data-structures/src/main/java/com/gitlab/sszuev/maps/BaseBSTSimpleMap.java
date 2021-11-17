@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 06.11.2021.
  */
-abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
+abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
     protected final Comparator<K> comparator;
-    protected BiNode<K, V> root;
+    protected BiNodeImpl<K, V> root;
     protected long size;
 
     public BaseBSTSimpleMap(Comparator<K> comparator) {
@@ -22,8 +22,13 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
     }
 
     @Override
+    public BiNodeImpl<K, V> getRoot() {
+        return root;
+    }
+
+    @Override
     public V get(K key) {
-        BiNode<K, V> current = root;
+        BiNodeImpl<K, V> current = root;
         if (current == null) {
             return null;
         }
@@ -33,7 +38,7 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
                 return current.value();
             }
             if (res < 0) {
-                BiNode<K, V> left = current.left();
+                BiNodeImpl<K, V> left = current.left();
                 if (left != null) {
                     current = left;
                 } else {
@@ -41,7 +46,7 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
                 }
                 continue;
             }
-            BiNode<K, V> right = current.right();
+            BiNodeImpl<K, V> right = current.right();
             if (right == null) {
                 return null;
             }
@@ -49,7 +54,7 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
         }
     }
 
-    protected void root(BiNode<K, V> newRoot) {
+    protected void root(BiNodeImpl<K, V> newRoot) {
         root = newRoot;
     }
 
@@ -68,12 +73,12 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
         return (Comparable<? super K>) key;
     }
 
-    protected BiNode<K, V> node(BiNode<K, V> other) {
+    protected BiNodeImpl<K, V> node(BiNodeImpl<K, V> other) {
         return node(other.key(), other.value());
     }
 
-    protected BiNode<K, V> node(K key, V value) {
-        BiNode<K, V> res = new BiNode<>(key);
+    protected BiNodeImpl<K, V> node(K key, V value) {
+        BiNodeImpl<K, V> res = new BiNodeImpl<>(key);
         res.value(value);
         return res;
     }
@@ -81,12 +86,12 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
     /**
      * Created by @ssz on 21.09.2021.
      */
-    public static class BiNode<K, V> implements TreeNode<K> {
+    public static class BiNodeImpl<K, V> implements BiNode<K> {
         private final K key;
-        private BiNode<K, V> left, right;
+        private BiNodeImpl<K, V> left, right;
         private V value;
 
-        protected BiNode(K key) {
+        protected BiNodeImpl(K key) {
             this.key = Objects.requireNonNull(key);
         }
 
@@ -94,24 +99,26 @@ abstract class BaseBSTSimpleMap<K, V> implements SimpleMap<K, V> {
             this.value = value;
         }
 
-        public BiNode<K, V> left() {
+        @Override
+        public BiNodeImpl<K, V> left() {
             return left;
         }
 
-        public BiNode<K, V> right() {
+        @Override
+        public BiNodeImpl<K, V> right() {
             return right;
         }
 
-        protected void right(BiNode<K, V> right) {
+        protected void right(BiNodeImpl<K, V> right) {
             this.right = right;
         }
 
-        protected void left(BiNode<K, V> left) {
+        protected void left(BiNodeImpl<K, V> left) {
             this.left = left;
         }
 
         @Override
-        public Stream<TreeNode<K>> children() {
+        public Stream<BiNodeImpl<K, V>> children() {
             return Stream.of(left, right);
         }
 

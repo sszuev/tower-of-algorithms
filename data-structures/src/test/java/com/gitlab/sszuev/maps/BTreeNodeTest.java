@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by @ssz on 13.11.2021.
  */
-public class TmpBNodeTest {
+public class BTreeNodeTest {
 
     @Test
     public void testPut3() {
@@ -116,7 +116,7 @@ public class TmpBNodeTest {
     @SuppressWarnings("unchecked")
     private static BTreeSimpleMap.BNodeImpl<Integer, String> createTestBNode(int... keys) {
         BTreeSimpleMap.BNodeImpl.ItemImpl<Integer, String>[] items = Arrays.stream(keys)
-                .mapToObj(TmpBNodeTest::createTestItem).toArray(BTreeSimpleMap.BNodeImpl.ItemImpl[]::new);
+                .mapToObj(BTreeNodeTest::createTestItem).toArray(BTreeSimpleMap.BNodeImpl.ItemImpl[]::new);
         return new BTreeSimpleMap.BNodeImpl<>(items);
     }
 

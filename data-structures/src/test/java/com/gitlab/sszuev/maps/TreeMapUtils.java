@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -16,22 +15,7 @@ import java.util.stream.Stream;
  */
 public class TreeMapUtils {
 
-    private static final TreeNode<?> EMPTY = new TreeNode<>() {
-        @Override
-        public Stream<TreeNode<Object>> children() {
-            return Stream.empty();
-        }
-
-        @Override
-        public Object key() {
-            return null;
-        }
-    };
-
-    @SuppressWarnings("unchecked")
-    public static <X> TreeNode<X> createEmpty() {
-        return (TreeNode<X>) EMPTY;
-    }
+    private static final TreeNode EMPTY = Stream::empty;
 
     /**
      * Represents a {@code SimpleMap} as a {@code String}.
@@ -40,30 +24,29 @@ public class TreeMapUtils {
      * @return {@code String}
      */
     public static String print(SimpleMap<?, ?> map) {
-        if (map instanceof BaseBSTSimpleMap) {
-            return print(((BaseBSTSimpleMap<?, ?>) map).root);
-        }
-        if (map instanceof BTreeSimpleMap) {
-            return print(((BTreeSimpleMap<?, ?>) map).root);
+        if (map instanceof HasTreeRoot) {
+            return print(((HasTreeRoot) map).getRoot());
         }
         return map.toString();
     }
 
-    public static String print(TreeNode<?> root) {
+    public static String print(TreeNode root) {
         return root == null ? "(empty)" : doPrint(root).toString();
     }
 
-    public static long size(BaseBSTSimpleMap.BiNode<?, ?> node) {
+    public static long size(BiNode<?> node) {
         return node == null ? 0 : node.size();
     }
 
-    public static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNode<X, V> node) {
+    public static long size(MultiNode<?> node) {
+        return node == null ? 0 : node.size();
+    }
+
+    public static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNodeImpl<X, V> node) {
         return isBST(node, null, null);
     }
 
-    private static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNode<X, V> root,
-                                                              BaseBSTSimpleMap.BiNode<X, V> min,
-                                                              BaseBSTSimpleMap.BiNode<X, V> max) {
+    private static <X extends Comparable<X>> boolean isBST(BiNode<X> root, BiNode<X> min, BiNode<X> max) {
         if (root == null)
             return true;
         X data = root.key();
@@ -73,13 +56,20 @@ public class TreeMapUtils {
         return isBST(root.left(), min, root) && isBST(root.right(), root, max);
     }
 
-    private static <X> StringBlock doPrint(TreeNode<X> root) {
+    private static StringBlock doPrint(TreeNode root) {
         StringBlock res = new StringBlock();
-        List<TreeNode<X>> children = root.children().collect(Collectors.toList());
+        List<TreeNode> children = root.children().collect(Collectors.toList());
         if (!children.stream().allMatch(Objects::isNull))
-            children.stream().map(x -> x == null ? createEmpty() : x).forEach(x -> res.addBlock(doPrint(x)));
-        res.addLine(Optional.ofNullable(root.key()).map(Object::toString).orElse(null));
+            children.stream().map(x -> x == null ? EMPTY : x).forEach(x -> res.addBlock(doPrint(x)));
+        res.addLine(toStringOrNull(root));
         return res;
+    }
+
+    private static String toStringOrNull(TreeNode node) {
+        if (EMPTY == node) {
+            return null;
+        }
+        return node instanceof BiNode ? String.valueOf(((BiNode<?>) node).key()) : node.toString();
     }
 
     private static String withSpaces(String space, int length) {
@@ -105,9 +95,20 @@ public class TreeMapUtils {
         if (!(map instanceof BaseBSTSimpleMap)) {
             return;
         }
-        System.out.println(print(map));
-        Assertions.assertTrue(isBST(((BaseBSTSimpleMap<K, V>) map).root), "Not a BST");
-        Assertions.assertEquals(size(((BaseBSTSimpleMap<K, V>) map).root), map.size(), "Wrong size");
+        BaseBSTSimpleMap.BiNodeImpl<K, V> root = ((BaseBSTSimpleMap<K, V>) map).getRoot();
+        System.out.println(print(root));
+        Assertions.assertTrue(isBST(root), "Not a BST");
+        Assertions.assertEquals(size(root), map.size(), "Wrong size");
+        System.out.println("-".repeat(42));
+    }
+
+    public static <K extends Comparable<K>, V> void assertBTree(SimpleMap<K, V> map) {
+        if (!(map instanceof BTreeSimpleMap)) {
+            return;
+        }
+        BTreeSimpleMap.BNodeImpl<K, V> root = ((BTreeSimpleMap<K, V>) map).getRoot();
+        System.out.println(print(root));
+        Assertions.assertEquals(size(root), map.size(), "Wrong size");
         System.out.println("-".repeat(42));
     }
 

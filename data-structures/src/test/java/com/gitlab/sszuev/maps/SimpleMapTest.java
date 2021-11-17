@@ -450,28 +450,28 @@ public class SimpleMapTest {
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
                 super.assertTree(map);
                 TreeMapUtils.assertBST(map);
-                AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
+                AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
                 if (root == null) {
                     return;
                 }
                 AssertionError error = new AssertionError("Three is not balanced");
                 root.preOrder(node -> {
-                    AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> n = asAVL(node);
-                    int leftHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.left());
-                    int rightHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.right());
+                    AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> n = asAVL(node);
+                    int leftHeight = AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl.height(n.left());
+                    int rightHeight = AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl.height(n.right());
                     if (Math.abs(rightHeight - leftHeight) > 1) {
                         throw error;
                     }
                 });
             }
 
-            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
                 return asAVL(map.root);
             }
 
             @SuppressWarnings("unchecked")
-            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> asAVL(TreeNode<?> node) {
-                return (AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V>) node;
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> asAVL(TreeNode node) {
+                return (AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V>) node;
             }
         },
         TREAP_BST {

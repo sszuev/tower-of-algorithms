@@ -26,17 +26,17 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
     }
 
     @Override
-    protected final TreapNode<K, V> node(K key, V value) {
+    protected final TreapNodeImpl<K, V> node(K key, V value) {
         return node(key, value, priorityFunction.applyAsDouble(key, value));
     }
 
     @Override
-    protected final TreapNode<K, V> node(BiNode<K, V> other) {
-        return node(other.key(), other.value(), ((TreapNode<K, V>) other).priority());
+    protected final TreapNodeImpl<K, V> node(BiNodeImpl<K, V> other) {
+        return node(other.key(), other.value(), ((TreapNodeImpl<K, V>) other).priority());
     }
 
-    protected TreapNode<K, V> node(K key, V value, double priority) {
-        TreapNode<K, V> res = new TreapNode<>(key, priority);
+    protected TreapNodeImpl<K, V> node(K key, V value, double priority) {
+        TreapNodeImpl<K, V> res = new TreapNodeImpl<>(key, priority);
         res.value(value);
         return res;
     }
@@ -49,18 +49,18 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
             size++;
             return null;
         }
-        Object split = split(key, (TreapNode<K, V>) root, TreapSimpleMap.super::compare, false, this::node);
-        if (split instanceof TreapNode) {
-            TreapNode<K, V> node = (TreapNode<K, V>) split;
+        Object split = split(key, (TreapNodeImpl<K, V>) root, TreapSimpleMap.super::compare, false, this::node);
+        if (split instanceof TreapSimpleMap.TreapNodeImpl) {
+            TreapNodeImpl<K, V> node = (TreapNodeImpl<K, V>) split;
             V prev = node.value();
             node.value(value);
             return prev;
         }
-        TreapNode<K, V> left = ((TreapNode[]) split)[0];
-        TreapNode<K, V> right = ((TreapNode[]) split)[1];
+        TreapNodeImpl<K, V> left = ((TreapNodeImpl[]) split)[0];
+        TreapNodeImpl<K, V> right = ((TreapNodeImpl[]) split)[1];
 
-        TreapNode<K, V> newLeft = merge(left, node(key, value), this::node);
-        TreapNode<K, V> newRoot = merge(newLeft, right, this::node);
+        TreapNodeImpl<K, V> newLeft = merge(left, node(key, value), this::node);
+        TreapNodeImpl<K, V> newRoot = merge(newLeft, right, this::node);
         root(newRoot);
         size++;
         return null;
@@ -72,32 +72,32 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
         if (root == null) {
             return null;
         }
-        TreapNode<K, V>[] first = (TreapNode[]) split(key, (TreapNode<K, V>) root,
+        TreapNodeImpl<K, V>[] first = (TreapNodeImpl[]) split(key, (TreapNodeImpl<K, V>) root,
                 (a, b) -> TreapSimpleMap.super.compare(a, b) + 1, true, this::node);
-        TreapNode<K, V> firstLeft = first[0];
-        TreapNode<K, V> firstRight = first[1];
+        TreapNodeImpl<K, V> firstLeft = first[0];
+        TreapNodeImpl<K, V> firstRight = first[1];
         if (firstRight == null) {
             return null;
         }
-        TreapNode<K, V>[] second = (TreapNode[]) split(key, firstRight,
+        TreapNodeImpl<K, V>[] second = (TreapNodeImpl[]) split(key, firstRight,
                 TreapSimpleMap.super::compare, true, this::node);
-        TreapNode<K, V> secondLeft = second[0];
-        TreapNode<K, V> secondRight = second[1];
+        TreapNodeImpl<K, V> secondLeft = second[0];
+        TreapNodeImpl<K, V> secondRight = second[1];
         if (secondLeft == null) {
             return null;
         }
         if (!Objects.equals(secondLeft.key(), key)) {
             throw new IllegalStateException();
         }
-        TreapNode<K, V> newRoot = merge(firstLeft, secondRight, this::node);
+        TreapNodeImpl<K, V> newRoot = merge(firstLeft, secondRight, this::node);
         root(newRoot);
         size--;
         return secondLeft.value();
     }
 
-    protected static <X, Y> TreapNode<X, Y> merge(TreapNode<X, Y> left,
-                                                  TreapNode<X, Y> right,
-                                                  UnaryOperator<TreapNode<X, Y>> factory) {
+    protected static <X, Y> TreapNodeImpl<X, Y> merge(TreapNodeImpl<X, Y> left,
+                                                      TreapNodeImpl<X, Y> right,
+                                                      UnaryOperator<TreapNodeImpl<X, Y>> factory) {
         if (left == null) {
             return right;
         }
@@ -105,12 +105,12 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
             return left;
         }
         if (left.priority() > right.priority()) {
-            TreapNode<X, Y> res = factory.apply(left);
+            TreapNodeImpl<X, Y> res = factory.apply(left);
             res.left(left.left());
             res.right(merge(left.right(), right, factory));
             return res;
         }
-        TreapNode<X, Y> res = factory.apply(right);
+        TreapNodeImpl<X, Y> res = factory.apply(right);
         res.right(right.right());
         res.left(merge(left, right.left(), factory));
         return res;
@@ -118,26 +118,26 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected static <X, Y> Object split(X key,
-                                         TreapNode<X, Y> current,
+                                         TreapNodeImpl<X, Y> current,
                                          Comparator<X> comparator,
                                          boolean splitOnEquals,
-                                         UnaryOperator<TreapNode<X, Y>> factory) {
+                                         UnaryOperator<TreapNodeImpl<X, Y>> factory) {
         int res = comparator.compare(current.key(), key);
         if (!splitOnEquals && res == 0) {
             return current;
         }
-        TreapNode<X, Y> right, left;
-        TreapNode<X, Y> newTree = null;
+        TreapNodeImpl<X, Y> right, left;
+        TreapNodeImpl<X, Y> newTree = null;
         if (res <= 0) {
             if (current.right() == null) {
                 right = null;
             } else {
                 Object split = split(key, current.right(), comparator, splitOnEquals, factory);
-                if (!(split instanceof TreapNode[])) {
+                if (!(split instanceof TreapNodeImpl[])) {
                     return split;
                 }
-                newTree = ((TreapNode[]) split)[0];
-                right = ((TreapNode[]) split)[1];
+                newTree = ((TreapNodeImpl[]) split)[0];
+                right = ((TreapNodeImpl[]) split)[1];
             }
             left = factory.apply(current);
             left.left(current.left());
@@ -147,23 +147,23 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
                 left = null;
             } else {
                 Object split = split(key, current.left(), comparator, splitOnEquals, factory);
-                if (!(split instanceof TreapNode[])) {
+                if (!(split instanceof TreapNodeImpl[])) {
                     return split;
                 }
-                left = ((TreapNode[]) split)[0];
-                newTree = ((TreapNode[]) split)[1];
+                left = ((TreapNodeImpl[]) split)[0];
+                newTree = ((TreapNodeImpl[]) split)[1];
             }
             right = factory.apply(current);
             right.left(newTree);
             right.right(current.right());
         }
-        return new TreapNode[]{left, right};
+        return new TreapNodeImpl[]{left, right};
     }
 
-    public static class TreapNode<K, V> extends BiNode<K, V> {
+    public static class TreapNodeImpl<K, V> extends BiNodeImpl<K, V> {
         private final double priority;
 
-        protected TreapNode(K key, double priority) {
+        protected TreapNodeImpl(K key, double priority) {
             super(key);
             this.priority = priority;
         }
@@ -173,13 +173,13 @@ public class TreapSimpleMap<K, V> extends BaseBSTSimpleMap<K, V> {
         }
 
         @Override
-        public TreapNode<K, V> left() {
-            return (TreapNode<K, V>) super.left();
+        public TreapNodeImpl<K, V> left() {
+            return (TreapNodeImpl<K, V>) super.left();
         }
 
         @Override
-        public TreapNode<K, V> right() {
-            return (TreapNode<K, V>) super.right();
+        public TreapNodeImpl<K, V> right() {
+            return (TreapNodeImpl<K, V>) super.right();
         }
 
         @Override
