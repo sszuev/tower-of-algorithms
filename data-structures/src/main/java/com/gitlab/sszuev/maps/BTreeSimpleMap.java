@@ -125,7 +125,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             insertIndex = -res - 1;
         }
         parent.insertItem(middle, insertIndex);
-        if (insertIndex == 0) { // for new root
+        if (insertIndex == 0) {
             parent.left(left);
             BNodeImpl<K, V> prevRight = parent.right(0, right);
             right.left(prevRight);
@@ -159,6 +159,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             rightArray[i - start] = nodeArray[i];
             BNodeImpl.parent((rightArray[i - start] = nodeArray[i]).link, res);
         }
+        res.left(node.item(this.middle).link);
         return res;
     }
 
@@ -317,10 +318,9 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         }
 
         protected BNodeImpl<K, V> left(BNodeImpl<K, V> leftRef) {
+            parent(leftRef, this);
             BNodeImpl<K, V> prev = this.left;
             this.left = leftRef;
-            parent(leftRef, this);
-            parent(prev, null);
             return prev;
         }
 
@@ -333,7 +333,6 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             BNodeImpl<K, V> prev = item.link;
             item.link = rightRef;
             parent(rightRef, this);
-            parent(prev, null);
             return prev;
         }
 

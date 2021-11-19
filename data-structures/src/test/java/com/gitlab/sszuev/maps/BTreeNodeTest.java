@@ -20,6 +20,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
+            assertParents(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -33,6 +34,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
+            assertParents(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -40,6 +42,26 @@ public class BTreeNodeTest {
         Assertions.assertTrue(res.contains("[50|60]"));
         Assertions.assertEquals(4, res.split("\n").length);
         Assertions.assertEquals("[20]", map.root.toString());
+    }
+
+    @Test
+    public void testPut3_catchBug() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>();
+        long count = 0;
+        String res = null;
+        for (int k : new int[]{49, 191, 118, 210, 120, 123, 284, 190, 411, 213, 151, 165, 228}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            Assertions.assertNull(map.put(k, "V-" + k));
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            assertParents(map);
+            Assertions.assertEquals(++count, map.size());
+            Assertions.assertEquals(count, res.split("[]|]").length - 1);
+        }
+        Assertions.assertEquals(2, res.split("\\|").length - 1);
+        Assertions.assertTrue(res.contains("[213|284]"));
+        Assertions.assertEquals(3, res.split("\n").length);
+        Assertions.assertEquals("[123|191]", map.root.toString());
     }
 
     @Test
@@ -52,6 +74,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
+            assertParents(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -79,6 +102,20 @@ public class BTreeNodeTest {
         BTreeSimpleMap<Integer, String> res = new BTreeSimpleMap<>();
         res.root = createTestTree();
         return res;
+    }
+
+    static void assertParents(BTreeSimpleMap<?, ?> map) {
+        BTreeSimpleMap.BNodeImpl<?, ?> root = map.getRoot();
+        Assertions.assertNull(root.parent());
+        Assertions.assertTrue(root.children()
+                .map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(BTreeNodeTest::hasParent));
+    }
+
+    static boolean hasParent(BTreeSimpleMap.BNodeImpl<?, ?> node) {
+        if (node.parent() == null) {
+            return false;
+        }
+        return node.children().map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(BTreeNodeTest::hasParent);
     }
 
     public static BTreeSimpleMap.BNodeImpl<Integer, String> createTestTree() {
