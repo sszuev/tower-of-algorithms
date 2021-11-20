@@ -3,6 +3,7 @@ package com.gitlab.sszuev.maps;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,18 +43,35 @@ public class TreeMapUtils {
         return node == null ? 0 : node.size();
     }
 
-    public static <X extends Comparable<X>, V> boolean isBST(BaseBSTSimpleMap.BiNodeImpl<X, V> node) {
-        return isBST(node, null, null);
+    public static <X> boolean isBST(BiNode<X> node, Comparator<X> comp) {
+        return isBST(node, null, null, comp);
     }
 
-    private static <X extends Comparable<X>> boolean isBST(BiNode<X> root, BiNode<X> min, BiNode<X> max) {
+    private static <X> boolean isBST(BiNode<X> root, BiNode<X> min, BiNode<X> max, Comparator<X> comp) {
         if (root == null)
             return true;
         X data = root.key();
-        if ((min != null && data.compareTo(min.key()) <= 0) || (max != null && data.compareTo(max.key()) > 0)) {
+        if ((min != null && comp.compare(data, min.key()) <= 0) || (max != null && comp.compare(data, max.key()) > 0)) {
             return false;
         }
-        return isBST(root.left(), min, root) && isBST(root.right(), root, max);
+        return isBST(root.left(), min, root, comp) && isBST(root.right(), root, max, comp);
+    }
+
+    static <X> boolean hasSortedKeys(MultiNode<X> node, Comparator<X> comp) {
+        List<X> keys = node.keys().collect(Collectors.toList());
+        if (keys.isEmpty()) {
+            return false;
+        }
+        X prev = null;
+        for (X current : keys) {
+            if (prev != null) {
+                if (comp.compare(prev, current) > 0) {
+                    return false;
+                }
+            }
+            prev = current;
+        }
+        return node.children().allMatch(it -> hasSortedKeys(it, comp));
     }
 
     private static StringBlock doPrint(TreeNode root) {
@@ -91,25 +109,67 @@ public class TreeMapUtils {
         return withSpaces(space, left) + str + withSpaces(space, right);
     }
 
-    public static <K extends Comparable<K>, V> void assertBST(SimpleMap<K, V> map) {
+    public static <K, V> void assertBST(SimpleMap<K, V> map) {
         if (!(map instanceof BaseBSTSimpleMap)) {
             return;
         }
-        BaseBSTSimpleMap.BiNodeImpl<K, V> root = ((BaseBSTSimpleMap<K, V>) map).getRoot();
+        BaseBSTSimpleMap<K, V> bstSimpleMap = (BaseBSTSimpleMap<K, V>) map;
+        BaseBSTSimpleMap.BiNodeImpl<K, V> root = bstSimpleMap.getRoot();
         System.out.println(print(root));
-        Assertions.assertTrue(isBST(root), "Not a BST");
+        Assertions.assertTrue(isBST(root, getComparator(bstSimpleMap)), "Not a BST");
         Assertions.assertEquals(size(root), map.size(), "Wrong size");
         System.out.println("-".repeat(42));
     }
 
-    public static <K extends Comparable<K>, V> void assertBTree(SimpleMap<K, V> map) {
+    public static <K, V> void assertBTree(SimpleMap<K, V> map) {
         if (!(map instanceof BTreeSimpleMap)) {
             return;
         }
-        BTreeSimpleMap.BNodeImpl<K, V> root = ((BTreeSimpleMap<K, V>) map).getRoot();
+        BTreeSimpleMap<K, V> bTreeSimpleMap = (BTreeSimpleMap<K, V>) map;
+        BTreeSimpleMap.BNodeImpl<K, V> root = bTreeSimpleMap.getRoot();
         System.out.println(print(root));
+        assertBNode(bTreeSimpleMap);
+        assertParents(root);
         Assertions.assertEquals(size(root), map.size(), "Wrong size");
         System.out.println("-".repeat(42));
+    }
+
+    static <X> void assertBNode(BTreeSimpleMap<X, ?> map) {
+        Assertions.assertTrue(hasSortedKeys(map.root, getComparator(map)));
+    }
+
+    static <X> Comparator<X> getComparator(BTreeSimpleMap<X, ?> map) {
+        Comparator<X> comp = map.comparator;
+        if (comp == null) {
+            comp = naturalComparator();
+        }
+        return comp;
+    }
+
+    static <X> Comparator<X> getComparator(BaseBSTSimpleMap<X, ?> map) {
+        Comparator<X> comp = map.comparator;
+        if (comp == null) {
+            comp = naturalComparator();
+        }
+        return comp;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <X> Comparator<X> naturalComparator() {
+        return (o1, o2) -> ((Comparable) o1).compareTo(o2);
+    }
+
+    static void assertParents(BTreeSimpleMap.BNodeImpl<?, ?> root) {
+        Assertions.assertNull(root.parent());
+        Assertions.assertTrue(root.children()
+                .map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(TreeMapUtils::hasParent));
+    }
+
+    private static boolean hasParent(BTreeSimpleMap.BNodeImpl<?, ?> node) {
+        if (node.parent() == null) {
+            return false;
+        }
+        return node.children().map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(TreeMapUtils::hasParent);
     }
 
     private static class StringBlock {

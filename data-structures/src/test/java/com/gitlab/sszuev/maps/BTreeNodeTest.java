@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 /**
+ * To test {@link BTreeSimpleMap}.
+ * <p>
  * Created by @ssz on 13.11.2021.
  */
 public class BTreeNodeTest {
@@ -20,7 +22,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
-            assertParents(map);
+            assertBTree(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -34,7 +36,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
-            assertParents(map);
+            assertBTree(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -54,7 +56,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
-            assertParents(map);
+            assertBTree(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -74,7 +76,7 @@ public class BTreeNodeTest {
             Assertions.assertNull(map.put(k, "V-" + k));
             res = TreeMapUtils.print(map);
             System.out.println(res);
-            assertParents(map);
+            assertBTree(map);
             Assertions.assertEquals(++count, map.size());
             Assertions.assertEquals(count, res.split("[]|]").length - 1);
         }
@@ -98,27 +100,45 @@ public class BTreeNodeTest {
         }
     }
 
+    @Test
+    public void testDelCase1() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
+        for (int k : new int[]{5, 8, 1, 2, 7, 9, 10}) {
+            Assertions.assertNull(map.put(k, "V-" + k));
+        }
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(7, map.size());
+        System.out.println("=".repeat(42));
+
+        Assertions.assertEquals("V-2", map.remove(2));
+        res = TreeMapUtils.print(map);
+        System.out.println(res);
+        assertBTree(map);
+        Assertions.assertEquals(6, map.size());
+        System.out.println("=".repeat(42));
+
+        Assertions.assertEquals("V-9", map.remove(9));
+        res = TreeMapUtils.print(map);
+        System.out.println(res);
+        assertBTree(map);
+        Assertions.assertEquals(5, map.size());
+    }
+
     public static BTreeSimpleMap<Integer, String> createTestMap() {
         BTreeSimpleMap<Integer, String> res = new BTreeSimpleMap<>();
         res.root = createTestTree();
         return res;
     }
 
-    static void assertParents(BTreeSimpleMap<?, ?> map) {
-        BTreeSimpleMap.BNodeImpl<?, ?> root = map.getRoot();
-        Assertions.assertNull(root.parent());
-        Assertions.assertTrue(root.children()
-                .map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(BTreeNodeTest::hasParent));
+    private static <X> void assertBTree(BTreeSimpleMap<X, ?> map) {
+        BTreeSimpleMap.BNodeImpl<X, ?> root = map.getRoot();
+        TreeMapUtils.assertBNode(map);
+        TreeMapUtils.assertParents(root);
+        Assertions.assertEquals(TreeMapUtils.size(root), map.size(), "Wrong size");
     }
 
-    static boolean hasParent(BTreeSimpleMap.BNodeImpl<?, ?> node) {
-        if (node.parent() == null) {
-            return false;
-        }
-        return node.children().map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(BTreeNodeTest::hasParent);
-    }
-
-    public static BTreeSimpleMap.BNodeImpl<Integer, String> createTestTree() {
+    private static BTreeSimpleMap.BNodeImpl<Integer, String> createTestTree() {
         BTreeSimpleMap.BNodeImpl<Integer, String> a3 = createTestBNode(1);
         BTreeSimpleMap.BNodeImpl<Integer, String> b3 = createTestBNode(5);
         BTreeSimpleMap.BNodeImpl<Integer, String> c3 = createTestBNode(7);

@@ -62,12 +62,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             if (res >= 0) {
                 return items[res].value();
             }
-            int insertionPoint = -res - 1;
-            if (insertionPoint < 2) {
-                current = insertionPoint == 0 ? current.left() : current.right(0);
-            } else {
-                current = current.right(insertionPoint - 1);
-            }
+            current = next(current, -res - 1);
         }
         return null;
     }
@@ -94,11 +89,37 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
                 size++;
                 return item.value(value);
             }
-            if (insertIndex < 2) {
-                current = insertIndex == 0 ? current.left() : current.right(0);
-            } else {
-                current = current.right(insertIndex - 1);
+            current = next(current, insertIndex);
+        }
+    }
+
+    @Override
+    public V remove(K key) {
+        BNodeImpl<K, V> current = root;
+        int prevIndex = -1;
+        while (current != null) {
+            if (current.isEmpty()) {
+                break;
             }
+            BNodeImpl.ItemImpl<K, V>[] items = current.items();
+            int res = binarySearch(items, current.lastIndex(), key);
+            if (res >= 0) {
+                V value = items[res].value();
+                deleteNode(current, res, prevIndex);
+                this.size--;
+                return value;
+            }
+            prevIndex = -res - 1;
+            current = next(current, prevIndex);
+        }
+        return null;
+    }
+
+    protected BNodeImpl<K, V> next(BNodeImpl<K, V> current, int insertIndex) {
+        if (insertIndex < 2) {
+            return insertIndex == 0 ? current.left() : current.right(0);
+        } else {
+            return current.right(insertIndex - 1);
         }
     }
 
@@ -109,7 +130,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
     protected void rebalance(BNodeImpl<K, V> node) {
         BNodeImpl<K, V> left = splitLeft(node);
         BNodeImpl<K, V> right = splitRight(node);
-        BNodeImpl.ItemImpl<K, V> middle = node.item(this.middle);
+        BNodeImpl.ItemImpl<K, V> middle = node.items()[this.middle];
 
         BNodeImpl<K, V> parent = node.parent();
         int insertIndex;
@@ -156,16 +177,24 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         BNodeImpl.ItemImpl<K, V>[] nodeArray = node.items();
         int start = middle + 1;
         for (int i = start; i < nodeArray.length; i++) {
-            rightArray[i - start] = nodeArray[i];
-            BNodeImpl.parent((rightArray[i - start] = nodeArray[i]).link, res);
+            int index = i - start;
+            BNodeImpl.parent((rightArray[index] = nodeArray[i]).link, res);
         }
-        res.left(node.item(this.middle).link);
+        res.left(node.items()[this.middle].link);
         return res;
     }
 
-    @Override
-    public V remove(K key) {
-        // TODO
+    protected void deleteNode(BNodeImpl<K, V> node, int index, int parent) {
+        if (node.isLeaf()) {
+            if (node.lastIndex() + 1 >= middle) {
+                // case 1:
+                node.deleteItem(index);
+                return;
+            }
+            // case 2a & case 2b
+        }
+        // case 3:
+        // TODO:
         throw new UnsupportedOperationException("TODO");
     }
 
@@ -225,11 +254,11 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         return res;
     }
 
-    public static class BNodeImpl<K, V> implements MultiNode<V> {
+    public static class BNodeImpl<K, V> implements MultiNode<K> {
         private final ItemImpl<K, V>[] items;
         private int lastIndex;
         private BNodeImpl<K, V> parent;
-        private BNodeImpl<K, V> left;
+        private BNodeImpl<K, V> link;
 
         public BNodeImpl(int degree) {
             this(newItemArray(degree));
@@ -242,10 +271,6 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         @SuppressWarnings("unchecked")
         private static <X, Y> BNodeImpl.ItemImpl<X, Y>[] newItemArray(int size) {
             return (BNodeImpl.ItemImpl<X, Y>[]) Array.newInstance(BNodeImpl.ItemImpl.class, size);
-        }
-
-        protected BNodeImpl.ItemImpl<K, V> item(int i) {
-            return items[i];
         }
 
         protected BNodeImpl.ItemImpl<K, V>[] items() {
@@ -273,7 +298,19 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             this.lastIndex++;
         }
 
-        public int lastIndex() {
+        protected void deleteItem(int index) {
+            int lastIndex = lastIndex();
+            if (index == lastIndex) {
+                items[index] = null;
+                this.lastIndex--;
+                return;
+            }
+            System.arraycopy(items, index + 1, items, index, lastIndex - index);
+            items[lastIndex] = null;
+            this.lastIndex--;
+        }
+
+        protected int lastIndex() {
             return lastIndex <= 0 ? lastIndex = calcLastIndex() : lastIndex;
         }
 
@@ -288,25 +325,25 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         }
 
         @Override
-        public Stream<MultiNode<V>> children() {
-            Stream<MultiNode<V>> res = Arrays.stream(items).flatMap(BNodeImpl::right);
-            if (left != null) {
-                res = Stream.concat(Stream.of(left), res);
+        public Stream<MultiNode<K>> children() {
+            Stream<MultiNode<K>> res = Arrays.stream(items).flatMap(BNodeImpl::right);
+            if (link != null) {
+                res = Stream.concat(Stream.of(link), res);
             }
             return res;
         }
 
         @Override
-        public Stream<V> keys() {
-            return Arrays.stream(items, 0, lastIndex() + 1).map(ItemImpl::value);
+        public Stream<K> keys() {
+            return Arrays.stream(items, 0, lastIndex() + 1).map(ItemImpl::key);
         }
 
-        private static <X> Stream<MultiNode<X>> right(ItemImpl<?, X> e) {
+        private static <X> Stream<MultiNode<X>> right(ItemImpl<X, ?> e) {
             return e == null ? Stream.empty() : Stream.ofNullable(e.link);
         }
 
         public boolean isLeaf() {
-            return left == null;
+            return link == null;
         }
 
         protected BNodeImpl<K, V> parent() {
@@ -314,18 +351,19 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         }
 
         public BNodeImpl<K, V> left() {
-            return left;
+            return link;
         }
 
         protected BNodeImpl<K, V> left(BNodeImpl<K, V> leftRef) {
             parent(leftRef, this);
-            BNodeImpl<K, V> prev = this.left;
-            this.left = leftRef;
+            BNodeImpl<K, V> prev = this.link;
+            this.link = leftRef;
             return prev;
         }
 
         public BNodeImpl<K, V> right(int index) {
-            return items[index].link;
+            ItemImpl<K, V> item = items[index];
+            return item == null ? null : item.link;
         }
 
         protected BNodeImpl<K, V> right(int index, BNodeImpl<K, V> rightRef) {
@@ -376,7 +414,5 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
                 return String.format("{%s}", key);
             }
         }
-
     }
-
 }
