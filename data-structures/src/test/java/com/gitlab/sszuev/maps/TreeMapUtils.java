@@ -48,8 +48,9 @@ public class TreeMapUtils {
     }
 
     private static <X> boolean isBST(BiNode<X> root, BiNode<X> min, BiNode<X> max, Comparator<X> comp) {
-        if (root == null)
+        if (root == null) {
             return true;
+        }
         X data = root.key();
         if ((min != null && comp.compare(data, min.key()) <= 0) || (max != null && comp.compare(data, max.key()) > 0)) {
             return false;
@@ -58,6 +59,9 @@ public class TreeMapUtils {
     }
 
     static <X> boolean hasSortedKeys(MultiNode<X> node, Comparator<X> comp) {
+        if (node == null) {
+            return true;
+        }
         List<X> keys = node.keys().collect(Collectors.toList());
         if (keys.isEmpty()) {
             return false;
@@ -160,6 +164,9 @@ public class TreeMapUtils {
     }
 
     static void assertParents(BTreeSimpleMap.BNodeImpl<?, ?> root) {
+        if (root == null) {
+            return;
+        }
         Assertions.assertNull(root.parent());
         Assertions.assertTrue(root.children()
                 .map(x -> (BTreeSimpleMap.BNodeImpl<?, ?>) x).allMatch(TreeMapUtils::hasParent));
