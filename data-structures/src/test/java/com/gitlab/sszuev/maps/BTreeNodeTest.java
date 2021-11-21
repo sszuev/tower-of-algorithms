@@ -20,7 +20,7 @@ public class BTreeNodeTest {
         String res = null;
         for (int k : new int[]{10, 20, 30, 40, 5, 50, 60, 70, 45, 55, 15, 25, 26, 16}) {
             System.out.println("==".repeat(42) + "::k=" + k);
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
             res = TreeMapUtils.print(map);
             System.out.println(res);
             assertBTree(map);
@@ -34,7 +34,7 @@ public class BTreeNodeTest {
 
         for (int k : new int[]{18, 6, 8}) {
             System.out.println("==".repeat(42) + "::k=" + k);
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
             res = TreeMapUtils.print(map);
             System.out.println(res);
             assertBTree(map);
@@ -54,7 +54,7 @@ public class BTreeNodeTest {
         String res = null;
         for (int k : new int[]{49, 191, 118, 210, 120, 123, 284, 190, 411, 213, 151, 165, 228}) {
             System.out.println("==".repeat(42) + "::k=" + k);
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
             res = TreeMapUtils.print(map);
             System.out.println(res);
             assertBTree(map);
@@ -74,7 +74,7 @@ public class BTreeNodeTest {
         String res = null;
         for (int k : new int[]{60, 40, 50, 100, 10, 80, 70, 90, 30, 20}) {
             System.out.println("==".repeat(42) + "::k=" + k);
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
             res = TreeMapUtils.print(map);
             System.out.println(res);
             assertBTree(map);
@@ -105,21 +105,21 @@ public class BTreeNodeTest {
     public void testDelCase1() {
         BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
         for (int k : new int[]{5, 8, 1, 2, 7, 9, 10}) {
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
         }
         String res = TreeMapUtils.print(map);
         System.out.println(res);
         Assertions.assertEquals(7, map.size());
         System.out.println("=".repeat(42));
 
-        Assertions.assertEquals("V-2", map.remove(2));
+        assertRemoveV(map, 2);
         res = TreeMapUtils.print(map);
         System.out.println(res);
         assertBTree(map);
         Assertions.assertEquals(6, map.size());
         System.out.println("=".repeat(42));
 
-        Assertions.assertEquals("V-9", map.remove(9));
+        assertRemoveV(map, 9);
         res = TreeMapUtils.print(map);
         System.out.println(res);
         assertBTree(map);
@@ -130,14 +130,14 @@ public class BTreeNodeTest {
     public void testDelCase2aDegree3RightFullHalfNode() {
         BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
         for (int k : new int[]{5, 8, 1, 7, 9, 10}) {
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
         }
         String res = TreeMapUtils.print(map);
         System.out.println(res);
         Assertions.assertEquals(6, map.size());
         System.out.println("=".repeat(42));
 
-        Assertions.assertEquals("V-7", map.remove(7));
+        assertRemoveV(map, 7);
         res = TreeMapUtils.print(map);
         System.out.println(res);
         assertBTree(map);
@@ -151,14 +151,14 @@ public class BTreeNodeTest {
     public void testDelCase2aDegree3LeftFullHalfNode() {
         BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
         for (int k : new int[]{23, 90, 4, 13, 64, 93}) {
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
         }
         String res = TreeMapUtils.print(map);
         System.out.println(res);
         Assertions.assertEquals(6, map.size());
         System.out.println("=".repeat(42));
 
-        Assertions.assertEquals("V-64", map.remove(64));
+        assertRemoveV(map, 64);
         res = TreeMapUtils.print(map);
         System.out.println(res);
         assertBTree(map);
@@ -169,10 +169,31 @@ public class BTreeNodeTest {
     }
 
     @Test
-    public void testDelCase2aDegree6() {
+    public void testDelCase2bDegree3() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
+        for (int k : new int[]{5, 9, 1, 8, 10}) {
+            assertPutV(map, k);
+        }
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(5, map.size());
+        System.out.println("=".repeat(42));
+
+        assertRemoveV(map, 8);
+        res = TreeMapUtils.print(map);
+        System.out.println(res);
+        assertBTree(map);
+        Assertions.assertEquals(4, map.size());
+        Assertions.assertEquals("[9]", map.root.toString());
+        Assertions.assertEquals("[1|5][10]",
+                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+    }
+
+    @Test
+    public void testDelCase2Degree6() {
         BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(6);
         for (int k : new int[]{44, 78, 233, 623, 12, 23, 34, 45, 67, 82, 130, 324, 456, 829, 888, 3443}) {
-            Assertions.assertNull(map.put(k, "V-" + k));
+            assertPutV(map, k);
         }
         String res = TreeMapUtils.print(map);
         System.out.println(res);
@@ -180,16 +201,35 @@ public class BTreeNodeTest {
 
         for (int k : new int[]{67, 324}) {
             System.out.println("=".repeat(42));
-            Assertions.assertEquals("V-" + k, map.remove(k));
+            assertRemoveV(map, k);
             res = TreeMapUtils.print(map);
             System.out.println(res);
             assertBTree(map);
-            System.out.println("=".repeat(42));
         }
 
         Assertions.assertEquals(14, map.size());
-        Assertions.assertEquals("[34|78|233|829]", map.root.toString());
+        Assertions.assertEquals("[34|78|233|829]", map.getRoot().toString());
         Assertions.assertEquals("[12|23][44|45][82|130][456|623][888|3443]",
+                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+
+        System.out.println("=".repeat(42));
+        assertRemoveV(map, 12);
+        res = TreeMapUtils.print(map);
+        System.out.println(res);
+        assertBTree(map);
+        Assertions.assertEquals(13, map.size());
+        Assertions.assertEquals("[78|233|829]", map.getRoot().toString());
+        Assertions.assertEquals("[23|34|44|45][82|130][456|623][888|3443]",
+                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+
+        System.out.println("=".repeat(42));
+        assertRemoveV(map, 3443);
+        res = TreeMapUtils.print(map);
+        System.out.println(res);
+        assertBTree(map);
+        Assertions.assertEquals(12, map.size());
+        Assertions.assertEquals("[78|233]", map.getRoot().toString());
+        Assertions.assertEquals("[23|34|44|45][82|130][456|623|829|888]",
                 map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
     }
 
@@ -204,6 +244,14 @@ public class BTreeNodeTest {
         TreeMapUtils.assertBNode(map);
         TreeMapUtils.assertParents(root);
         Assertions.assertEquals(TreeMapUtils.size(root), map.size(), "Wrong size");
+    }
+
+    private static void assertRemoveV(SimpleMap<Integer, String> map, int x) {
+        Assertions.assertEquals("V-" + x, map.remove(x));
+    }
+
+    private static void assertPutV(SimpleMap<Integer, String> map, int x) {
+        Assertions.assertNull(map.put(x, "V-" + x));
     }
 
     private static BTreeSimpleMap.BNodeImpl<Integer, String> createTestTree() {
