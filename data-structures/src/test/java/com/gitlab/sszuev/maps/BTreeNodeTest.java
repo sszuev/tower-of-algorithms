@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * To test {@link BTreeSimpleMap}.
@@ -12,6 +13,20 @@ import java.util.stream.Collectors;
  * Created by @ssz on 13.11.2021.
  */
 public class BTreeNodeTest {
+
+    @Test
+    public void testGet() {
+        BTreeSimpleMap<Integer, String> map = createTestMap();
+        System.out.println(TreeMapUtils.print(map));
+        for (int k : new int[]{1, 2, 5, 6, 7, 10, 11, 12, 14, 21, 33, 34, 55, 56, 67, 122}) {
+            System.out.println("Test key=" + k);
+            Assertions.assertEquals("v=" + k, map.get(k), "Wrong value for key " + k);
+        }
+        for (int k : new int[]{4, 0, 42, 142}) {
+            System.out.println("Test key=" + k);
+            Assertions.assertNull(map.get(k), "There is a value for key " + k);
+        }
+    }
 
     @Test
     public void testPutDegree3() {
@@ -85,20 +100,6 @@ public class BTreeNodeTest {
         Assertions.assertEquals(2, res.split("\n").length);
         Assertions.assertEquals("[20|50|70]", map.root.toString());
         Assertions.assertTrue(res.contains("[80|90|100]") && res.contains("[30|40]"));
-    }
-
-    @Test
-    public void testGet() {
-        BTreeSimpleMap<Integer, String> map = createTestMap();
-        System.out.println(TreeMapUtils.print(map));
-        for (int k : new int[]{1, 2, 5, 6, 7, 10, 11, 12, 14, 21, 33, 34, 55, 56, 67, 122}) {
-            System.out.println("Test key=" + k);
-            Assertions.assertEquals("v=" + k, map.get(k), "Wrong value for key " + k);
-        }
-        for (int k : new int[]{4, 0, 42, 142}) {
-            System.out.println("Test key=" + k);
-            Assertions.assertNull(map.get(k), "There is a value for key " + k);
-        }
     }
 
     @Test
@@ -231,6 +232,77 @@ public class BTreeNodeTest {
         Assertions.assertEquals("[78|233]", map.getRoot().toString());
         Assertions.assertEquals("[23|34|44|45][82|130][456|623|829|888]",
                 map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+    }
+
+    @Test
+    public void testDelCase2AndRebalanceDegree3() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(3);
+        IntStream.rangeClosed(1, 22).map(x -> 230 - 10 * x).forEach(k -> assertPutV(map, k));
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(22, map.size());
+        assertBTree(map);
+
+        int count = 22;
+        for (int k : new int[]{100, 180, 200, 140, 190, 40, 10, 60}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            assertRemoveV(map, k);
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(--count, map.size());
+            assertBTree(map);
+        }
+        Assertions.assertEquals("[110]", map.getRoot().toString());
+        Assertions.assertEquals("[30|70][150|170]",
+                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[20][50][80|90][120|130][160][210|220]", res.split("\n")[2].replace(" ", ""));
+    }
+
+    @Test
+    public void testDelCase2AndRebalanceDegree4() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(4);
+        IntStream.rangeClosed(1, 22).map(x -> 10 * x).forEach(k -> assertPutV(map, k));
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(22, map.size());
+        assertBTree(map);
+
+        int count = 22;
+        for (int k : new int[]{130, 30, 70, 140, 110}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            assertRemoveV(map, k);
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(--count, map.size());
+            assertBTree(map);
+        }
+
+        Assertions.assertEquals("[120|180]", map.getRoot().toString());
+        Assertions.assertEquals("[40|80][160][200]",
+                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+    }
+
+    @Test
+    public void testDelAndRebalanceDegree7() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>(7);
+        for (int k : new int[]{320, 170, 340, 60, 190, 380, 310, 350, 400, 250}) {
+            assertPutV(map, k);
+        }
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(10, map.size());
+        assertBTree(map);
+
+        int count = 10;
+        for (int k : new int[]{190, 60, 350, 380}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            assertRemoveV(map, k);
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(--count, map.size());
+            assertBTree(map);
+        }
+        Assertions.assertEquals("[170|250|310|320|340|400]", map.getRoot().toString());
     }
 
     public static BTreeSimpleMap<Integer, String> createTestMap() {
