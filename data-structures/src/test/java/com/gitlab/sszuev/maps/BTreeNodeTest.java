@@ -143,9 +143,8 @@ public class BTreeNodeTest {
         System.out.println(res);
         assertBTree(map);
         Assertions.assertEquals(5, map.size());
-        Assertions.assertEquals("[5|9]", map.root.toString());
-        Assertions.assertEquals("[1][8][10]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[5|9]", map.getRoot().toString());
+        Assertions.assertEquals("[1][8][10]", levelAsString(map.getRoot()));
     }
 
     @Test
@@ -164,9 +163,8 @@ public class BTreeNodeTest {
         System.out.println(res);
         assertBTree(map);
         Assertions.assertEquals(5, map.size());
-        Assertions.assertEquals("[13|90]", map.root.toString());
-        Assertions.assertEquals("[4][23][93]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[13|90]", map.getRoot().toString());
+        Assertions.assertEquals("[4][23][93]", levelAsString(map.getRoot()));
     }
 
     @Test
@@ -185,9 +183,8 @@ public class BTreeNodeTest {
         System.out.println(res);
         assertBTree(map);
         Assertions.assertEquals(4, map.size());
-        Assertions.assertEquals("[9]", map.root.toString());
-        Assertions.assertEquals("[1|5][10]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[9]", map.getRoot().toString());
+        Assertions.assertEquals("[1|5][10]", levelAsString(map.getRoot()));
     }
 
     @Test
@@ -210,8 +207,7 @@ public class BTreeNodeTest {
 
         Assertions.assertEquals(14, map.size());
         Assertions.assertEquals("[34|78|233|829]", map.getRoot().toString());
-        Assertions.assertEquals("[12|23][44|45][82|130][456|623][888|3443]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[12|23][44|45][82|130][456|623][888|3443]", levelAsString(map.getRoot()));
 
         System.out.println("=".repeat(42));
         assertRemoveV(map, 12);
@@ -220,8 +216,7 @@ public class BTreeNodeTest {
         assertBTree(map);
         Assertions.assertEquals(13, map.size());
         Assertions.assertEquals("[78|233|829]", map.getRoot().toString());
-        Assertions.assertEquals("[23|34|44|45][82|130][456|623][888|3443]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[23|34|44|45][82|130][456|623][888|3443]", levelAsString(map.getRoot()));
 
         System.out.println("=".repeat(42));
         assertRemoveV(map, 3443);
@@ -230,8 +225,7 @@ public class BTreeNodeTest {
         assertBTree(map);
         Assertions.assertEquals(12, map.size());
         Assertions.assertEquals("[78|233]", map.getRoot().toString());
-        Assertions.assertEquals("[23|34|44|45][82|130][456|623|829|888]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[23|34|44|45][82|130][456|623|829|888]", levelAsString(map.getRoot()));
     }
 
     @Test
@@ -253,8 +247,7 @@ public class BTreeNodeTest {
             assertBTree(map);
         }
         Assertions.assertEquals("[110]", map.getRoot().toString());
-        Assertions.assertEquals("[30|70][150|170]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[30|70][150|170]", levelAsString(map.getRoot()));
         Assertions.assertEquals("[20][50][80|90][120|130][160][210|220]", res.split("\n")[2].replace(" ", ""));
     }
 
@@ -278,8 +271,7 @@ public class BTreeNodeTest {
         }
 
         Assertions.assertEquals("[120|180]", map.getRoot().toString());
-        Assertions.assertEquals("[40|80][160][200]",
-                map.getRoot().children().map(String::valueOf).collect(Collectors.joining("")));
+        Assertions.assertEquals("[40|80][160][200]", levelAsString(map.getRoot()));
     }
 
     @Test
@@ -305,7 +297,7 @@ public class BTreeNodeTest {
         Assertions.assertEquals("[170|250|310|320|340|400]", map.getRoot().toString());
     }
 
-    public static BTreeSimpleMap<Integer, String> createTestMap() {
+    static BTreeSimpleMap<Integer, String> createTestMap() {
         BTreeSimpleMap<Integer, String> res = new BTreeSimpleMap<>();
         res.root = createTestTree();
         return res;
@@ -324,6 +316,10 @@ public class BTreeNodeTest {
 
     private static void assertPutV(SimpleMap<Integer, String> map, int x) {
         Assertions.assertNull(map.put(x, "V-" + x));
+    }
+
+    private static String levelAsString(BTreeSimpleMap.BNodeImpl<?, ?> node) {
+        return node.children().map(String::valueOf).collect(Collectors.joining(""));
     }
 
     private static BTreeSimpleMap.BNodeImpl<Integer, String> createTestTree() {

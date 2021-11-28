@@ -118,7 +118,7 @@ public class TreeMapUtils {
             return;
         }
         BaseBSTSimpleMap<K, V> bstSimpleMap = (BaseBSTSimpleMap<K, V>) map;
-        BaseBSTSimpleMap.BiNodeImpl<K, V> root = bstSimpleMap.getRoot();
+        BiNode<K> root = bstSimpleMap.getRoot();
         System.out.println(print(root));
         Assertions.assertTrue(isBST(root, getComparator(bstSimpleMap)), "Not a BST");
         Assertions.assertEquals(size(root), map.size(), "Wrong size");
@@ -139,7 +139,38 @@ public class TreeMapUtils {
     }
 
     static <X> void assertBNode(BTreeSimpleMap<X, ?> map) {
-        Assertions.assertTrue(hasSortedKeys(map.root, getComparator(map)));
+        Comparator<X> comp = getComparator(map);
+        Assertions.assertTrue(hasSortedKeys(map.getRoot(), comp));
+        assertBNode(map.getRoot(), comp);
+    }
+
+    static <X> void assertBNode(BTreeSimpleMap.BNodeImpl<X, ?> node, Comparator<X> comp) {
+        if (node == null) {
+            return;
+        }
+        List<BTreeSimpleMap.BNodeImpl<X, ?>> children = new ArrayList<>();
+        BTreeSimpleMap.BNodeImpl<X, ?> left = node.left();
+        if (left != null) {
+            children.add(left);
+            X leftKey = left.items()[left.lastIndex()].key();
+            Assertions.assertTrue(comp.compare(leftKey, node.items()[0].key()) < 0);
+        }
+        for (int i = 0; i <= node.lastIndex(); i++) {
+            BTreeSimpleMap.BNodeImpl<X, ?> right = node.right(i);
+            if (left == null) {
+                Assertions.assertNull(right);
+                continue;
+            }
+            Assertions.assertNotNull(right);
+            children.add(right);
+            X rightKey = right.items()[0].key();
+            Assertions.assertTrue(comp.compare(rightKey, node.items()[i].key()) > 0);
+        }
+        children.forEach(child -> {
+            Assertions.assertNotSame(child, node);
+            Assertions.assertSame(node, child.parent(), "Wrong parend for " + child);
+            assertBNode(child, comp);
+        });
     }
 
     static <X> Comparator<X> getComparator(BTreeSimpleMap<X, ?> map) {

@@ -60,7 +60,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             if (res >= 0) {
                 return items[res].value();
             }
-            current = next(current, -res - 1);
+            current = BNodeImpl.next(current, -res - 1);
         }
         return null;
     }
@@ -87,7 +87,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
                 size++;
                 return item.value(value);
             }
-            current = next(current, insertIndex);
+            current = BNodeImpl.next(current, insertIndex);
         }
     }
 
@@ -112,17 +112,9 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             }
             int prevIndex = -res - 1;
             path.add(prevIndex);
-            current = next(current, prevIndex);
+            current = BNodeImpl.next(current, prevIndex);
         }
         return null;
-    }
-
-    protected BNodeImpl<K, V> next(BNodeImpl<K, V> current, int insertIndex) {
-        if (insertIndex < 2) {
-            return insertIndex == 0 ? current.left() : current.right(0);
-        } else {
-            return current.right(insertIndex - 1);
-        }
     }
 
     protected boolean needRebalanceWhenAdd(BNodeImpl<K, V> node) {
@@ -195,10 +187,14 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         return node.length() < middle;
     }
 
+    protected boolean isHalfFull(BNodeImpl<K, V> node) {
+        return node.length() > middle;
+    }
+
     protected void rebalanceWhenDelete(BNodeImpl<K, V> node, int indexInParent) {
         // case 2a:
         BNodeImpl<K, V> parent = node.parent();
-        BNodeImpl<K, V> left = indexInParent > 0 ? next(parent, indexInParent - 1) : null;
+        BNodeImpl<K, V> left = indexInParent > 0 ? BNodeImpl.next(parent, indexInParent - 1) : null;
         if (left == node) {
             throw new IllegalStateException();
         }
@@ -211,7 +207,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             node.right(0, toRight);
             return;
         }
-        BNodeImpl<K, V> right = next(parent, indexInParent + 1);
+        BNodeImpl<K, V> right = BNodeImpl.next(parent, indexInParent + 1);
         if (right != null && isHalfFull(right)) {
             BNodeImpl<K, V> toLeft = right.right(0);
             BNodeImpl<K, V> toRight = right.left();
@@ -233,10 +229,6 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             return;
         }
         throw new IllegalStateException();
-    }
-
-    protected boolean isHalfFull(BNodeImpl<K, V> node) {
-        return node.length() > middle;
     }
 
     /**
@@ -351,6 +343,14 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             return res;
         }
 
+        public static <X, Y> BNodeImpl<X, Y> next(BNodeImpl<X, Y> node, int index) {
+            if (index < 2) {
+                return index == 0 ? node.left() : node.right(0);
+            } else {
+                return node.right(index - 1);
+            }
+        }
+
         protected ItemImpl<K, V>[] items() {
             return items;
         }
@@ -363,7 +363,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             return lastIndex() + 1;
         }
 
-        protected int lastIndex() {
+        public int lastIndex() {
             return lastIndex <= 0 ? lastIndex = calcLastIndex() : lastIndex;
         }
 
@@ -431,7 +431,6 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             BNodeImpl<K, V> resLink = right(index);
             ItemImpl<K, V> old = items[index];
             if (old != null) {
-                right(index, null); // remove ref for old item
                 items[index] = item;
             } else { // at the end of the node with index increasing
                 insertItem(item, index);
