@@ -297,6 +297,55 @@ public class BTreeNodeTest {
         Assertions.assertEquals("[170|250|310|320|340|400]", map.getRoot().toString());
     }
 
+    @Test
+    public void testDelCase3Degree3() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>();
+        for (int k : new int[]{5, 8, 1, 2, 7, 9, 10}) {
+            assertPutV(map, k);
+        }
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(7, map.size());
+        assertBTree(map);
+
+        int count = 7;
+        for (int k : new int[]{5, 8, 9}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            assertRemoveV(map, k);
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(--count, map.size());
+            assertBTree(map);
+        }
+        Assertions.assertEquals("[7]", map.getRoot().toString());
+        Assertions.assertEquals("[1|2][10]", levelAsString(map.getRoot()));
+    }
+
+    @Test
+    public void testDelCase3RebalanceDegree3() {
+        BTreeSimpleMap<Integer, String> map = new BTreeSimpleMap<>();
+        int size = 22;
+        IntStream.rangeClosed(1, size)
+                .map(x -> x % 2 != 0 ? size * 10 - 10 * x : 10 * x).forEach(k -> assertPutV(map, k));
+
+        String res = TreeMapUtils.print(map);
+        System.out.println(res);
+        Assertions.assertEquals(size, map.size());
+        assertBTree(map);
+
+        int count = size;
+        for (int k : new int[]{150, 110, 80, 40, 20, 140, 70, 180, 130, 30, 190, 170, 210, 160, 200}) {
+            System.out.println("==".repeat(42) + "::k=" + k);
+            assertRemoveV(map, k);
+            res = TreeMapUtils.print(map);
+            System.out.println(res);
+            Assertions.assertEquals(--count, map.size());
+            assertBTree(map);
+        }
+        Assertions.assertEquals("[60|100]", map.getRoot().toString());
+        Assertions.assertEquals("[10|50][90][120|220]", levelAsString(map.getRoot()));
+    }
+
     static BTreeSimpleMap<Integer, String> createTestMap() {
         BTreeSimpleMap<Integer, String> res = new BTreeSimpleMap<>();
         res.root = createTestTree();

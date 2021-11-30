@@ -154,33 +154,55 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
         }
     }
 
-    protected void deleteNode(BNodeImpl<K, V> node, int index, List<Integer> path) {
+    protected void deleteNode(final BNodeImpl<K, V> node, final int index, final List<Integer> path) {
         if (node.isLeaf()) {
-            if (node.isRoot() || isHalfFull(node)) { // case 1:
-                node.deleteItem(index);
-                return;
-            }
-            // case 2:
-            node.deleteItem(index);
-            while (true) {
-                int pathIndex = path.remove(path.size() - 1);
-                rebalanceWhenDelete(node, pathIndex);
-                node = node.parent();
-                if (node.isRoot()) {
-                    if (node.isEmpty()) {
-                        this.root = node.left();
-                        BNodeImpl.parent(this.root, null);
-                    }
-                    return;
-                }
-                if (!needRebalanceWhenDelete(node)) {
-                    return;
-                }
-            }
+            deleteLeafNode(node, index, path);
+            return;
         }
         // case 3:
-        // TODO:
-        throw new UnsupportedOperationException("TODO");
+        BNodeImpl<K, V> left = BNodeImpl.next(node, index);
+        if (left == null) {
+            throw new IllegalStateException();
+        }
+        BNodeImpl<K, V> current = left;
+        int currentIndex = current.lastIndex();
+        path.add(index);
+        while (!current.isLeaf()) {
+            BNodeImpl<K, V> tmp = current.right(currentIndex);
+            if (tmp == null) {
+                break;
+            }
+            path.add(currentIndex + 1);
+            current = tmp;
+            currentIndex = current.lastIndex();
+        }
+        BNodeImpl.exchange(current, currentIndex, node, index);
+        deleteLeafNode(current, currentIndex, path);
+    }
+
+    protected void deleteLeafNode(final BNodeImpl<K, V> node, final int index, final List<Integer> path) {
+        if (node.isRoot() || isHalfFull(node)) { // case 1:
+            node.deleteItem(index);
+            return;
+        }
+        // case 2:
+        node.deleteItem(index);
+        BNodeImpl<K, V> current = node;
+        while (true) {
+            int pathIndex = path.remove(path.size() - 1);
+            rebalanceWhenDelete(current, pathIndex);
+            current = current.parent();
+            if (current.isRoot()) {
+                if (current.isEmpty()) {
+                    this.root = current.left();
+                    BNodeImpl.parent(this.root, null);
+                }
+                return;
+            }
+            if (!needRebalanceWhenDelete(current)) {
+                return;
+            }
+        }
     }
 
     protected boolean needRebalanceWhenDelete(BNodeImpl<K, V> node) {
@@ -312,13 +334,27 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             }
         }
 
+        protected static <X, Y> void exchange(BNodeImpl<X, Y> source, int sourceIndex,
+                                              BNodeImpl<X, Y> target, int targetIndex) {
+            ItemImpl<X, Y>[] srcArray = source.items();
+            ItemImpl<X, Y>[] dstArray = target.items();
+            BNodeImpl<X, Y> srcLink = source.right(sourceIndex);
+            BNodeImpl<X, Y> dstLink = target.right(targetIndex);
+            ItemImpl<X, Y> src = srcArray[sourceIndex];
+            ItemImpl<X, Y> dst = dstArray[targetIndex];
+            srcArray[sourceIndex] = dst;
+            dstArray[targetIndex] = src;
+            source.right(sourceIndex, srcLink);
+            target.right(targetIndex, dstLink);
+        }
+
         private static <X, Y> ItemImpl<X, Y> move(BNodeImpl<X, Y> source, int sourceIndex,
                                                   BNodeImpl<X, Y> target, int targetIndex) {
             ItemImpl<X, Y> src = source.deleteItem(sourceIndex);
             return target.replaceItem(src, targetIndex);
         }
 
-        public static <K, V> BNodeImpl<K, V> splitLeft(BNodeImpl<K, V> node, int middle) {
+        protected static <K, V> BNodeImpl<K, V> splitLeft(BNodeImpl<K, V> node, int middle) {
             ItemImpl<K, V>[] nodeArray = node.items();
             BNodeImpl<K, V> res = new BNodeImpl<>(nodeArray.length);
             ItemImpl<K, V>[] resArray = res.items();
@@ -330,7 +366,7 @@ public class BTreeSimpleMap<K, V> implements SimpleMap<K, V>, HasTreeRoot {
             return res;
         }
 
-        public static <K, V> BNodeImpl<K, V> splitRight(BNodeImpl<K, V> node, int middle) {
+        protected static <K, V> BNodeImpl<K, V> splitRight(BNodeImpl<K, V> node, int middle) {
             ItemImpl<K, V>[] nodeArray = node.items();
             BNodeImpl<K, V> res = new BNodeImpl<>(nodeArray.length);
             ItemImpl<K, V>[] resArray = res.items();

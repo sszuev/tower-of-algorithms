@@ -153,7 +153,8 @@ public class TreeMapUtils {
         if (left != null) {
             children.add(left);
             X leftKey = left.items()[left.lastIndex()].key();
-            Assertions.assertTrue(comp.compare(leftKey, node.items()[0].key()) < 0);
+            X key = node.items()[0].key();
+            Assertions.assertTrue(comp.compare(leftKey, key) < 0, "Wrong order: left-key=" + leftKey + ", key=" + key);
         }
         for (int i = 0; i <= node.lastIndex(); i++) {
             BTreeSimpleMap.BNodeImpl<X, ?> right = node.right(i);
@@ -164,11 +165,12 @@ public class TreeMapUtils {
             Assertions.assertNotNull(right);
             children.add(right);
             X rightKey = right.items()[0].key();
-            Assertions.assertTrue(comp.compare(rightKey, node.items()[i].key()) > 0);
+            X key = node.items()[i].key();
+            Assertions.assertTrue(comp.compare(rightKey, key) > 0, "Wrong order: key=" + key + ", right-key=" + rightKey);
         }
         children.forEach(child -> {
             Assertions.assertNotSame(child, node);
-            Assertions.assertSame(node, child.parent(), "Wrong parend for " + child);
+            Assertions.assertSame(node, child.parent(), "Wrong parent for " + child);
             assertBNode(child, comp);
         });
     }

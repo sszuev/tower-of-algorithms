@@ -491,6 +491,40 @@ public class SimpleMapTest {
                 TreeMapUtils.assertBST(map);
             }
         },
+        B_TREE_3 {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new BTreeSimpleMap<>(3);
+            }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return BTreeSimpleMap.class;
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                super.assertTree(map);
+                TreeMapUtils.assertBTree(map);
+            }
+        },
+        B_TREE_6 {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new BTreeSimpleMap<>(6);
+            }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return BTreeSimpleMap.class;
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                super.assertTree(map);
+                TreeMapUtils.assertBTree(map);
+            }
+        },
         JDK_TREE_MAP {
             @SuppressWarnings("SortedCollectionWithNonComparableKeys")
             @Override
