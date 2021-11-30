@@ -29,6 +29,18 @@ public enum SimpleMapFactory {
             return new TreapSimpleMap<>();
         }
     },
+    BTREE_OF_ORDER_3 {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new BTreeSimpleMap<>(3);
+        }
+    },
+    BTREE_OF_ORDER_100 {
+        @Override
+        public <K, V> SimpleMap<K, V> createEmptyMap() {
+            return new BTreeSimpleMap<>(100);
+        }
+    },
 
     SEPARATE_CHAINING_HASHTABLE {
         @Override
