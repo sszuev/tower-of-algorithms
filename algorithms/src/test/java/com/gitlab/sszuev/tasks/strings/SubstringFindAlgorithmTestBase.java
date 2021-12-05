@@ -5,9 +5,9 @@ import com.gitlab.sszuev.tasks.IterativeRunTestEngine;
 import java.util.stream.Stream;
 
 /**
- * Created by @ssz on 04.11.2021.
+ * Created by @ssz on 05.12.2021.
  */
-abstract class SubstringSearchAlgorithmTestBase extends IterativeRunTestEngine  {
+abstract class SubstringFindAlgorithmTestBase extends IterativeRunTestEngine {
 
     public static Stream<Data> listData() throws Exception {
         return listData("/substring-search");

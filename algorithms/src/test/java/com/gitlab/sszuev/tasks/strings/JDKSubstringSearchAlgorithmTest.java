@@ -5,7 +5,7 @@ import com.gitlab.sszuev.tasks.Algorithm;
 /**
  * Created by @ssz on 30.10.2021.
  */
-public class JDKSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
+public class JDKSubstringSearchAlgorithmTest extends SubstringFindOneAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {

@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 04.11.2021.
  */
-public class MyBMSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
+public class MyBMSubstringSearchAlgorithmTest extends SubstringFindOneAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {
