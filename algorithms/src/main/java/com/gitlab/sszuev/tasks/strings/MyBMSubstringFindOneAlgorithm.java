@@ -5,8 +5,9 @@ import java.util.Map;
 
 /**
  * A Boyer–Moore algorithm to search substring.
- *
+ * <p>
  * Created by @ssz on 31.10.2021.
+ *
  * @see <a href='https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm'>wiki:Boyer-Moore string-search algorithm</a>
  */
 public class MyBMSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {

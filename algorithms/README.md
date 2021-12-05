@@ -46,6 +46,7 @@ Right now there are following algorithmic tasks:
   * [Boyer–Moore–Horspool algorithm to search substring](src/main/java/com/gitlab/sszuev/tasks/strings/BMHSubstringFindOneAlgorithm.java)
   * [Boyer–Moore algorithm to search substring, wiki variant](src/main/java/com/gitlab/sszuev/tasks/strings/WikiBMSubstringFindOneAlgorithm.java)
   * [Boyer–Moore algorithm to search substring, ssz variant](src/main/java/com/gitlab/sszuev/tasks/strings/MyBMSubstringFindOneAlgorithm.java)
+  * [Knuth-Morris-Pratt algorithm to search substring, naive prefix function](src/main/java/com/gitlab/sszuev/tasks/strings/SimpleKMKSubstringFindAllAlgorithm.java)
 
 ##### Requirements:
 

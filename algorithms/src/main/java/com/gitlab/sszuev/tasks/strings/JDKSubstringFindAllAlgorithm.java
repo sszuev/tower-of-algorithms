@@ -16,7 +16,7 @@ public class JDKSubstringFindAllAlgorithm extends BaseSubstringFindAllAlgorithm 
     public static List<Integer> findAll(String text, String str) {
         int textSize = text.length();
         int strSize = str.length();
-        if (textSize < strSize) {
+        if (strSize == 0 || textSize < strSize) {
             return List.of();
         }
         ArrayList<Integer> res = new ArrayList<>(toSize(textSize, strSize));
