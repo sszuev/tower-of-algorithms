@@ -5,7 +5,7 @@ package com.gitlab.sszuev.tasks.strings;
  *
  * @see String#indexOf(String)
  */
-public class JDKSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
+public class JDKSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {
     @Override
     int find(String text, String str) {
         return text.indexOf(str);

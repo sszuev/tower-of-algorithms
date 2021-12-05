@@ -10,7 +10,7 @@ import java.util.Arrays;
  *
  * @see <a href='https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm'>wiki:Boyer-Moore string-search algorithm</a>
  */
-public class WikiBMSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
+public class WikiBMSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {
 
     public static int indexOf(String text, String str) {
         char[] strChars = str.toCharArray();

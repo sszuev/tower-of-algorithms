@@ -3,7 +3,7 @@ package com.gitlab.sszuev.tasks.strings;
 /**
  * Created by @ssz on 04.11.2021.
  */
-public class NaiveSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
+public class NaiveSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {
     
     public static int indexOf(String text, String str) {
         char[] strChars = str.toCharArray();

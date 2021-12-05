@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by @ssz on 31.10.2021.
  * @see <a href='https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm'>wiki:Boyer-Moore string-search algorithm</a>
  */
-public class MyBMSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
+public class MyBMSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {
 
     public static int indexOf(String text, String str) {
         char[] strChars = str.toCharArray();
