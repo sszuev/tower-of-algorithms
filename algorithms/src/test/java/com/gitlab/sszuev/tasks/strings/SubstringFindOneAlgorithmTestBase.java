@@ -15,4 +15,9 @@ abstract class SubstringFindOneAlgorithmTestBase extends SubstringFindAlgorithmT
     protected void assertEquals(List<String> expected, List<String> actual) {
         super.assertEquals(expected.subList(0, 1), actual);
     }
+
+    @Override
+    public long getIterationNumber() {
+        return 100_000;
+    }
 }

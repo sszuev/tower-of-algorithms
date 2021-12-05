@@ -12,9 +12,4 @@ abstract class SubstringFindAlgorithmTestBase extends IterativeRunTestEngine {
     public static Stream<Data> listData() throws Exception {
         return listData("/substring-search");
     }
-
-    @Override
-    public long getIterationNumber() {
-        return 100_000;
-    }
 }

@@ -1,14 +1,13 @@
 package com.gitlab.sszuev.tasks.strings;
 
-import com.gitlab.sszuev.tasks.Algorithm;
-
 /**
  * Created by @ssz on 05.12.2021.
  */
-public class SimpleKMKSubstringFindAllAlgorithmTest extends SubstringFindAllAlgorithmTestBase {
+public class SimpleKMKSubstringFindAllAlgorithmTest extends KMKSubstringFindAllAlgorithmTestBase {
 
     @Override
-    public Algorithm getTaskToTest() {
+    public SimpleKMKSubstringFindAllAlgorithm getTaskToTest() {
         return new SimpleKMKSubstringFindAllAlgorithm();
     }
+
 }
