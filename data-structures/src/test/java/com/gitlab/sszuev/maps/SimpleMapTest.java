@@ -416,6 +416,7 @@ public class SimpleMapTest {
         });
     }
 
+    @SuppressWarnings("rawtypes")
     enum TestType {
         SIMPLE_BST {
             @Override
@@ -424,8 +425,13 @@ public class SimpleMapTest {
             }
 
             @Override
+            Class<? extends SimpleMap> type() {
+                return BinarySearchTreeSimpleMap.class;
+            }
+
+            @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(BinarySearchTreeSimpleMap.class, map.getClass());
+                super.assertTree(map);
                 TreeMapUtils.assertBST(map);
             }
         },
@@ -436,31 +442,87 @@ public class SimpleMapTest {
             }
 
             @Override
+            Class<? extends SimpleMap> type() {
+                return AVLBinarySearchTreeSimpleMap.class;
+            }
+
+            @Override
             public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
-                Assertions.assertEquals(AVLBinarySearchTreeSimpleMap.class, map.getClass());
+                super.assertTree(map);
                 TreeMapUtils.assertBST(map);
-                AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
+                AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> root = getRoot(((AVLBinarySearchTreeSimpleMap<K, V>) map));
                 if (root == null) {
                     return;
                 }
                 AssertionError error = new AssertionError("Three is not balanced");
                 root.preOrder(node -> {
-                    AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> n = asAVL(node);
-                    int leftHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.left());
-                    int rightHeight = AVLBinarySearchTreeSimpleMap.AVLBiNode.height(n.right());
+                    AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> n = asAVL(node);
+                    int leftHeight = AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl.height(n.left());
+                    int rightHeight = AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl.height(n.right());
                     if (Math.abs(rightHeight - leftHeight) > 1) {
                         throw error;
                     }
                 });
             }
 
-            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
                 return asAVL(map.root);
             }
 
             @SuppressWarnings("unchecked")
-            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V> asAVL(TreeNode<?> node) {
-                return (AVLBinarySearchTreeSimpleMap.AVLBiNode<K, V>) node;
+            private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> asAVL(TreeNode node) {
+                return (AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V>) node;
+            }
+        },
+        TREAP_BST {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new TreapSimpleMap<>();
+            }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return TreapSimpleMap.class;
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                super.assertTree(map);
+                TreeMapUtils.assertBST(map);
+            }
+        },
+        B_TREE_3 {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new BTreeSimpleMap<>(3);
+            }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return BTreeSimpleMap.class;
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                super.assertTree(map);
+                TreeMapUtils.assertBTree(map);
+            }
+        },
+        B_TREE_6 {
+            @Override
+            public <K, V> SimpleMap<K, V> create() {
+                return new BTreeSimpleMap<>(6);
+            }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return BTreeSimpleMap.class;
+            }
+
+            @Override
+            public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+                super.assertTree(map);
+                TreeMapUtils.assertBTree(map);
             }
         },
         JDK_TREE_MAP {
@@ -469,6 +531,11 @@ public class SimpleMapTest {
             public <K, V> SimpleMap<K, V> create() {
                 return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return JDKMapWrapperSimpleMap.class;
+            }
         },
 
         SC_HASHTABLE {
@@ -476,18 +543,31 @@ public class SimpleMapTest {
             public <K, V> SimpleMap<K, V> create() {
                 return new SeparateChainingHashtableSimpleMap<>();
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return SeparateChainingHashtableSimpleMap.class;
+            }
         },
         OA_HASHTABLE {
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new OpenAddressingHashtableSimpleMap<>();
             }
+
+            @Override
+            Class<? extends SimpleMap> type() {
+                return OpenAddressingHashtableSimpleMap.class;
+            }
         },
         ;
 
         public abstract <K, V> SimpleMap<K, V> create();
 
+        abstract Class<? extends SimpleMap> type();
+
         public <K extends Comparable<K>, V> void assertTree(SimpleMap<K, V> map) {
+            Assertions.assertEquals(type(), map.getClass());
         }
     }
 }
