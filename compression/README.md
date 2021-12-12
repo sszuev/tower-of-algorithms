@@ -2,6 +2,11 @@
 
 This project contains different data compression algorithms.
 
+Right now there are following data compression algorithms:
+
+- [Standard JDK's Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKZipCodecImpl.java)
+- [Simples RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
+
 ##### Requirements:
 
 - Git

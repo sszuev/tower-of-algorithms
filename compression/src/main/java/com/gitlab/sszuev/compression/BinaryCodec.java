@@ -1,6 +1,8 @@
 package com.gitlab.sszuev.compression;
 
 /**
+ * Represents a lossless data compression codec for binary arrays.
+ * <p>
  * Created by @ssz on 11.12.2021.
  */
 public interface BinaryCodec {
