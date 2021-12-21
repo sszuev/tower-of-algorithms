@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.compression;
 
 import com.gitlab.sszuev.compression.impl.JDKZipCodecImpl;
+import com.gitlab.sszuev.compression.impl.SimpleRLECodecImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -17,16 +18,22 @@ public class FileCodecTest {
 
     @EnumSource(DataProvider.class)
     @ParameterizedTest
-    public void testCompressDecompress(DataProvider data) throws IOException {
-        testCompressDecompress(new JDKZipCodecImpl(), data);
+    public void testCompressDecompressWithZipCodec(DataProvider data) throws IOException {
+        testCompressDecompress(new JDKZipCodecImpl(), "zip", data);
     }
 
-    private void testCompressDecompress(FileCodec codec, DataProvider data) throws IOException {
+    @EnumSource(DataProvider.class)
+    @ParameterizedTest
+    public void testCompressDecompressWithSimpleRLECodec(DataProvider data) throws IOException {
+        testCompressDecompress(new SimpleRLECodecImpl(), "srle", data);
+    }
+
+    private void testCompressDecompress(FileCodec codec, String name, DataProvider data) throws IOException {
         Path src = data.path();
-        String fileName = src.getFileName().toString();
-        String ext = getExtension(fileName);
-        Path zip = Files.createTempFile(fileName, ".zip");
-        Path res = Files.createTempFile(fileName, ext == null ? "" : "." + ext);
+        String ext = getExtension(src.getFileName().toString());
+        String prefix = data.name() + "-";
+        Path zip = Files.createTempFile(prefix, "." + name);
+        Path res = Files.createTempFile(prefix, ext == null ? "" : "." + ext);
 
         codec.encode(src, zip);
         debug(src, zip);

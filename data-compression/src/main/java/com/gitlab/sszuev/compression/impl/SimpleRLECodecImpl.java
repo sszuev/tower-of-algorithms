@@ -1,39 +1,122 @@
 package com.gitlab.sszuev.compression.impl;
 
 import com.gitlab.sszuev.compression.BinaryCodec;
+import com.gitlab.sszuev.compression.FileCodec;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Run-length encoding (RLE).
+ * <p>
+ * Example: {@code WWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWBWWWWWWWWWWWWWW => 9W3B24W1B14W}
  * <p>
  * Created by @ssz on 12.12.2021.
  *
  * @see <a href='https://en.wikipedia.org/wiki/Run-length_encoding'>Run-length encoding</a>
  */
-public class SimpleRLECodecImpl implements BinaryCodec {
+public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
     private static final int MAX_BYTES_IN_SEQUENCE = 256;
 
     @Override
     public byte[] encode(byte[] raw) {
         byte[] res = new byte[raw.length * 2];
+        int resLength = encode(raw, raw.length, res);
+        return res.length == resLength ? res : Arrays.copyOf(res, resLength);
+    }
+
+    @Override
+    public void encode(IOSupplier<? extends ReadableByteChannel> source,
+                       IOSupplier<? extends WritableByteChannel> target,
+                       int bufferLength) throws IOException {
+        int writeBufferCapacity = 2 * (bufferLength / 3);
+        int readBufferCapacity = bufferLength - writeBufferCapacity;
+
+        ByteBuffer readBuffer = ByteBuffer.allocate(readBufferCapacity);
+        ByteBuffer writeBuffer = ByteBuffer.allocate(writeBufferCapacity);
+
+        try (ReadableByteChannel readChannel = source.open();
+             WritableByteChannel writeChannel = target.open()) {
+            SeekableByteChannel seekable = writeChannel instanceof SeekableByteChannel ?
+                    (SeekableByteChannel) writeChannel : null;
+
+            // the number of bytes read, possibly zero, or -1 if the channel has reached end-of-stream
+            int read;
+            // the number of bytes written, possibly zero
+            int write;
+            byte endSymbol = 0;
+            byte endCount = 0;
+
+            while ((read = readChannel.read(readBuffer)) > 0) {
+                readBuffer.rewind();
+
+                write = encode(readBuffer.array(), read, writeBuffer.array());
+                writeBuffer.limit(write);
+                writeBuffer.position(0);
+
+                if (seekable != null) {
+                    byte startSymbol = writeBuffer.get(1);
+                    byte startCount = writeBuffer.get(0);
+                    int sum;
+                    if (endSymbol != 0 &&
+                            startSymbol == endSymbol &&
+                            (sum = unsignedIntSum(startCount, endCount)) <= MAX_BYTES_IN_SEQUENCE) {
+                        writeBuffer.put(0, (byte) sum);
+                        // shift two symbols back
+                        seekable.position(seekable.position() - 2);
+                    }
+                    // remember the last two symbols
+                    endSymbol = writeBuffer.get(write - 1);
+                    endCount = writeBuffer.get(write - 2);
+                }
+
+                int writeBytes = writeChannel.write(writeBuffer);
+                if (writeBytes != write) {
+                    throw new IllegalStateException();
+                }
+            }
+        }
+    }
+
+    /**
+     * Encodes the data using RLE algorithm.
+     *
+     * @param source   the array with original data
+     * @param sourceTo the final index of the source array to end encoding,
+     *                 exclusive (this index may lie outside the array)
+     * @param target   the array with result (encoded) data
+     * @return the final index of the target array, exclusive
+     */
+    protected int encode(byte[] source, int sourceTo, byte[] target) {
         int length = 0;
         int series = 1;
         for (int i = 1; ; i++) {
-            if (i >= raw.length) {
-                res[length++] = (byte) series;
-                res[length++] = raw[i - 1];
+            if (i >= sourceTo) {
+                target[length++] = (byte) series;
+                target[length++] = source[i - 1];
                 break;
             }
-            if (series < MAX_BYTES_IN_SEQUENCE - 1 && raw[i] == raw[i - 1]) {
+            if (series < MAX_BYTES_IN_SEQUENCE - 1 && source[i] == source[i - 1]) {
                 series++;
             } else {
-                res[length++] = (byte) series;
-                res[length++] = raw[i - 1];
+                target[length++] = (byte) series;
+                target[length++] = source[i - 1];
                 series = 1;
             }
         }
-        return res.length == length ? res : Arrays.copyOf(res, length);
+        return length;
+    }
+
+    private static int unsignedIntSum(byte a, byte b) {
+        return Byte.toUnsignedInt(a) + Byte.toUnsignedInt(b);
     }
 
     @Override
@@ -53,4 +136,62 @@ public class SimpleRLECodecImpl implements BinaryCodec {
         }
         return res;
     }
+
+    @Override
+    public void decode(Path source, Path target) throws IOException {
+        if (Files.size(Objects.requireNonNull(source, "Null source")) % 2 != 0) {
+            throw new IllegalArgumentException("Wrong array specified");
+        }
+        Objects.requireNonNull(target, "Null target");
+
+        decode(() -> Files.newByteChannel(source, StandardOpenOption.READ),
+                () -> Files.newByteChannel(target, StandardOpenOption.WRITE),
+                DEFAULT_BUFFER_SIZE);
+    }
+
+    @Override
+    public void decode(IOSupplier<? extends ReadableByteChannel> source,
+                       IOSupplier<? extends WritableByteChannel> target,
+                       int bufferLength) throws IOException {
+        int readBufferCapacity = bufferLength / 2 + bufferLength % 2;
+        int writeBufferCapacity = bufferLength - readBufferCapacity;
+
+        ByteBuffer readBuffer = ByteBuffer.allocate(readBufferCapacity);
+        ByteBuffer writeBuffer = ByteBuffer.allocate(writeBufferCapacity);
+
+        try (ReadableByteChannel readChannel = source.open();
+             WritableByteChannel writeChannel = target.open()) {
+
+            while (readChannel.read(readBuffer) > 0) {
+                int length = readBuffer.position();
+                if (length % 2 != 0) {
+                    throw new IllegalStateException();
+                }
+                readBuffer.rewind();
+                int start = 0;
+                for (int i = 0; i < length; i += 2) {
+                    int count = Byte.toUnsignedInt(readBuffer.get(i));
+                    byte data = readBuffer.get(i + 1);
+
+                    int end = start + count;
+                    if (end > writeBufferCapacity) {
+                        Arrays.fill(writeBuffer.array(), start, writeBufferCapacity, data);
+                        start = 0;
+                        end -= writeBufferCapacity;
+
+                        writeBuffer.limit(writeBufferCapacity);
+                        writeChannel.write(writeBuffer);
+                        writeBuffer.position(0);
+                    }
+
+                    Arrays.fill(writeBuffer.array(), start, end, data);
+                    writeBuffer.limit(end);
+                    start = end;
+                }
+                writeChannel.write(writeBuffer);
+                writeBuffer.position(0);
+            }
+        }
+    }
+
 }

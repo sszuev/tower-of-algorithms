@@ -9,7 +9,7 @@ import java.util.Objects;
  * Created by @ssz on 18.12.2021.
  */
 public enum DataProvider {
-    TEXT_01("/file-01.html"),
+    TEXT_HTML("/file-01.html"),
     ;
     private final Path path;
 
