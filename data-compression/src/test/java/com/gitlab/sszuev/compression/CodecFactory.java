@@ -1,5 +1,6 @@
 package com.gitlab.sszuev.compression;
 
+import com.gitlab.sszuev.compression.impl.EnhancedRLECodecImpl;
 import com.gitlab.sszuev.compression.impl.JDKZipCodecImpl;
 import com.gitlab.sszuev.compression.impl.SimpleRLECodecImpl;
 
@@ -19,6 +20,12 @@ enum CodecFactory {
             return new SimpleRLECodecImpl();
         }
     },
+    ENHANCED_RLE {
+        @Override
+        public BinaryCodec createCodec() {
+            return new EnhancedRLECodecImpl();
+        }
+    }
     ;
 
     public abstract BinaryCodec createCodec();

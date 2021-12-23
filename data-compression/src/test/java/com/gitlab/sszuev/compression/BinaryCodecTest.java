@@ -29,6 +29,8 @@ public class BinaryCodecTest {
 
         testCompressDecompress(factory, 42, 42, 42, 42, 42, 42, 42, 42, 42);
 
+        testCompressDecompress(factory, 42, -42, 42, -42, 42, -42, 42, -42, 42, -42, 42, 42, 42, -42);
+
         testCompressDecompress(factory, "XXX".repeat(42) + "YYY".repeat(42_000) + "ZZZ".repeat(42));
     }
 
