@@ -11,9 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -55,8 +53,7 @@ public class JDKZipCodecImpl implements BinaryCodec, FileCodec {
     public void encode(Path source, Path target) throws IOException {
         Objects.requireNonNull(source, "Null source");
         Objects.requireNonNull(target, "Null target");
-        encode(() -> Files.newByteChannel(source, StandardOpenOption.READ),
-                () -> Files.newByteChannel(target, StandardOpenOption.WRITE),
+        encode(() -> FileCodec.newReadChannel(source), () -> FileCodec.newWriteChannel(target),
                 source.getFileName().toString(), DEFAULT_BUFFER_SIZE);
     }
 

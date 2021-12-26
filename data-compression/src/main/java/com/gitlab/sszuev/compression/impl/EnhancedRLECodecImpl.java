@@ -15,14 +15,16 @@ import java.util.Arrays;
  * @see <a href='https://en.wikipedia.org/wiki/Run-length_encoding'>Run-length encoding</a>
  */
 public class EnhancedRLECodecImpl implements BinaryCodec {
-    private static final byte MAX_BYTES_IN_SEQUENCE = 127;
+    private static final int MAX_LENGTH_OF_REPEAT_SEQUENCE = Byte.MAX_VALUE;
+    private static final int MAX_LENGTH_OF_UNIQUE_SEQUENCE = -Byte.MIN_VALUE;
 
-    private static int maxLength(int length) {
-        return length % MAX_BYTES_IN_SEQUENCE + 1 + (length / MAX_BYTES_IN_SEQUENCE) * (MAX_BYTES_IN_SEQUENCE + 1);
+    private static int maxLength(int length) { // all symbols are unique
+        return length % MAX_LENGTH_OF_UNIQUE_SEQUENCE + 1 +
+                (length / MAX_LENGTH_OF_UNIQUE_SEQUENCE) * (MAX_LENGTH_OF_UNIQUE_SEQUENCE + 1);
     }
 
-    private static int halve(int length) {
-        int n = length / MAX_BYTES_IN_SEQUENCE + 1;
+    private static int halve(int length, int max) {
+        int n = length / max + 1;
         return length / n;
     }
 
@@ -49,8 +51,8 @@ public class EnhancedRLECodecImpl implements BinaryCodec {
             int us = uniqueSequence(source, i, sourceTo);
             if (us != i) {
                 series = us - i;
-                if (series > MAX_BYTES_IN_SEQUENCE) {
-                    series = halve(series);
+                if (series > MAX_LENGTH_OF_UNIQUE_SEQUENCE) {
+                    series = halve(series, MAX_LENGTH_OF_UNIQUE_SEQUENCE);
                     us = i + series;
                 }
                 target[length++] = (byte) (-series);
@@ -64,8 +66,8 @@ public class EnhancedRLECodecImpl implements BinaryCodec {
                 throw new IllegalStateException();
             }
             series = rs - i;
-            if (series > MAX_BYTES_IN_SEQUENCE) {
-                series = halve(series);
+            if (series > MAX_LENGTH_OF_REPEAT_SEQUENCE) {
+                series = halve(series, MAX_LENGTH_OF_REPEAT_SEQUENCE);
                 rs = i + series;
             }
             target[length++] = (byte) series;
@@ -150,4 +152,5 @@ public class EnhancedRLECodecImpl implements BinaryCodec {
         }
         return length;
     }
+
 }

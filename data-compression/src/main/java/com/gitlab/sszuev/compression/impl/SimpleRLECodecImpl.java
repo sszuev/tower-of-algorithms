@@ -10,7 +10,6 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -27,6 +26,23 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
     private static final int MAX_BYTES_IN_SEQUENCE = 256;
 
     @Override
+    public void encode(Path source, Path target) throws IOException {
+        this.encode(source, target, DEFAULT_BUFFER_SIZE);
+    }
+
+    public void encode(Path source, Path target, int bufferLength) throws IOException {
+        long sourceSize = Files.size(Objects.requireNonNull(source, "Null source"));
+        Objects.requireNonNull(target, "Null target");
+        if (sourceSize <= bufferLength / 3) {
+            byte[] original = Files.readAllBytes(source);
+            byte[] encoded = this.encode(original);
+            Files.write(target, encoded);
+            return;
+        }
+        this.encode(() -> FileCodec.newReadChannel(source), () -> FileCodec.newWriteChannel(target), bufferLength);
+    }
+
+    @Override
     public byte[] encode(byte[] raw) {
         byte[] res = new byte[raw.length * 2];
         int resLength = encode(raw, raw.length, res);
@@ -37,8 +53,9 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
     public void encode(IOSupplier<? extends ReadableByteChannel> source,
                        IOSupplier<? extends WritableByteChannel> target,
                        int bufferLength) throws IOException {
-        int writeBufferCapacity = 2 * (bufferLength / 3);
-        int readBufferCapacity = bufferLength - writeBufferCapacity;
+        // the write-buffer capacity must be twice the read-buffer capacity for the worse case
+        int readBufferCapacity = bufferLength / 3;
+        int writeBufferCapacity = 2 * readBufferCapacity;
 
         ByteBuffer readBuffer = ByteBuffer.allocate(readBufferCapacity);
         ByteBuffer writeBuffer = ByteBuffer.allocate(writeBufferCapacity);
@@ -86,6 +103,10 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
         }
     }
 
+    private static int unsignedIntSum(byte a, byte b) {
+        return Byte.toUnsignedInt(a) + Byte.toUnsignedInt(b);
+    }
+
     /**
      * Encodes the data using RLE algorithm.
      *
@@ -115,8 +136,24 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
         return length;
     }
 
-    private static int unsignedIntSum(byte a, byte b) {
-        return Byte.toUnsignedInt(a) + Byte.toUnsignedInt(b);
+    @Override
+    public void decode(Path source, Path target) throws IOException {
+        this.decode(source, target, DEFAULT_BUFFER_SIZE);
+    }
+
+    public void decode(Path source, Path target, int bufferLength) throws IOException {
+        long sourceSize = Files.size(Objects.requireNonNull(source, "Null source"));
+        if (sourceSize % 2 != 0) {
+            throw new IllegalArgumentException("Wrong array specified");
+        }
+        Objects.requireNonNull(target, "Null target");
+        if (sourceSize <= 2L * bufferLength / 3) {
+            byte[] compressed = Files.readAllBytes(source);
+            byte[] decompressed = this.decode(compressed);
+            Files.write(target, decompressed);
+            return;
+        }
+        this.decode(() -> FileCodec.newReadChannel(source), () -> FileCodec.newWriteChannel(target), bufferLength);
     }
 
     @Override
@@ -135,18 +172,6 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
             Arrays.fill(res, j, j += s, encoded[i + 1]);
         }
         return res;
-    }
-
-    @Override
-    public void decode(Path source, Path target) throws IOException {
-        if (Files.size(Objects.requireNonNull(source, "Null source")) % 2 != 0) {
-            throw new IllegalArgumentException("Wrong array specified");
-        }
-        Objects.requireNonNull(target, "Null target");
-
-        decode(() -> Files.newByteChannel(source, StandardOpenOption.READ),
-                () -> Files.newByteChannel(target, StandardOpenOption.WRITE),
-                DEFAULT_BUFFER_SIZE);
     }
 
     @Override
@@ -174,7 +199,7 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
                     byte data = readBuffer.get(i + 1);
 
                     int end = start + count;
-                    if (end > writeBufferCapacity) {
+                    while (end > writeBufferCapacity) {
                         Arrays.fill(writeBuffer.array(), start, writeBufferCapacity, data);
                         start = 0;
                         end -= writeBufferCapacity;
