@@ -8,7 +8,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Run-length encoding (RLE) with obvious improvements
@@ -25,6 +28,25 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
     private static final int MAX_LENGTH_OF_UNIQUE_SEQUENCE = -Byte.MIN_VALUE;
 
     @Override
+    public void encode(Path source, Path target) throws IOException {
+        this.encode(source, target, DEFAULT_BUFFER_SIZE);
+    }
+
+    public void encode(Path source, Path target, int bufferLength) throws IOException {
+        long sourceSize = Files.size(Objects.requireNonNull(source, "Null source"));
+        Objects.requireNonNull(target, "Null target");
+        int readBufferLength = calcReadBufferCapacityForCompress(bufferLength);
+        if (sourceSize <= readBufferLength) {
+            byte[] original = Files.readAllBytes(source);
+            byte[] encoded = this.encode(original);
+            Files.write(target, encoded);
+            return;
+        }
+        this.encode(() -> FileCodec.newReadChannel(source), () -> FileCodec.newWriteChannel(target),
+                readBufferLength, bufferLength - readBufferLength);
+    }
+
+    @Override
     public byte[] encode(byte[] raw) {
         byte[] res = new byte[maxLength(raw.length)];
         int resLength = encode(raw, raw.length, res);
@@ -32,12 +54,18 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
     }
 
     @Override
-    public void encode(IOSupplier<? extends ReadableByteChannel> source,
-                       IOSupplier<? extends WritableByteChannel> target,
-                       int bufferLength) throws IOException {
-        final int readBufferCapacity = calcReadBufferCapacityForCompress(bufferLength);
-        final int writeBufferCapacity = bufferLength - readBufferCapacity;
+    public final void encode(IOSupplier<? extends ReadableByteChannel> source,
+                             IOSupplier<? extends WritableByteChannel> target,
+                             int bufferLength) throws IOException {
+        int readBufferCapacity = calcReadBufferCapacityForCompress(bufferLength);
+        int writeBufferCapacity = bufferLength - readBufferCapacity;
+        encode(source, target, readBufferCapacity, writeBufferCapacity);
+    }
 
+    protected void encode(IOSupplier<? extends ReadableByteChannel> source,
+                          IOSupplier<? extends WritableByteChannel> target,
+                          final int readBufferCapacity,
+                          final int writeBufferCapacity) throws IOException {
         ByteBuffer readBuffer = ByteBuffer.allocate(readBufferCapacity);
         ByteBuffer writeBuffer = ByteBuffer.allocate(writeBufferCapacity);
 
@@ -97,6 +125,25 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
     }
 
     @Override
+    public void decode(Path source, Path target) throws IOException {
+        this.decode(source, target, DEFAULT_BUFFER_SIZE);
+    }
+
+    public void decode(Path source, Path target, int bufferLength) throws IOException {
+        long sourceSize = Files.size(Objects.requireNonNull(source, "Null source"));
+        Objects.requireNonNull(target, "Null target");
+        int readBufferLength = calcReadBufferCapacityForDecompress(bufferLength);
+        if (sourceSize <= readBufferLength) {
+            byte[] compressed = Files.readAllBytes(source);
+            byte[] decompressed = this.decode(compressed);
+            Files.write(target, decompressed);
+            return;
+        }
+        this.decode(() -> FileCodec.newReadChannel(source), () -> FileCodec.newWriteChannel(target),
+                readBufferLength, bufferLength - readBufferLength);
+    }
+
+    @Override
     public byte[] decode(byte[] encoded) {
         int length = getRawArrayLength(encoded);
         byte[] res = new byte[length];
@@ -119,12 +166,18 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
     }
 
     @Override
-    public void decode(IOSupplier<? extends ReadableByteChannel> source,
-                       IOSupplier<? extends WritableByteChannel> target,
-                       int bufferLength) throws IOException {
-        final int readBufferCapacity = calcReadBufferCapacityForDecompress(bufferLength);
-        final int writeBufferCapacity = bufferLength - readBufferCapacity;
+    public final void decode(IOSupplier<? extends ReadableByteChannel> source,
+                             IOSupplier<? extends WritableByteChannel> target,
+                             int bufferLength) throws IOException {
+        int readBufferCapacity = calcReadBufferCapacityForDecompress(bufferLength);
+        int writeBufferCapacity = bufferLength - readBufferCapacity;
+        decode(source, target, readBufferCapacity, writeBufferCapacity);
+    }
 
+    protected void decode(IOSupplier<? extends ReadableByteChannel> source,
+                          IOSupplier<? extends WritableByteChannel> target,
+                          final int readBufferCapacity,
+                          final int writeBufferCapacity) throws IOException {
         ByteBuffer readBuffer = ByteBuffer.allocate(readBufferCapacity);
         ByteBuffer writeBuffer = ByteBuffer.allocate(writeBufferCapacity);
 
