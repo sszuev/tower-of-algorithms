@@ -1,6 +1,7 @@
 package com.gitlab.sszuev.compression;
 
 import com.gitlab.sszuev.compression.impl.EnhancedRLECodecImpl;
+import com.gitlab.sszuev.compression.impl.JDKGZipCodecImpl;
 import com.gitlab.sszuev.compression.impl.JDKZipCodecImpl;
 import com.gitlab.sszuev.compression.impl.SimpleRLECodecImpl;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,6 @@ import java.util.Arrays;
  */
 public class FileCodecTest {
 
-
     @TempDir
     static Path tempDir;
 
@@ -26,6 +26,12 @@ public class FileCodecTest {
     @ParameterizedTest
     public void testZipCodec(DataProvider data) throws IOException {
         testCompressDecompress(new JDKZipCodecImpl(), "zip", data);
+    }
+
+    @EnumSource(value = DataProvider.class, names = {"TEXT_HTML"}, mode = EnumSource.Mode.EXCLUDE)
+    @ParameterizedTest
+    public void testGZipCodec(DataProvider data) throws IOException {
+        testCompressDecompress(new JDKGZipCodecImpl(), "gzip", data);
     }
 
     @EnumSource(value = DataProvider.class, names = {"TEXT_HTML"}, mode = EnumSource.Mode.EXCLUDE)
