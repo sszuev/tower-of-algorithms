@@ -32,6 +32,11 @@ public class BinaryCodecTest {
         testCompressDecompress(factory, 42, -42, 42, -42, 42, -42, 42, -42, 42, -42, 42, 42, 42, -42);
 
         testCompressDecompress(factory, "XXX".repeat(42) + "YYY".repeat(42_000) + "ZZZ".repeat(42));
+
+        testCompressDecompress(factory, 33, 33, 33, 33, 33,
+                42, 42, 42, 42, 42, 42, 42, 11, 11, 11, 11, 11, 89, 127, -128, 0, 42, 42, 42, 42);
+
+        testCompressDecompress(factory, "тест".repeat(42));
     }
 
     private void testCompressDecompress(CodecFactory factory, String given) {

@@ -1,5 +1,6 @@
 package com.gitlab.sszuev.compression;
 
+import com.gitlab.sszuev.compression.impl.EnhancedRLECodecImpl;
 import com.gitlab.sszuev.compression.impl.JDKZipCodecImpl;
 import com.gitlab.sszuev.compression.impl.SimpleRLECodecImpl;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +31,12 @@ public class FileCodecTest {
     @ParameterizedTest
     public void testCompressDecompressWithNaiveLECodec(DataProvider data) throws IOException {
         testCompressDecompress(new SimpleRLECodecImpl(), "srle", data);
+    }
+
+    @EnumSource(DataProvider.class)
+    @ParameterizedTest
+    public void testCompressDecompressWithOptimizedRLECodec(DataProvider data) throws IOException {
+        testCompressDecompress(new EnhancedRLECodecImpl(), "erle", data);
     }
 
     private void testCompressDecompress(FileCodec codec, String name, DataProvider data) throws IOException {
