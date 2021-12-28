@@ -5,7 +5,9 @@ This project contains different data compression algorithms.
 Right now there are following data compression algorithms:
 
 - [Standard JDK's Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKZipCodecImpl.java)
-- [Simples RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
+- [Standard JDK's GZip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKGZipCodecImpl.java)
+- [Naive RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
+- [Optimized RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/EnhancedRLECodecImpl.java)
 
 ##### Requirements:
 
@@ -15,8 +17,11 @@ Right now there are following data compression algorithms:
 
 ##### Build and run:
 
-```
+```bash
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
-$ cd 2021-07-otus-algorithms-sszuev/compression
+$ cd 2021-07-otus-algorithms-sszuev/data-compression
 $ mvn clean package
-$ java -jar target/compression.jar
+$ java -jar target/data-compression.jar
+```
+
+##### To run demonstration tests use command `mvn -q test -Dtest=FileCodecTest`
