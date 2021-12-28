@@ -18,24 +18,25 @@ import java.util.Arrays;
  */
 public class FileCodecTest {
 
+
     @TempDir
     static Path tempDir;
 
-    @EnumSource(DataProvider.class)
+    @EnumSource(value = DataProvider.class, names = {"TEXT_HTML"}, mode = EnumSource.Mode.EXCLUDE)
     @ParameterizedTest
-    public void testCompressDecompressWithZipCodec(DataProvider data) throws IOException {
+    public void testZipCodec(DataProvider data) throws IOException {
         testCompressDecompress(new JDKZipCodecImpl(), "zip", data);
     }
 
-    @EnumSource(DataProvider.class)
+    @EnumSource(value = DataProvider.class, names = {"TEXT_HTML"}, mode = EnumSource.Mode.EXCLUDE)
     @ParameterizedTest
-    public void testCompressDecompressWithNaiveLECodec(DataProvider data) throws IOException {
+    public void testNaiveRLECodec(DataProvider data) throws IOException {
         testCompressDecompress(new SimpleRLECodecImpl(), "srle", data);
     }
 
-    @EnumSource(DataProvider.class)
+    @EnumSource(value = DataProvider.class, names = {"TEXT_HTML"}, mode = EnumSource.Mode.EXCLUDE)
     @ParameterizedTest
-    public void testCompressDecompressWithOptimizedRLECodec(DataProvider data) throws IOException {
+    public void testOptimizedRLECodec(DataProvider data) throws IOException {
         testCompressDecompress(new EnhancedRLECodecImpl(), "erle", data);
     }
 
