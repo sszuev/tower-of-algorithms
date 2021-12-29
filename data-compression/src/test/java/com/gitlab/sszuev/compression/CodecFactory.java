@@ -18,10 +18,16 @@ enum CodecFactory {
             return new JDKGZipCodecImpl();
         }
     },
-    APACHE_ZIO {
+    APACHE_ZIP {
         @Override
         public BinaryCodec createCodec() {
             return new ApacheZipCodecImpl();
+        }
+    },
+    APACHE_SEVEN_ZIP {
+        @Override
+        public BinaryCodec createCodec() {
+            return new ApacheSevenZipCodecImpl();
         }
     },
     SIMPLE_RLE {

@@ -27,6 +27,12 @@
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>
         </dependency>
+        <dependency>
+            <!-- it is needed for 7z from commons-compress -->
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.9</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

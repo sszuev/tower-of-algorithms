@@ -100,6 +100,17 @@ public class App {
                 return name().equals(id.trim().toUpperCase(Locale.ROOT));
             }
         },
+        COMMONS_SEVEN_ZIP {
+            @Override
+            public FileCodec createCodec(LongConsumer listener) {
+                return new ApacheSevenZipCodecImpl(listener);
+            }
+
+            @Override
+            public String ext() {
+                return "7z";
+            }
+        },
         STANDARD_GZIP {
             @Override
             public FileCodec createCodec(LongConsumer listener) {

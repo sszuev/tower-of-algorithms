@@ -53,6 +53,12 @@ public class FileCodecTest {
 
     @EnumSource(value = DataProvider.class)
     @ParameterizedTest
+    public void testApacheCommonsSevenZipCodec(DataProvider data) throws IOException {
+        testCompressDecompress(new ApacheSevenZipCodecImpl(), "7z", data);
+    }
+
+    @EnumSource(value = DataProvider.class)
+    @ParameterizedTest
     public void testNaiveRLECodec(DataProvider data) throws IOException {
         testCompressDecompress(new SimpleRLECodecImpl(), "srle", data);
     }
