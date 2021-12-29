@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by @ssz on 30.10.2021.
  */
-abstract class BaseSubstringSearchAlgorithm implements Algorithm {
+abstract class BaseSubstringFindOneAlgorithm implements Algorithm {
 
     /**
      * Returns the index within the {@code text} of the first occurrence of the specified substring.

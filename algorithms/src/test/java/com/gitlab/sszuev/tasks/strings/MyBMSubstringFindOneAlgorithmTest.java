@@ -12,11 +12,11 @@ import java.util.stream.Stream;
 /**
  * Created by @ssz on 04.11.2021.
  */
-public class MyBMSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
+public class MyBMSubstringFindOneAlgorithmTest extends SubstringFindOneAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {
-        return new MyBMSubstringSearchAlgorithm();
+        return new MyBMSubstringFindOneAlgorithm();
     }
 
     public static Stream<Map.Entry<String, int[]>> calcShiftTableData() {
@@ -34,7 +34,7 @@ public class MyBMSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTe
     @ParameterizedTest
     @MethodSource("calcShiftTableData")
     public void testCalcShiftTableData(Map.Entry<String, int[]> data) {
-        int[] actual = MyBMSubstringSearchAlgorithm.calcShiftTable(data.getKey().toCharArray());
+        int[] actual = MyBMSubstringFindOneAlgorithm.calcShiftTable(data.getKey().toCharArray());
         Assertions.assertArrayEquals(data.getValue(), actual);
     }
 }

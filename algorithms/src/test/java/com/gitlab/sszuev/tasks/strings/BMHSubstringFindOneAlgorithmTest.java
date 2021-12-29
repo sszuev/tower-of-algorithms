@@ -5,10 +5,10 @@ import com.gitlab.sszuev.tasks.Algorithm;
 /**
  * Created by @ssz on 30.10.2021.
  */
-public class BMHSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
+public class BMHSubstringFindOneAlgorithmTest extends SubstringFindOneAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {
-        return new BMHSubstringSearchAlgorithm();
+        return new BMHSubstringFindOneAlgorithm();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Arrays;
  *
  * @see <a href='https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore%E2%80%93Horspool_algorithm'>wiki: Boyer–Moore–Horspool algorithm</a>
  */
-public class BMHSubstringSearchAlgorithm extends BaseSubstringSearchAlgorithm {
+public class BMHSubstringFindOneAlgorithm extends BaseSubstringFindOneAlgorithm {
 
     public static int indexOf(String text, String str) {
         char[] strChars = str.toCharArray();

@@ -5,10 +5,10 @@ import com.gitlab.sszuev.tasks.Algorithm;
 /**
  * Created by @ssz on 04.11.2021.
  */
-public class NaiveSubstringSearchAlgorithmTest extends SubstringSearchAlgorithmTestBase {
+public class NaiveSubstringFindOneAlgorithmTest extends SubstringFindOneAlgorithmTestBase {
 
     @Override
     public Algorithm getTaskToTest() {
-        return new NaiveSubstringSearchAlgorithm();
+        return new NaiveSubstringFindOneAlgorithm();
     }
 }
