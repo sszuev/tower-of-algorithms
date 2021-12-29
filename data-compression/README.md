@@ -6,6 +6,7 @@ Right now there are following data compression algorithms:
 
 - [Standard JDK's Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKZipCodecImpl.java)
 - [Standard JDK's GZip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKGZipCodecImpl.java)
+- [Apache Commons Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/ApacheZipCodecImpl.java)
 - [Naive RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
 - [Optimized RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/EnhancedRLECodecImpl.java)
 
@@ -28,10 +29,10 @@ $ java -jar target/data-compression.jar
 
 ##### Usage:
 ```text
-usage: -e|-d -s <source> -c {0|1|2|3} [[-o] -t <target>] [-b <buffer>]
+usage: -e|-d -s <source> -c {0|1|2|3|4} [[-o] -t <target>] [-b <buffer>]
  -b,--buffer <arg>   Buffer in bytes.
                      Optional: by default it is 8192
- -c,--codec <arg>    The codec, choose one of these: 0(STANDARD_ZIP), 1(STANDARD_GZIP), 2(NAIVE_RLE), 3(OPTIMISED_RLE)
+ -c,--codec <arg>    The codec, choose one of these: 0(STANDARD_ZIP), 1(COMMONS_ZIP), 2(STANDARD_GZIP), 3(NAIVE_RLE), 4(OPTIMISED_RLE)
  -d,--decode         Mandatory mode: perform decoding
  -e,--encode         Mandatory mode: perform encoding
  -h,--help           Display usage

@@ -1,9 +1,6 @@
 package com.gitlab.sszuev.compression;
 
-import com.gitlab.sszuev.compression.impl.EnhancedRLECodecImpl;
-import com.gitlab.sszuev.compression.impl.JDKGZipCodecImpl;
-import com.gitlab.sszuev.compression.impl.JDKZipCodecImpl;
-import com.gitlab.sszuev.compression.impl.SimpleRLECodecImpl;
+import com.gitlab.sszuev.compression.impl.*;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -81,6 +78,27 @@ public class App {
             public String ext() {
                 return "zip";
             }
+
+            @Override
+            boolean match(String id) {
+                return name().equals(id.trim().toUpperCase(Locale.ROOT));
+            }
+        },
+        COMMONS_ZIP {
+            @Override
+            public FileCodec createCodec(LongConsumer listener) {
+                return new ApacheZipCodecImpl(listener);
+            }
+
+            @Override
+            public String ext() {
+                return "zip";
+            }
+
+            @Override
+            boolean match(String id) {
+                return name().equals(id.trim().toUpperCase(Locale.ROOT));
+            }
         },
         STANDARD_GZIP {
             @Override
@@ -120,10 +138,13 @@ public class App {
 
         public abstract String ext();
 
+        boolean match(String id) {
+            return name().equalsIgnoreCase(id = id.trim()) || id.equalsIgnoreCase(ext());
+        }
+
         public static Codec of(String ext) {
-            ext = ext.trim().toLowerCase(Locale.ROOT);
             for (Codec c : values()) {
-                if (c.name().equalsIgnoreCase(ext) || c.ext().equals(ext)) {
+                if (c.match(ext)) {
                     return c;
                 }
             }
