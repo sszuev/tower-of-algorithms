@@ -4,12 +4,12 @@ This project contains different data compression algorithms.
 
 Right now there are following data compression algorithms:
 
-- [Standard JDK's Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKZipCodecImpl.java)
-- [Standard JDK's GZip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/JDKGZipCodecImpl.java)
-- [Apache Commons Zip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/ApacheZipCodecImpl.java)
-- [Apache Commons SevenZip compressor](/src/main/java/com/gitlab/sszuev/compression/impl/ApacheSevenZipCodecImpl.java)
-- [Naive RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
-- [Optimized RLE compressor](/src/main/java/com/gitlab/sszuev/compression/impl/EnhancedRLECodecImpl.java)
+- [Standard JDK's Zip compressor](src/main/java/com/gitlab/sszuev/compression/impl/JDKZipCodecImpl.java)
+- [Standard JDK's GZip compressor](src/main/java/com/gitlab/sszuev/compression/impl/JDKGZipCodecImpl.java)
+- [Apache Commons Zip compressor](src/main/java/com/gitlab/sszuev/compression/impl/ApacheZipCodecImpl.java)
+- [Apache Commons SevenZip compressor](src/main/java/com/gitlab/sszuev/compression/impl/ApacheSevenZipCodecImpl.java)
+- [Naive RLE compressor](src/main/java/com/gitlab/sszuev/compression/impl/SimpleRLECodecImpl.java)
+- [Optimized RLE compressor](src/main/java/com/gitlab/sszuev/compression/impl/EnhancedRLECodecImpl.java)
 
 ##### Requirements:
 
