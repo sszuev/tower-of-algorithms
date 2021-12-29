@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.LongConsumer;
 
 /**
  * Run-length encoding (RLE) with obvious improvements
@@ -26,6 +27,16 @@ import java.util.Objects;
 public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
     private static final int MAX_LENGTH_OF_REPEAT_SEQUENCE = Byte.MAX_VALUE;
     private static final int MAX_LENGTH_OF_UNIQUE_SEQUENCE = -Byte.MIN_VALUE;
+
+    private final LongConsumer listener;
+
+    public EnhancedRLECodecImpl() {
+        this(null);
+    }
+
+    public EnhancedRLECodecImpl(LongConsumer listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void encode(Path source, Path target) throws IOException {
@@ -80,6 +91,7 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
             int tailLength = -1;
 
             while ((readLength = readChannel.read(readBuffer)) > 0) {
+                record(readLength);
                 readBuffer.rewind();
                 tailLength = -1;
                 writePosition = writeBuffer.position();
@@ -112,6 +124,7 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
                     writeBuffer.position(0);
                 }
             }
+            record(readLength);
             if (seekable != null && tailLength > 0) {
                 // write the last remaining tail
                 writeBuffer.limit(tailLength);
@@ -189,7 +202,7 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
             byte[] writeArray = writeBuffer.array();
 
             while ((readLength = readChannel.read(readBuffer)) >= 0 || readBuffer.position() > 0) {
-
+                record(readLength);
                 int ws = 0;
                 int we;
                 int copyLength;
@@ -532,4 +545,11 @@ public class EnhancedRLECodecImpl implements BinaryCodec, FileCodec {
         }
         return length;
     }
+
+    protected void record(long readLength) {
+        if (listener != null) {
+            listener.accept(readLength);
+        }
+    }
+
 }

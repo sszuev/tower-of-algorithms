@@ -13,6 +13,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.function.LongConsumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -22,6 +23,16 @@ import java.util.zip.ZipOutputStream;
  */
 public class JDKZipCodecImpl implements BinaryCodec, FileCodec {
     private static final String ZIP_ENTRY_ID = JDKZipCodecImpl.class.getName();
+
+    private final LongConsumer listener;
+
+    public JDKZipCodecImpl() {
+        this(null);
+    }
+
+    public JDKZipCodecImpl(LongConsumer listener) {
+        this.listener = listener;
+    }
 
     @Override
     public byte[] encode(byte[] raw) {
@@ -74,10 +85,13 @@ public class JDKZipCodecImpl implements BinaryCodec, FileCodec {
             ZipEntry entry = new ZipEntry(entityName);
             zip.putNextEntry(entry);
             ByteBuffer buffer = ByteBuffer.allocate(bufferLength);
-            while (src.read(buffer) != -1) {
+            int readLength;
+            while ((readLength = src.read(buffer)) != -1) {
+                record(readLength);
                 zip.write(buffer.array(), 0, buffer.position());
                 buffer.rewind();
             }
+            record(readLength);
             zip.closeEntry();
         }
     }
@@ -94,17 +108,25 @@ public class JDKZipCodecImpl implements BinaryCodec, FileCodec {
                 throw new IllegalArgumentException("Wrong data specified");
             }
             ByteBuffer buffer = ByteBuffer.allocate(bufferCapacity);
-            int p1;
-            while ((p1 = zip.read(buffer.array())) > 0) {
-                buffer.limit(p1);
-                int p2 = dst.write(buffer);
-                if (p2 != p1) {
+            int readLength;
+            int writeLength;
+            while ((readLength = zip.read(buffer.array())) > 0) {
+                record(readLength);
+                buffer.limit(readLength);
+                writeLength = dst.write(buffer);
+                if (writeLength != readLength) {
                     throw new IllegalStateException();
                 }
                 buffer.rewind();
             }
+            record(readLength);
             zip.closeEntry();
         }
     }
 
+    protected void record(long readLength) {
+        if (listener != null) {
+            listener.accept(readLength);
+        }
+    }
 }

@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.function.LongConsumer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -15,6 +16,16 @@ import java.util.zip.GZIPOutputStream;
  * Created by @ssz on 28.12.2021.
  */
 public class JDKGZipCodecImpl implements BinaryCodec, FileCodec {
+    private final LongConsumer listener;
+
+    public JDKGZipCodecImpl() {
+        this(null);
+    }
+
+    public JDKGZipCodecImpl(LongConsumer listener) {
+        this.listener = listener;
+    }
+
     @Override
     public byte[] encode(byte[] raw) {
         ByteArrayOutputStream res = new ByteArrayOutputStream(raw.length / 2);
@@ -42,12 +53,15 @@ public class JDKGZipCodecImpl implements BinaryCodec, FileCodec {
                        int bufferLength) throws IOException {
         try (ReadableByteChannel src = source.open();
              WritableByteChannel dst = target.open();
-             OutputStream zip = new GZIPOutputStream(Channels.newOutputStream(dst))) {
+             OutputStream zip = new GZIPOutputStream(Channels.newOutputStream(dst), bufferLength)) {
             ByteBuffer buffer = ByteBuffer.allocate(bufferLength);
-            while (src.read(buffer) != -1) {
+            int readLength;
+            while ((readLength = src.read(buffer)) > 0) {
+                record(readLength);
                 zip.write(buffer.array(), 0, buffer.position());
                 buffer.rewind();
             }
+            record(readLength);
         }
     }
 
@@ -56,18 +70,27 @@ public class JDKGZipCodecImpl implements BinaryCodec, FileCodec {
                        IOSupplier<? extends WritableByteChannel> target,
                        int bufferLength) throws IOException {
         try (ReadableByteChannel src = source.open();
-             InputStream zip = new GZIPInputStream(Channels.newInputStream(src));
+             InputStream zip = new GZIPInputStream(Channels.newInputStream(src), bufferLength);
              WritableByteChannel dst = target.open()) {
-            ByteBuffer buffer = ByteBuffer.allocate(bufferLength);
-            int p1;
-            while ((p1 = zip.read(buffer.array())) > 0) {
-                buffer.limit(p1);
-                int p2 = dst.write(buffer);
-                if (p2 != p1) {
+            ByteBuffer readBuffer = ByteBuffer.allocate(bufferLength);
+            int readLength;
+            int writeLength;
+            while ((readLength = zip.read(readBuffer.array())) > 0) {
+                record(readLength);
+                readBuffer.limit(readLength);
+                writeLength = dst.write(readBuffer);
+                if (writeLength != readLength) {
                     throw new IllegalStateException();
                 }
-                buffer.rewind();
+                readBuffer.rewind();
             }
+            record(readLength);
+        }
+    }
+
+    protected void record(long readLength) {
+        if (listener != null) {
+            listener.accept(readLength);
         }
     }
 }

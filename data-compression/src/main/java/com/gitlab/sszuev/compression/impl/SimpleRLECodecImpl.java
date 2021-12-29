@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.LongConsumer;
 
 /**
  * Run-length encoding (RLE).
@@ -24,6 +25,16 @@ import java.util.Objects;
  */
 public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
     private static final int MAX_BYTES_IN_SEQUENCE = 256;
+
+    private final LongConsumer listener;
+
+    public SimpleRLECodecImpl() {
+        this(null);
+    }
+
+    public SimpleRLECodecImpl(LongConsumer listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void encode(Path source, Path target) throws IOException {
@@ -66,17 +77,18 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
                     (SeekableByteChannel) writeChannel : null;
 
             // the number of bytes read, possibly zero, or -1 if the channel has reached end-of-stream
-            int read;
+            int readLength;
             // the number of bytes written, possibly zero
-            int write;
+            int writeLength;
             byte endSymbol = 0;
             byte endCount = 0;
 
-            while ((read = readChannel.read(readBuffer)) > 0) {
+            while ((readLength = readChannel.read(readBuffer)) > 0) {
+                record(readLength);
                 readBuffer.rewind();
 
-                write = encode(readBuffer.array(), read, writeBuffer.array());
-                writeBuffer.limit(write);
+                writeLength = encode(readBuffer.array(), readLength, writeBuffer.array());
+                writeBuffer.limit(writeLength);
                 writeBuffer.position(0);
 
                 if (seekable != null) {
@@ -91,15 +103,16 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
                         seekable.position(seekable.position() - 2);
                     }
                     // remember the last two symbols
-                    endSymbol = writeBuffer.get(write - 1);
-                    endCount = writeBuffer.get(write - 2);
+                    endSymbol = writeBuffer.get(writeLength - 1);
+                    endCount = writeBuffer.get(writeLength - 2);
                 }
 
                 int writeBytes = writeChannel.write(writeBuffer);
-                if (writeBytes != write) {
+                if (writeBytes != writeLength) {
                     throw new IllegalStateException();
                 }
             }
+            record(readLength);
         }
     }
 
@@ -187,7 +200,9 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
         try (ReadableByteChannel readChannel = source.open();
              WritableByteChannel writeChannel = target.open()) {
 
-            while (readChannel.read(readBuffer) > 0) {
+            int readLength;
+            while ((readLength = readChannel.read(readBuffer)) > 0) {
+                record(readLength);
                 int length = readBuffer.position();
                 if (length % 2 != 0) {
                     throw new IllegalStateException();
@@ -216,7 +231,13 @@ public class SimpleRLECodecImpl implements BinaryCodec, FileCodec {
                 writeChannel.write(writeBuffer);
                 writeBuffer.position(0);
             }
+            record(readLength);
         }
     }
 
+    protected void record(long readLength) {
+        if (listener != null) {
+            listener.accept(readLength);
+        }
+    }
 }
