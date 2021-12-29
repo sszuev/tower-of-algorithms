@@ -25,3 +25,19 @@ $ java -jar target/data-compression.jar
 ```
 
 ##### To run demonstration tests use command `mvn -q test -Dtest=FileCodecTest`
+
+##### Usage:
+```text
+usage: -e|-d -s <source> -c {0|1|2|3} [[-o] -t <target>] [-b <buffer>]
+ -b,--buffer <arg>   Buffer in bytes.
+                     Optional: by default it is 8192
+ -c,--codec <arg>    The codec, choose one of these: 0(STANDARD_ZIP), 1(STANDARD_GZIP), 2(NAIVE_RLE), 3(OPTIMISED_RLE)
+ -d,--decode         Mandatory mode: perform decoding
+ -e,--encode         Mandatory mode: perform encoding
+ -h,--help           Display usage
+ -o,--overwrite      Overwrites the target file if it is exist.
+                     Optional: by default error in that case.
+ -s,--source <arg>   The source file path (absolute or relative)
+ -t,--target <arg>   The target file path (absolute or relative).
+                     Optional: by default the filename is inferred from the source filename, the codec and direction mode
+```
