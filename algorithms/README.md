@@ -52,7 +52,7 @@ Right now there are following algorithmic tasks:
   
 - Miscellaneous recursion and dynamic programming tasks
   * [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/dynamic/tickets/HappyTicketsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
-
+  * [Sum of fractions](src/main/java/com/gitlab/sszuev/tasks/dynamic/fractions/SumOfFractionsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=SumOfFractionsDynamicAlgorithmTest`)
 
 ##### Requirements:
 
