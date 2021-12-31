@@ -3,15 +3,6 @@
 This is a collection of some algorithmic tasks and junit-based demo stand for running various algorithms.
 Right now there are following algorithmic tasks:
 
-- [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/tickets/HappyTicketsDynamicAlgorithm.java) (command to
-  run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
-- Bitboard algorithms (command to run: `mvn -q test -Dtest=*WalkAlgorithmTest`):
-  * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
-  * [Bishop walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/BishopWalkAlgorithm.java)
-  * [Rook walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/RookWalkAlgorithm.java)
-  * [Queen walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/QueenWalkAlgorithm.java)
-  * [Knight walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KnightWalkAlgorithm.java)
-
 - Algorithms for raising a real number to a natural power (command to
   run `mvn -q test -Dtest=NaturalPower*AlgorithmTest`):
   * [Simple iterative algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/power/NaturalPowerSimpleIterativeAlgorithm.java)
@@ -51,6 +42,17 @@ Right now there are following algorithmic tasks:
   * [Boyer–Moore algorithm to search substring, ssz variant](src/main/java/com/gitlab/sszuev/tasks/strings/MyBMSubstringFindOneAlgorithm.java)
   * [Knuth-Morris-Pratt algorithm to search substring, naive prefix function](src/main/java/com/gitlab/sszuev/tasks/strings/SimpleKMKSubstringFindAllAlgorithm.java)
   * [Knuth-Morris-Pratt algorithm to search substring, classic prefix function](src/main/java/com/gitlab/sszuev/tasks/strings/FastKMKSubstringFindAllAlgorithm.java)
+
+- Bitboard algorithms (command to run: `mvn -q test -Dtest=*WalkAlgorithmTest`):
+  * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
+  * [Bishop walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/BishopWalkAlgorithm.java)
+  * [Rook walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/RookWalkAlgorithm.java)
+  * [Queen walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/QueenWalkAlgorithm.java)
+  * [Knight walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KnightWalkAlgorithm.java)
+  
+- Miscellaneous recursion and dynamic programming tasks
+  * [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/dynamic/tickets/HappyTicketsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
+
 
 ##### Requirements:
 
