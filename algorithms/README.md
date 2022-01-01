@@ -54,6 +54,7 @@ Right now there are following algorithmic tasks:
   * [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/dynamic/tickets/HappyTicketsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
   * [Sum of fractions](src/main/java/com/gitlab/sszuev/tasks/dynamic/fractions/SumOfFractionsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=SumOfFractionsDynamicAlgorithmTest`)
   * [Pyramid problem: searching the maximum "garland" in the "digital christmas tree"](src/main/java/com/gitlab/sszuev/tasks/dynamic/pyramid/PyramidDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=PyramidDynamicAlgorithmTest`)
+  * [Counting two-digit numbers with exclusion  of three consecutive digits series ("5x8 problem")](src/main/java/com/gitlab/sszuev/tasks/dynamic/misc/CountTwoDigitNumbersDynamicAlgorithm.java) (`mvn -q test -Dtest=CountTwoDigitNumbersDynamicAlgorithmTest`)
 
 ##### Requirements:
 
