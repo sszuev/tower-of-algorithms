@@ -58,6 +58,7 @@ Right now there are following algorithmic tasks:
   * [Matrix islands: find all 1-digit islands from square matrix consisting of 0 and 1](src/main/java/com/gitlab/sszuev/tasks/dynamic/matrix/MatrixIslandsDynamicAlgorithm.java) (`mvn -q test -Dtest=MatrixIslandsDynamicAlgorithmTest`)
   * Calculation the maximum possible shed area on a fixed rectangular area with some obstacles (command to run: `mvn -q test -Dtest=*ShedDynamicAlgorithmTest`)
     - [A brute-force solution with O(N^4) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/SmallShedDynamicAlgorithm.java)
+    - [An optimized solution with O(N^3) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/LargeShedDynamicAlgorithm.java)
 
 ##### Requirements:
 
