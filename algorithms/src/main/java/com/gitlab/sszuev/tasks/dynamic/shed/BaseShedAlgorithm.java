@@ -19,7 +19,8 @@ abstract class BaseShedAlgorithm implements Algorithm {
         }
         int numberOfObstacles = Integer.parseInt(obstacles[0].trim());
         if (numberOfObstacles != obstacles.length - 1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("numberOfObstacles=" + numberOfObstacles +
+                    "!=records(" + (obstacles.length - 1) + ")");
         }
         int width = parseFirstNumber(widthHeight);
         int height = parseSecondNumber(widthHeight);
