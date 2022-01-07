@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
  * <p>
  * Created by @ssz on 17.11.2021.
  */
-interface BiNode<X> extends TreeNode {
+public interface BiNode<X> extends TreeNode {
 
     X key();
 

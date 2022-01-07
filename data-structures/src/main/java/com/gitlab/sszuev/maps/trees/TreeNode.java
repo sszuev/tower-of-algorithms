@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  * <p>
  * Created by @ssz on 21.09.2021.
  */
-interface TreeNode {
+public interface TreeNode {
 
     Stream<? extends TreeNode> children();
 

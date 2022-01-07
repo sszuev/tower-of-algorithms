@@ -1,9 +1,9 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
 
 /**
  * Created by @ssz on 17.11.2021.
  */
-interface HasTreeRoot {
+public interface HasTreeRoot {
 
     TreeNode getRoot();
 }

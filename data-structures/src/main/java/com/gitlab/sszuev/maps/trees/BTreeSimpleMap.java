@@ -1,4 +1,6 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
+
+import com.gitlab.sszuev.maps.SimpleMap;
 
 import java.lang.reflect.Array;
 import java.util.*;

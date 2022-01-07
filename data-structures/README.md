@@ -5,25 +5,29 @@ console [JMH](https://openjdk.java.net/projects/code-tools/jmh) based applicatio
 
 Right now there are following data structures:
 
-- [Dynamic Array](src/main/java/com/gitlab/sszuev/arrays/DynamicArray.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.arrays.*`):
+- [Dynamic Arrays](src/main/java/com/gitlab/sszuev/arrays/DynamicArray.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.arrays.*`):
   * [A naive one-item-a-time-grown implementation](src/main/java/com/gitlab/sszuev/arrays/SimpleDynamicArray.java)
   * [An implementation with fixed growth-factor (so called "vector")](src/main/java/com/gitlab/sszuev/arrays/FixedVectorDynamicArray.java)
   * [An implementation with dynamic growth-factor](src/main/java/com/gitlab/sszuev/arrays/FactorVectorDynamicArray.java)
   * [A matrix-based dynamic array](src/main/java/com/gitlab/sszuev/arrays/MatrixDynamicArray.java)
   * [A wrapper for JDK `java.util.List` implementations](src/main/java/com/gitlab/sszuev/arrays/JDKListDynamicArray.java)
 
-- [Priority Queue](src/main/java/com/gitlab/sszuev/queues/PriorityQueue.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.queues.*`):
-  * [A priority heap based impplementation (wrapper for `java.util.PriorityQueue`)](src/main/java/com/gitlab/sszuev/queues/HeapPriorityQueue.java)
+- [Priority Queues](src/main/java/com/gitlab/sszuev/queues/PriorityQueue.java) (benchmark command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.queues.*`):
+  * [A priority heap based implementation (wrapper for `java.util.PriorityQueue`)](src/main/java/com/gitlab/sszuev/queues/HeapPriorityQueue.java)
   * [A `java.util.TreeSet`-based implementation](src/main/java/com/gitlab/sszuev/queues/TreeSetPriorityQueue.java)
   * [A `java.util.Map`-based implementation](src/main/java/com/gitlab/sszuev/queues/MapPriorityQueue.java)
   
-- [Map (Key-Value Dictionary)](src/main/java/com/gitlab/sszuev/maps/SimpleMap.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.*`):
-  * [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/BinarySearchTreeSimpleMap.java)
-  * [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/AVLBinarySearchTreeSimpleMap.java)
-  * [Treap - a Cartesian Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/TreapSimpleMap.java)
-  * [B-Tree - a self-balancing multi-node Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/BTreeSimpleMap.java)
-  * [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/SeparateChainingHashtableSimpleMap.java)
-  * [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/OpenAddressingHashtableSimpleMap.java)
+- [Maps (Key-Value Dictionaries)](src/main/java/com/gitlab/sszuev/maps/SimpleMap.java) (benchmark command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.*`):
+  * [A wrapper for JDK `java.util.Map` implementations](src/main/java/com/gitlab/sszuev/maps/JDKMapWrapperSimpleMap.java)
+  * Trees:
+    - [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/trees/BinarySearchTreeSimpleMap.java)
+    - [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/trees/AVLBinarySearchTreeSimpleMap.java)
+    - [Treap - a Cartesian Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/trees/TreapSimpleMap.java)
+    - [B-Tree - a self-balancing multi-node Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/trees/BTreeSimpleMap.java)
+  * Hash-tables:
+    - [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/SeparateChainingHashtableSimpleMap.java)
+    - [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/OpenAddressingHashtableSimpleMap.java)
+  
 
 - [Graph algorithms](src/main/java/com/gitlab/sszuev/graphs/Graph.java) 
   * [Demucron's algorithm (topological sorting)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L66)
@@ -39,7 +43,7 @@ Right now there are following data structures:
 
 ##### Build and run:
 
-```
+```bash
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
 $ cd 2021-07-otus-algorithms-sszuev/data-structures
 $ mvn clean package

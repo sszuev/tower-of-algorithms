@@ -1,5 +1,6 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
 
+import com.gitlab.sszuev.maps.SimpleMap;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;

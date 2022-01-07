@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.trees;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  *
  * @param <X> - payload
  */
-interface MultiNode<X> extends TreeNode {
+public interface MultiNode<X> extends TreeNode {
     Stream<X> keys();
 
     @Override

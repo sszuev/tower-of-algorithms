@@ -1,5 +1,8 @@
 package com.gitlab.sszuev.maps;
 
+import com.gitlab.sszuev.maps.hashtables.OpenAddressingHashtableSimpleMap;
+import com.gitlab.sszuev.maps.hashtables.SeparateChainingHashtableSimpleMap;
+import com.gitlab.sszuev.maps.trees.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -466,7 +469,7 @@ public class SimpleMapTest {
             }
 
             private <K, V> AVLBinarySearchTreeSimpleMap.AVLBiNodeImpl<K, V> getRoot(AVLBinarySearchTreeSimpleMap<K, V> map) {
-                return asAVL(map.root);
+                return asAVL(map.getRoot());
             }
 
             @SuppressWarnings("unchecked")
@@ -526,7 +529,6 @@ public class SimpleMapTest {
             }
         },
         JDK_TREE_MAP {
-            @SuppressWarnings("SortedCollectionWithNonComparableKeys")
             @Override
             public <K, V> SimpleMap<K, V> create() {
                 return new JDKMapWrapperSimpleMap<>(new TreeMap<>());

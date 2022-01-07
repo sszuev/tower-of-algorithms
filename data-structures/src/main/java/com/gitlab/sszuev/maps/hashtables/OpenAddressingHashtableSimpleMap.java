@@ -1,4 +1,6 @@
-package com.gitlab.sszuev.maps;
+package com.gitlab.sszuev.maps.hashtables;
+
+import com.gitlab.sszuev.maps.SimpleMap;
 
 import java.util.Objects;
 

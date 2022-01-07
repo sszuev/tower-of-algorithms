@@ -1,6 +1,13 @@
 package com.gitlab.sszuev.benchmarks.maps;
 
-import com.gitlab.sszuev.maps.*;
+import com.gitlab.sszuev.maps.JDKMapWrapperSimpleMap;
+import com.gitlab.sszuev.maps.SimpleMap;
+import com.gitlab.sszuev.maps.hashtables.OpenAddressingHashtableSimpleMap;
+import com.gitlab.sszuev.maps.hashtables.SeparateChainingHashtableSimpleMap;
+import com.gitlab.sszuev.maps.trees.AVLBinarySearchTreeSimpleMap;
+import com.gitlab.sszuev.maps.trees.BTreeSimpleMap;
+import com.gitlab.sszuev.maps.trees.BinarySearchTreeSimpleMap;
+import com.gitlab.sszuev.maps.trees.TreapSimpleMap;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -55,7 +62,6 @@ public enum SimpleMapFactory {
         }
     },
     JDK_TREE_MAP {
-        @SuppressWarnings("SortedCollectionWithNonComparableKeys")
         @Override
         public <K, V> SimpleMap<K, V> createEmptyMap() {
             return new JDKMapWrapperSimpleMap<>(new TreeMap<>());
