@@ -2,6 +2,7 @@
 
 This project contains different data structure implementations and simple
 console [JMH](https://openjdk.java.net/projects/code-tools/jmh) based application for demonstration.
+_Note: some benchmarks may take a long time_
 
 Right now there are following data structures:
 
@@ -17,8 +18,7 @@ Right now there are following data structures:
   * [A `java.util.TreeSet`-based implementation](src/main/java/com/gitlab/sszuev/queues/TreeSetPriorityQueue.java)
   * [A `java.util.Map`-based implementation](src/main/java/com/gitlab/sszuev/queues/MapPriorityQueue.java)
   
-- [Maps (Key-Value Dictionaries)](src/main/java/com/gitlab/sszuev/maps/SimpleMap.java) (benchmark command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.*`):
-  * [A wrapper for JDK `java.util.Map` implementations](src/main/java/com/gitlab/sszuev/maps/JDKMapWrapperSimpleMap.java)
+- [Maps (Key-Value Dictionaries)](src/main/java/com/gitlab/sszuev/maps/SimpleMap.java) (benchmark command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.SimpleMapBenchmark`):
   * Trees:
     - [Simple Binary Search Tree Map implementation without any rebalance](src/main/java/com/gitlab/sszuev/maps/trees/BinarySearchTreeSimpleMap.java)
     - [AVL Binary Search Tree Map implementation](src/main/java/com/gitlab/sszuev/maps/trees/AVLBinarySearchTreeSimpleMap.java)
@@ -27,8 +27,11 @@ Right now there are following data structures:
   * Hash-tables:
     - [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/SeparateChainingHashtableSimpleMap.java)
     - [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/OpenAddressingHashtableSimpleMap.java)
+  * Wrappers to compare: 
+    - [Simple wrapper for JDK `java.util.Map` implementations](src/main/java/com/gitlab/sszuev/maps/JDKMapWrapperSimpleMap.java)
+    - [A wrapper for `java.util.Map` with Bloom-Filter optimization](src/main/java/com/gitlab/sszuev/maps/BigSimpleMap.java)
     
-- Misc data-structures: [Bloom Filter](src/main/java/com/gitlab/sszuev/misc/SimpleBloomFilter.java)
+- Misc data-structures: [Bloom Filter](src/main/java/com/gitlab/sszuev/misc/SimpleBloomFilter.java) (benchmark command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.maps.BigMapBenchmark` ~ 10m): 
   * [Simplest Bloom Filter impl](src/main/java/com/gitlab/sszuev/misc/MyBloomFilter.java)
   * [Guava-based wrapper](src/main/java/com/gitlab/sszuev/misc/GuavaBloomFilter.java)
 
