@@ -27,7 +27,10 @@ Right now there are following data structures:
   * Hash-tables:
     - [A hashtable separate-chaining implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/SeparateChainingHashtableSimpleMap.java)
     - [A hashtable open-addressing implementation](src/main/java/com/gitlab/sszuev/maps/hashtables/OpenAddressingHashtableSimpleMap.java)
-  
+    
+- Misc data-structures: [Bloom Filter](src/main/java/com/gitlab/sszuev/misc/SimpleBloomFilter.java)
+  * [Simplest Bloom Filter impl](src/main/java/com/gitlab/sszuev/misc/MyBloomFilter.java)
+  * [Guava-based wrapper](src/main/java/com/gitlab/sszuev/misc/GuavaBloomFilter.java)
 
 - [Graph algorithms](src/main/java/com/gitlab/sszuev/graphs/Graph.java) 
   * [Demucron's algorithm (topological sorting)](src/main/java/com/gitlab/sszuev/graphs/Graphs.java#L66)
