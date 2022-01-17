@@ -54,8 +54,12 @@ Right now there are following algorithmic tasks:
   * [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/dynamic/tickets/HappyTicketsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
   * [Sum of fractions](src/main/java/com/gitlab/sszuev/tasks/dynamic/fractions/SumOfFractionsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=SumOfFractionsDynamicAlgorithmTest`)
   * [Pyramid problem: searching the maximum "garland" in the "digital christmas tree"](src/main/java/com/gitlab/sszuev/tasks/dynamic/pyramid/PyramidDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=PyramidDynamicAlgorithmTest`)
-  * [Counting two-digit numbers with exclusion  of three consecutive digits series ("5x8 problem")](src/main/java/com/gitlab/sszuev/tasks/dynamic/misc/CountTwoDigitNumbersDynamicAlgorithm.java) (`mvn -q test -Dtest=CountTwoDigitNumbersDynamicAlgorithmTest`)
+  * [Counting two-digit numbers with exclusion of three consecutive digits series ("5x8 problem")](src/main/java/com/gitlab/sszuev/tasks/dynamic/misc/CountTwoDigitNumbersDynamicAlgorithm.java) (`mvn -q test -Dtest=CountTwoDigitNumbersDynamicAlgorithmTest`)
   * [Matrix islands: find all 1-digit islands from square matrix consisting of 0 and 1](src/main/java/com/gitlab/sszuev/tasks/dynamic/matrix/MatrixIslandsDynamicAlgorithm.java) (`mvn -q test -Dtest=MatrixIslandsDynamicAlgorithmTest`)
+  * Calculation the maximum possible shed area on a fixed rectangular area with some obstacles (command to run: `mvn -q test -Dtest=*ShedDynamicAlgorithmTest`)
+    - [A brute-force solution with O(N^4) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/SmallShedDynamicAlgorithm.java)
+    - [An optimized solution with O(N^3) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/LargeShedDynamicAlgorithm.java)
+    - [An optimal solution with O(N^2) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/HugeShedDynamicAlgorithm.java)
 
 ##### Requirements:
 
@@ -65,7 +69,7 @@ Right now there are following algorithmic tasks:
 
 ##### Run all tests:
 
-```
+```bash
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
 $ cd 2021-07-otus-algorithms-sszuev/algorithms
 $ mvn -q test
@@ -73,7 +77,7 @@ $ mvn -q test
 
 ##### Run a particular test:
 
-```
+```bash
 $ git clone git@gitlab.com:sszuev/2021-07-otus-algorithms-sszuev.git
 $ cd 2021-07-otus-algorithms-sszuev/algorithms
 $ mvn -Dtest=StringLengthCalculationAlgorithmTest -q test
@@ -81,6 +85,6 @@ $ mvn -Dtest=StringLengthCalculationAlgorithmTest -q test
 
 Use option `-Dtest-data` to specify a real dir containing test data (it works only for a particular test):
 
-```
+```bash
 mvn -q test -Dtest=RookWalkAlgorithmTest -Dtest-data=target\test-classes\bitboard\rook
 ``` 
