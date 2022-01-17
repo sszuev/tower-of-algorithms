@@ -3,15 +3,6 @@
 This is a collection of some algorithmic tasks and junit-based demo stand for running various algorithms.
 Right now there are following algorithmic tasks:
 
-- [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/tickets/HappyTicketsDynamicAlgorithm.java) (command to
-  run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
-- Bitboard algorithms (command to run: `mvn -q test -Dtest=*WalkAlgorithmTest`):
-  * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
-  * [Bishop walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/BishopWalkAlgorithm.java)
-  * [Rook walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/RookWalkAlgorithm.java)
-  * [Queen walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/QueenWalkAlgorithm.java)
-  * [Knight walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KnightWalkAlgorithm.java)
-
 - Algorithms for raising a real number to a natural power (command to
   run `mvn -q test -Dtest=NaturalPower*AlgorithmTest`):
   * [Simple iterative algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/power/NaturalPowerSimpleIterativeAlgorithm.java)
@@ -27,7 +18,10 @@ Right now there are following algorithmic tasks:
 - Primes number calculation (command to run: `mvn -q test -Dtest=Primes*AlgorithmTest`):
   * [Iterative algorithm with some optimizations](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesOptimizedIterativeAlgorithm.java)
   * [Sieve of Eratosthenes algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesAlgorithm.java)
-  * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java) 
+  * [Sieve of Eratosthenes With Linear Complexity algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/primes/PrimesSieveOfEratosthenesLinearTimeAlgorithm.java)
+  
+- Greatest common divisor algorithms (command to run: `mvn -q test -Dtest=*GCDAlgorithmTest`):
+  * [Recursive Binary GCD algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/gcd/RecursiveBinaryGCDAlgorithm.java)
 
 - Sorting algorithms (command to run: `mvn -q test -Dtest=*SortlgorithmTest`):
   * [Bubble sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BubbleSortAlgorithm.java)
@@ -48,6 +42,20 @@ Right now there are following algorithmic tasks:
   * [Boyer–Moore algorithm to search substring, ssz variant](src/main/java/com/gitlab/sszuev/tasks/strings/MyBMSubstringFindOneAlgorithm.java)
   * [Knuth-Morris-Pratt algorithm to search substring, naive prefix function](src/main/java/com/gitlab/sszuev/tasks/strings/SimpleKMKSubstringFindAllAlgorithm.java)
   * [Knuth-Morris-Pratt algorithm to search substring, classic prefix function](src/main/java/com/gitlab/sszuev/tasks/strings/FastKMKSubstringFindAllAlgorithm.java)
+
+- Bitboard algorithms (command to run: `mvn -q test -Dtest=*WalkAlgorithmTest`):
+  * [King walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KingWalkAlgorithm.java)
+  * [Bishop walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/BishopWalkAlgorithm.java)
+  * [Rook walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/RookWalkAlgorithm.java)
+  * [Queen walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/QueenWalkAlgorithm.java)
+  * [Knight walk problem](src/main/java/com/gitlab/sszuev/tasks/bitboard/KnightWalkAlgorithm.java)
+  
+- Miscellaneous recursion and dynamic programming tasks
+  * [Happy tickets problem](src/main/java/com/gitlab/sszuev/tasks/dynamic/tickets/HappyTicketsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=HappyTicketsDynamicAlgorithmTest`)
+  * [Sum of fractions](src/main/java/com/gitlab/sszuev/tasks/dynamic/fractions/SumOfFractionsDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=SumOfFractionsDynamicAlgorithmTest`)
+  * [Pyramid problem: searching the maximum "garland" in the "digital christmas tree"](src/main/java/com/gitlab/sszuev/tasks/dynamic/pyramid/PyramidDynamicAlgorithm.java) (command to run: `mvn -q test -Dtest=PyramidDynamicAlgorithmTest`)
+  * [Counting two-digit numbers with exclusion  of three consecutive digits series ("5x8 problem")](src/main/java/com/gitlab/sszuev/tasks/dynamic/misc/CountTwoDigitNumbersDynamicAlgorithm.java) (`mvn -q test -Dtest=CountTwoDigitNumbersDynamicAlgorithmTest`)
+  * [Matrix islands: find all 1-digit islands from square matrix consisting of 0 and 1](src/main/java/com/gitlab/sszuev/tasks/dynamic/matrix/MatrixIslandsDynamicAlgorithm.java) (`mvn -q test -Dtest=MatrixIslandsDynamicAlgorithmTest`)
 
 ##### Requirements:
 

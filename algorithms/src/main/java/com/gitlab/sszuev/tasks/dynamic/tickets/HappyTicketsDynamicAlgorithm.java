@@ -1,4 +1,4 @@
-package com.gitlab.sszuev.tasks.tickets;
+package com.gitlab.sszuev.tasks.dynamic.tickets;
 
 import com.gitlab.sszuev.tasks.Algorithm;
 
