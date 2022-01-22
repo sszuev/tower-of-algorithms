@@ -5,7 +5,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <b>Bucket Sort</b>
+ * <b>Bucket Sort (ints)</b>
+ * It is <b>non-adaptive</b>, <b>stable</b>, <b>online</b>, <b>non-in-place</b> sorting.
+ * <ul>
+ * <li>Average case performance: {@code O(n)}</li>
+ * <li>Average case memory: {@code O(n)}</li>
+ * <li>Best case performance: {@code O(n)}</li>
+ * <li>Worst case performance: {@code O(n^2)}</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
+ * </ul>
  * <p>
  * Bucket Sort is also known as bin sort because you create bins or buckets to sort inputs.
  * <p>
@@ -20,12 +28,11 @@ import java.util.List;
  * <li>Second, the elements to be sorted must be uniformly distributed</li>
  * </ul>
  * Bucket Sort is <b>not</b> stable and <b>not</b> in-place algorithm.
- * <p>
- * Created by @ssz on 17.12.2020.
- *
- * @see <a href='https://javarevisited.blogspot.com/2017/01/bucket-sort-in-java-with-example.html'>Bucket Sort</a>
- * <p>
+ * {@inheritDoc}
  * Created by @ssz on 20.09.2021.
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Bucket_sort'>wiki: Bucket Sort</a>
+ * @see <a href='https://javarevisited.blogspot.com/2017/01/bucket-sort-in-java-with-example.html'>Bucket Sort</a>
  */
 public class BucketSortAlgorithm extends BaseIntegerSortAlgorithm {
 

@@ -1,10 +1,21 @@
 package com.gitlab.sszuev.tasks.sorting;
 
 /**
- * <b>Merge Sort</b>
- *
- * @see <a href='https://www.java67.com/2018/03/mergesort-in-java-algorithm-example-and.html'>Merge Sort in Java - Algorithm Example</a>
+ * <b>Merge Sort (ints).</b>
+ * It is <b>non-adaptive</b>, <b>stable</b>, <b>online</b>(somehow) sorting.
+ * <ul>
+ * <li>Average case performance: {@code O(n*log(n))}</li>
+ * <li>Average case memory: {@code O(n)} (possible {@code O(1)}) with linked lists</li>
+ * <li>Best case performance: {@code O(n*log(n))}</li>
+ * <li>Worst case performance: {@code O(n*log(n))}</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
+ * </ul>
+ * {@inheritDoc}
  * Created by @ssz on 19.09.2021.
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Merge_sort'>wiki: Merge sort</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Visualization</a>
+ * @see <a href='https://www.java67.com/2018/03/mergesort-in-java-algorithm-example-and.html'>Merge Sort - Algorithm Example</a>
  */
 public class MergeSortAlgorithm extends BaseIntegerSortAlgorithm implements IntSort, CharSort {
 

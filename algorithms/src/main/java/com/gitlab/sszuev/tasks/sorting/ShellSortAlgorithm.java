@@ -2,19 +2,19 @@ package com.gitlab.sszuev.tasks.sorting;
 
 /**
  * <b>Shell Sort (for Integers).</b>
- * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
+ * It is <b>adaptive</b>(somehow), <b>non-stable</b>, <b>non-online</b>, <b>in-place</b> sorting.
  * <ul>
- * <li>Worst case performance: {@code O(n^2)} (worst known worst case gap sequence),
- * {@code O(n * (log(n))^2)} (best known worst case gap sequence)</li>
- * <li>Best case performance: {@code O(n * log(n))} (most gap sequences),
- * {@code O(n * (log(n))^2)} (best known worst-case gap sequence</li>
  * <li>Average case performance: {@code O(n^(4/3))} (approximate)</li>
- * <li>Worst-case space complexity: {@code O(n)} total, {@code O(1)} auxiliary</li>
+ * <li>Average case memory: {@code O(1)}</li>
+ * <li>Best case performance: {@code O(n*log(n))} (most gap sequences),{@code O(n * (log(n))^2)} (best known worst-case gap sequence</li>
+ * <li>Worst case performance: {@code O(n^2)} (worst known worst case gap sequence) {@code O(n*(log(n))^2)} (best known worst case gap sequence)</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
  * </ul>
+ * {@inheritDoc}
  * Created by @ssz on 29.08.2021.
  *
- * @see <a href='https://en.wikipedia.org/wiki/Shellsort'>Shell sort</a>
- * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Sorting Algorithms Visualization</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Shellsort'>wiki: Shell sort</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Visualization</a>
  */
 public class ShellSortAlgorithm extends BaseIntegerSortAlgorithm {
 

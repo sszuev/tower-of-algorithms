@@ -7,7 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by @ssz on 29.08.2021.
+ * @see <a href='https://en.wikipedia.org/wiki/Sorting_algorithm#Comparison_of_algorithms'>wiki: comparison and non-comparison sorts</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Sorting_algorithm#Stability'>wiki: Stable sorting</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Adaptive_sort'>wiki: Adaptive sort</a>
+ * @see <a href='https://en.wikipedia.org/wiki/Online_algorithm'>wiki: Ontline algorithm</a>
+ * @see <a href='https://en.wikipedia.org/wiki/In-place_algorithm'>wiki: In-place algorithms</a>
  */
 abstract class BaseIntegerSortAlgorithm implements Algorithm, IntSort {
 

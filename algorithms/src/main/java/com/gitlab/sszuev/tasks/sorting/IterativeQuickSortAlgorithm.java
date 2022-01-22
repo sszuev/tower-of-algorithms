@@ -4,13 +4,23 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
- * <b>Quick Sort</b>
+ * <b>Quick Sort (ints)</b>
+ * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>non-online</b>, <b>in-place</b> sorting.
+ * <ul>
+ * <li>Average case performance: {@code O(n*log(n))}</li>
+ * <li>Average case memory: {@code O(log(n))}</li>
+ * <li>Best case performance: {@code O(n*log(n))} (simple partition)</li>
+ * <li>Worst case performance: {@code O(n^2)}</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
+ * </ul>
  * The quicksort algorithm is one of the important sorting algorithms.
  * Similar to merge sort, quicksort also uses divide-and-conquer.
- *
- * @see <a href='https://javarevisited.blogspot.com/2016/09/iterative-quicksort-example-in-java-without-recursion.html'>Iterative QuickSort (without Recursion)</a>
- * <p>
+ * {@inheritDoc}
  * Created by @ssz on 19.09.2021.
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Quicksort'>wiki: Quicksort</a>
+ * @see <a href='https://javarevisited.blogspot.com/2016/09/iterative-quicksort-example-in-java-without-recursion.html'>Iterative QuickSort (without Recursion)</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Visualization</a>
  */
 public class IterativeQuickSortAlgorithm extends BaseIntegerSortAlgorithm implements IntSort, CharSort {
 

@@ -17,7 +17,6 @@ import java.util.List;
  * @see <a href='https://www.youtube.com/watch?v=NOq7yuAwAFY'>ru-youtoube: 5x8</a>
  */
 public class CountTwoDigitNumbersDynamicAlgorithm implements Algorithm {
-    long x = 3559958832009428378L;
 
     public static long count(long n) {
         long x5 = 1;

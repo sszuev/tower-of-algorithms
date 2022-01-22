@@ -35,11 +35,12 @@ The project has educational and training purposes.
     * [Selection sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/SelectionSortAlgorithm.java)
     * [Shell sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/ShellSortAlgorithm.java)
     * [Heap sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/HeapSortAlgorithm.java)
-    * [Iterative quick sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/IterativeQuickSortAlgorithm.java)
-    * [Plain (in-memory) merge sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/MergeSortAlgorithm.java)
+    * [Quick sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/IterativeQuickSortAlgorithm.java)
+    * [Simple merge sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/MergeSortAlgorithm.java)
     * [Radix sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/RadixSortAlgorithm.java)
     * [Bucket sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/BucketSortAlgorithm.java)
-    * [External (merge) sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/ExternalSortAlgorithm.java)
+    * [Counting sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/CountingSortAlgorithm.java)
+    * [External sort](algorithms/src/main/java/com/gitlab/sszuev/tasks/sorting/ExternalSortAlgorithm.java)
 
   - String algorithms:
     * [Naive full-scan algorithm to search substring](algorithms/src/main/java/com/gitlab/sszuev/tasks/strings/NaiveSubstringFindOneAlgorithm.java)
