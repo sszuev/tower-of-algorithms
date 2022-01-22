@@ -4,6 +4,8 @@ This project contains different data structure implementations and simple
 console [JMH](https://openjdk.java.net/projects/code-tools/jmh) based application for demonstration.
 _Note: some benchmarks may take a long time_
 
+##### [HOME](../README.md)
+
 Right now there are following data structures:
 
 - [Dynamic Arrays](src/main/java/com/gitlab/sszuev/arrays/DynamicArray.java) (command: `java -jar target/data-structures.jar com.gitlab.sszuev.benchmarks.arrays.*`):

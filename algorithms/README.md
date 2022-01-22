@@ -1,7 +1,9 @@
-#### Algorithms
+#### Algorithms.
 
 This is a collection of some algorithmic tasks and junit-based demo stand for running various algorithms.
 Right now there are following algorithmic tasks:
+
+##### [HOME](../README.md)
 
 - Algorithms for raising a real number to a natural power (command to
   run `mvn -q test -Dtest=NaturalPower*AlgorithmTest`):
@@ -60,6 +62,7 @@ Right now there are following algorithmic tasks:
     - [A brute-force solution with O(N^4) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/SmallShedDynamicAlgorithm.java)
     - [An optimized solution with O(N^3) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/LargeShedDynamicAlgorithm.java)
     - [An optimal solution with O(N^2) complexity](src/main/java/com/gitlab/sszuev/tasks/dynamic/shed/HugeShedDynamicAlgorithm.java)
+
 
 ##### Requirements:
 
