@@ -18,9 +18,18 @@ abstract class SortAlgorithmTestBase extends RunTestEngine {
         return Stream.of("digits", "random", "revers", "sorted").flatMap(SortAlgorithmTestBase::listFor);
     }
 
-    private static Stream<Data> listFor(String dir) {
+    static Stream<Data> listFor(String dir) {
         try {
             return listData("/sorting/" + dir).map(x -> x.withName(dir));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    static Stream<Data> listFor(String dir, int max) {
+        try {
+            return listData("/sorting/" + dir, max).map(x -> x.withName(dir));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
