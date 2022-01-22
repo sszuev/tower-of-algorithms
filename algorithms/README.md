@@ -25,16 +25,17 @@ Right now there are following algorithmic tasks:
 - Greatest common divisor algorithms (command to run: `mvn -q test -Dtest=*GCDAlgorithmTest`):
   * [Recursive Binary GCD algorithm](src/main/java/com/gitlab/sszuev/tasks/algebraic/gcd/RecursiveBinaryGCDAlgorithm.java)
 
-- Sorting algorithms (command to run: `mvn -q test -Dtest=*SortlgorithmTest`):
+- Sorting algorithms (command to run: `mvn -q test -Dtest=*SortAlgorithmTest`):
   * [Bubble sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BubbleSortAlgorithm.java)
   * [Insertion sort](src/main/java/com/gitlab/sszuev/tasks/sorting/InsertionSortAlgorithm.java)
   * [Selection sort](src/main/java/com/gitlab/sszuev/tasks/sorting/SelectionSortAlgorithm.java)
   * [Shell sort](src/main/java/com/gitlab/sszuev/tasks/sorting/ShellSortAlgorithm.java)
   * [Heap sort](src/main/java/com/gitlab/sszuev/tasks/sorting/HeapSortAlgorithm.java)
-  * [Iterative quick sort](src/main/java/com/gitlab/sszuev/tasks/sorting/IterativeQuickSortAlgorithm.java)
+  * [Quick sort (simple iterative impl)](src/main/java/com/gitlab/sszuev/tasks/sorting/IterativeQuickSortAlgorithm.java)
   * [Plain (in-memory) merge sort](src/main/java/com/gitlab/sszuev/tasks/sorting/MergeSortAlgorithm.java)
   * [Radix sort](src/main/java/com/gitlab/sszuev/tasks/sorting/RadixSortAlgorithm.java)
   * [Bucket sort](src/main/java/com/gitlab/sszuev/tasks/sorting/BucketSortAlgorithm.java)
+  * [Counting sort](src/main/java/com/gitlab/sszuev/tasks/sorting/CountingSortAlgorithm.java)  
   * [External (merge) sort](src/main/java/com/gitlab/sszuev/tasks/sorting/ExternalSortAlgorithm.java)
 
 - String algorithms (command to run: `mvn -q test -Dtest=strings/*AlgorithmTest`):
