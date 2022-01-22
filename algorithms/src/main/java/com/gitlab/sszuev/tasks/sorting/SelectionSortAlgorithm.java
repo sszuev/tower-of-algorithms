@@ -1,18 +1,20 @@
 package com.gitlab.sszuev.tasks.sorting;
 
 /**
- * <b>Bubble Sort Algorithm (for Integers)</b>
- * It is <b>non-adaptive</b>, <b>stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
+ * <b>Selection Sort Algorithm (for Integers)</b>
+ * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>non-online</b>, <b>in-place</b> sorting.
  * <ul>
- * <li>Worst case performance, {@code O(n^2)} (comparisons and swaps)</li>
- * <li>Best case performance, {@code O(n)} comparisons and {@code O(1)} swaps</li>
  * <li>Average case performance, {@code O(n^2)} (comparisons and swaps)</li>
- * <li>Worst-case space complexity: {@code O(n)} total, {@code O(1)} auxiliary</li>
+ * <li>Average case memory: {@code O(1)}</li>
+ * <li>Best case performance: {@code O(n)} comparisons and {@code O(1)} swaps</li>
+ * <li>Worst case performance: {@code O(n^2)} (comparisons and swaps)</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
  * </ul>
+ * {@inheritDoc}
  * Created by @ssz on 29.08.2021.
  *
  * @see <a href='https://en.wikipedia.org/wiki/Selection_sort'>wiki: Selection Sort</a>
- * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Sorting Algorithms Visualization</a>
+ * @see <a href='https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html'>Visualization</a>
  */
 public class SelectionSortAlgorithm extends BaseIntegerSortAlgorithm {
 

@@ -2,15 +2,18 @@ package com.gitlab.sszuev.tasks.sorting;
 
 /**
  * <b>Heap Sort Algorithm (for Integers)</b>
- * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>in-place</b>, <b>non-online</b> sorting.
+ * It is <b>non-adaptive</b>, <b>non-stable</b>, <b>non-online</b>, <b>in-place</b> sorting.
  * <ul>
- * <li>Worst case performance: {@code O(n * log(n))}</li>
- * <li>Best case performance: {@code O(n * log(n))} (distinct keys) and {@code O(n)} (equal keys)</li>
- * <li>Average case performance: {@code O(n * log(n))}</li>
- * <li>Worst-case space complexity: {@code O(n)} total, {@code O(1)} auxiliary</li>
+ * <li>Average case performance: {@code O(n*log(n))}</li>
+ * <li>Average case memory: {@code O(1)}</li>
+ * <li>Best case performance: {@code O(n*log(n))} (distinct keys) and {@code O(n)} (equal keys)</li>
+ * <li>Worst case performance: {@code O(n*log(n))}</li>
+ * <li>Worst-case memory: {@code O(n)}</li>
  * </ul>
+ * {@inheritDoc}
  * Created by @ssz on 29.08.2021.
- * @see <a href='https://en.wikipedia.org/wiki/Heapsort'>Heap Sort</a>
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Heapsort'>wiki: Heap Sort</a>
  */
 public class HeapSortAlgorithm extends BaseIntegerSortAlgorithm {
 
